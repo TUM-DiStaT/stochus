@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Install dependencies
-        run: nx ci
+        run: npm ci
 
       - name: Check all files' formatting
         run: npx nx format:check

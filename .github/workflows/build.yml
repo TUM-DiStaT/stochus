@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Install dependencies
-        run: nx ci
+        run: npm ci
 
       - name: Build all apps
         if: github.event_name == 'pull_request'
