@@ -7,17 +7,8 @@ on:
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/setup.yml
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Lint all projects
         if: github.event_name == 'pull_request'
         run: npx nx affected --target=lint --parallel=3

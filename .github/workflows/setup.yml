@@ -1,0 +1,17 @@
+name: Setup workspace
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Needed so main branch is also fetched
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: npm ci
