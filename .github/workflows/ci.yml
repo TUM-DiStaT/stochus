@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
+      - fix-nx-project-selection
+#  pull_request:
 
 jobs:
   tests-linting-and-build:
