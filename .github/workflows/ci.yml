@@ -32,16 +32,17 @@ jobs:
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: lint
-          all: github.event_name == 'push'
+          all: ${{github.event_name == 'push'}}
 
       - name: Build
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: build
-          all: github.event_name == 'push'
+          all: ${{github.event_name == 'push'}}
+          args: '--configuration=production'
 
       - name: Test
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: test
-          all: github.event_name == 'push'
+          all: ${{github.event_name == 'push'}}
