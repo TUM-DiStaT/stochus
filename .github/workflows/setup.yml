@@ -1,7 +1,6 @@
 name: Setup workspace
 
-on:
-  push:
+on: []
 
 jobs:
   setup:

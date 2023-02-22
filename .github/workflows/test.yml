@@ -7,8 +7,8 @@ on:
 
 jobs:
   main:
-    uses: ./.github/workflows/setup.yml
     steps:
+      - uses: ./.github/workflows/setup.yml
       - name: Test all projects
         if: github.event_name == 'pull_request'
         run: npx nx affected --target=test --parallel=3 --configuration=ci
