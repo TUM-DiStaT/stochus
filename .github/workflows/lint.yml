@@ -1,0 +1,27 @@
+name: Lint
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: nx ci
+
+      - name: Lint all projects
+        if: github.event_name == 'pull_request'
+        run: npx nx affected --target=lint --parallel=3
+
+      - name: Lint affected projects
+        if: github.event_name == 'push'
+        run: npx nx run-many --target=lint --parallel=3

@@ -1,0 +1,22 @@
+name: Format checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: nx ci
+
+      - name: Check all files' formatting
+        run: npx nx format:check
