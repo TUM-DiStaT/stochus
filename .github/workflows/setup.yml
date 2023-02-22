@@ -1,5 +1,8 @@
 name: Setup workspace
 
+on:
+  push:
+
 jobs:
   setup:
     runs-on: ubuntu-latest
