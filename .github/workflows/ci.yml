@@ -1,0 +1,44 @@
+name: Tests, linting etc.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Needed so main branch is also fetched
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check all files' formatting
+        run: npx nx format:check
+
+      - name: Lint
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: lint
+          all: github.event_name == 'push'
+
+      - name: Build
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: build
+          all: github.event_name == 'push'
+
+      - name: Test
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: test
+          all: github.event_name == 'push'
