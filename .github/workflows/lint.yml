@@ -7,8 +7,10 @@ on:
 
 jobs:
   main:
+    runs-on: ubuntu-latest
     steps:
       - uses: ./.github/workflows/setup.yml
+
       - name: Lint all projects
         if: github.event_name == 'pull_request'
         run: npx nx affected --target=lint --parallel=3
