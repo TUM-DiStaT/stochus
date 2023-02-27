@@ -1,7 +1,7 @@
 const { createGlobPatternsForDependencies } = require('@nrwl/angular/tailwind')
 const { join } = require('path')
 
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 module.exports = {
   content: [
     join(__dirname, 'src/**/!(*.stories|*.spec).{ts,html}'),
@@ -10,5 +10,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 }
