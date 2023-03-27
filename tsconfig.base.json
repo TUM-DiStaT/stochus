@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
       "@stochus/daisy-ui": ["libs/daisy-ui/src/index.ts"]
     }
   },
