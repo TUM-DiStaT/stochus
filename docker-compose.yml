@@ -28,3 +28,6 @@ services:
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_HOSTNAME: localhost
+    volumes:
+      - ./docker/keycloak/realms:/tmp/realm-exports
+      - ./docker/keycloak/realms:/opt/keycloak/data/import
