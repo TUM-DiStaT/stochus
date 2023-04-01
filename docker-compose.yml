@@ -16,10 +16,7 @@ services:
     #    restart: unless-stopped
     ports:
       - "8080:8080"
-    command: start-dev
-    #    command: ["start", "--import-realm"]
-    #    volumes:
-    #      - docker-volumes/keycloak-realm:/opt/keycloak/data/import
+    command: ["start-dev", "--import-realm"]
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
