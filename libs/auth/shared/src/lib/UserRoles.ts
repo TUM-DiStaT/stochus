@@ -5,6 +5,8 @@ export enum UserRoles {
   MANAGE_ACCOUNT = 'manage-account',
   MANAGE_ACCOUNT_LINKS = 'manage-account-links',
   VIEW_PROFILE = 'view-profile',
+  STUDENT = 'student',
+  RESEARCHER = 'researcher',
 }
 
 const invertedRoles = Object.values(UserRoles).reduce(

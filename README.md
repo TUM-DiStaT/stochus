@@ -4,6 +4,14 @@
 
 ## Getting up and running
 
+### Pre-configured users
+
+| Username     | Password   | Roles                              |
+| ------------ | ---------- | ---------------------------------- |
+| `admin`      | `admin`    | Keycloak admin, not a stochus user |
+| `student`    | `password` | student                            |
+| `researcher` | `password` | researcher                         |
+
 ## Making changes to Keycloak (e.g. adding new users)
 
 Once you've made a change to keycloak, you'll have to export the realm so the changes can be shared with other
