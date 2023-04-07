@@ -1,0 +1,10 @@
+import { UserRoles } from './UserRoles'
+
+export type User = {
+  id: string
+  username: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  roles: UserRoles[]
+}
