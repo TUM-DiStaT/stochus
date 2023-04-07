@@ -14,6 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noImplicitOverride": true,
     "paths": {
       "@stochus/auth/backend": ["libs/auth/backend/src/index.ts"],
       "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
