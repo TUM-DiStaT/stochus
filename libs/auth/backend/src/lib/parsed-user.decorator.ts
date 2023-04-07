@@ -1,31 +1,7 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-  InternalServerErrorException,
-} from '@nestjs/common'
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import { extractRequest } from 'nest-keycloak-connect/util'
 import { KeycloakTokenParsed } from 'keycloak-js'
-import { isValidRoles, User } from '@stochus/auth/shared'
-
-const undefinedIfEmpty = (str?: string): string | undefined =>
-  str ? str : undefined
-
-const parseUser = (unparsedUser: KeycloakTokenParsed): User => {
-  const roles = unparsedUser.realm_access?.roles
-
-  if (!unparsedUser.sub || !roles || !isValidRoles(roles)) {
-    throw new InternalServerErrorException()
-  }
-
-  return {
-    id: unparsedUser.sub,
-    roles: roles,
-    username: unparsedUser['preferred_username'],
-    email: undefinedIfEmpty(unparsedUser['email']),
-    firstName: undefinedIfEmpty(unparsedUser['given_name']),
-    lastName: undefinedIfEmpty(unparsedUser['family_name']),
-  }
-}
+import { parseUser } from '@stochus/auth/shared'
 
 export const ParsedUser = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
