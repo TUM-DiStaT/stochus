@@ -1,21 +1,24 @@
-import { Test } from '@nestjs/testing';
+import { Test } from '@nestjs/testing'
 
-import { AppService } from './app.service';
+import { AppService } from './app.service'
 
 describe('AppService', () => {
-  let service: AppService;
+  let service: AppService
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
       providers: [AppService],
-    }).compile();
+    }).compile()
 
-    service = app.get<AppService>(AppService);
-  });
+    service = app.get<AppService>(AppService)
+  })
 
   describe('getData', () => {
     it('should return "Welcome to backend!"', () => {
-      expect(service.getData()).toEqual({ message: 'Welcome to backend!' });
-    });
-  });
-});
+      const username = 'asdf'
+      expect(service.getData(username)).toEqual({
+        message: `Welcome to backend, ${username}!`,
+      })
+    })
+  })
+})
