@@ -21,6 +21,7 @@
     "daisyui": "^2.51.0",
     "keycloak-angular": "^13.0.0",
     "keycloak-js": "^21.0.1",
+    "nest-keycloak-connect": "^1.9.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "tslib": "^2.3.0",

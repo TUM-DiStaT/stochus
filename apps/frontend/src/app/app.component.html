@@ -1,4 +1,5 @@
 <button (click)="login()">Anmelden</button>
 <button (click)="logout()">Abmelden</button>
+<div>{{ hello$ | async | json }}</div>
 <stochus-nx-welcome></stochus-nx-welcome>
 <router-outlet></router-outlet>

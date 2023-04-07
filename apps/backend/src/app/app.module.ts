@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { BackendAuthModule } from '@stochus/auth/backend'
 
 @Module({
-  imports: [],
+  imports: [BackendAuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
