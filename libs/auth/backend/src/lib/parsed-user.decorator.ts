@@ -32,6 +32,12 @@ export const ParsedUser = createParamDecorator(
     const [request] = extractRequest(context)
     const unparsedUser: KeycloakTokenParsed | undefined = request.user
 
+    if (!unparsedUser) {
+      throw new Error(
+        'ParsedUser was used without the user having been parsed by Keycloak. Perhaps the route is set to @Public()?',
+      )
+    }
+
     return unparsedUser ? parseUser(unparsedUser) : undefined
   },
 )
