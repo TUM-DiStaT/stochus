@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.keycloak.getKeycloakInstance().loadUserProfile().then(console.log)
     this.getData()
   }
 
