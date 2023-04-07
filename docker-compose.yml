@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   keycloak_postgres:
@@ -15,13 +15,13 @@ services:
       - keycloak_postgres
     #    restart: unless-stopped
     ports:
-      - "8080:8080"
-    command: ["start-dev", "--import-realm"]
+      - '8080:8080'
+    command: ['start-dev', '--import-realm']
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: postgres
-      KC_DB_URL: "jdbc:postgresql://keycloak_postgres:5432/${KEYCLOAK_DB_NAME}"
+      KC_DB_URL: 'jdbc:postgresql://keycloak_postgres:5432/${KEYCLOAK_DB_NAME}'
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_HOSTNAME: localhost
