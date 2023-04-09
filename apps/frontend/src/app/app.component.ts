@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http'
 import { Subject } from 'rxjs'
 import { AsyncPipe, JsonPipe } from '@angular/common'
 import { NavbarComponent } from './navbar/navbar.component'
+import { ToastServiceHostComponent } from '@stochus/daisy-ui'
 
 @Component({
   standalone: true,
@@ -15,13 +16,13 @@ import { NavbarComponent } from './navbar/navbar.component'
     HttpClientModule,
     JsonPipe,
     NavbarComponent,
+    ToastServiceHostComponent,
   ],
   selector: 'stochus-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'frontend'
   hello$ = new Subject()
 
   constructor(private readonly http: HttpClient) {}

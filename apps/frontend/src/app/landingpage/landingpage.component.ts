@@ -6,6 +6,7 @@ import {
   ButtonComponent,
   ButtonSize,
   ButtonStyle,
+  ToastService,
 } from '@stochus/daisy-ui'
 
 @Component({
@@ -19,14 +20,19 @@ export class LandingpageComponent {
   protected readonly ButtonStyle = ButtonStyle
   protected readonly ButtonSize = ButtonSize
 
-  constructor(private readonly keycloakService: KeycloakService) {}
+  constructor(
+    private readonly keycloakService: KeycloakService,
+    private readonly toastService: ToastService,
+  ) {}
 
   login() {
-    // this.keycloakService.logout().catch(console.error)
     this.keycloakService
       .login({
         redirectUri: window.location.origin + '/dashboard',
       })
-      .catch(console.error)
+      .catch((e) => {
+        console.error(e)
+        this.toastService.error('Login fehlgeschlagen')
+      })
   }
 }

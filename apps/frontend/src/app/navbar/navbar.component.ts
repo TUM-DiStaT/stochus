@@ -16,6 +16,7 @@ import {
   NavbarComponent as DaisyNavbarComponent,
   NavbarEndComponent,
   NavbarStartComponent,
+  ToastService,
 } from '@stochus/daisy-ui'
 
 @Component({
@@ -57,9 +58,13 @@ export class NavbarComponent {
   constructor(
     private readonly router: Router,
     private readonly keycloakService: KeycloakService,
+    private readonly toastService: ToastService,
   ) {}
 
-  async logout() {
-    await this.keycloakService.logout(window.location.origin)
+  logout() {
+    this.keycloakService.logout(window.location.origin).catch((e) => {
+      console.error(e)
+      this.toastService.error('Abmelden fehlgeschlagen')
+    })
   }
 }
