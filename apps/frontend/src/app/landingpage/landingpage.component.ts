@@ -25,7 +25,7 @@ export class LandingpageComponent {
     // this.keycloakService.logout().catch(console.error)
     this.keycloakService
       .login({
-        redirectUri: window.location.origin,
+        redirectUri: window.location.origin + '/dashboard',
       })
       .catch(console.error)
   }
