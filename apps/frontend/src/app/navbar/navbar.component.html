@@ -1,0 +1,26 @@
+<daisy-navbar
+  *ngIf="showAppUi$ | async"
+  class="bg-primary text-primary-content"
+>
+  <daisy-navbar-start></daisy-navbar-start>
+  <daisy-navbar-center>
+    <a
+      [routerLink]="['dashboard']"
+      daisyButton
+      [style]="ButtonStyle.GHOST"
+      class="normal-case text-lg"
+    >
+      Stochus
+    </a>
+  </daisy-navbar-center>
+  <daisy-navbar-end>
+    <button
+      daisyButton
+      [style]="ButtonStyle.GHOST"
+      (click)="logout()"
+      class="text-primary-content"
+    >
+      Abmelden
+    </button>
+  </daisy-navbar-end>
+</daisy-navbar>

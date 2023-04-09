@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { DashboardComponent } from './dashboard.component'
-import { KeycloakTestingModule } from '@stochus/auth/frontend'
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent
@@ -8,7 +7,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, KeycloakTestingModule],
+      imports: [DashboardComponent],
     }).compileComponents()
 
     fixture = TestBed.createComponent(DashboardComponent)
