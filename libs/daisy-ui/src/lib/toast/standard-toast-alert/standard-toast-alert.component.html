@@ -1,0 +1,24 @@
+<daisy-alert
+  [class.invisible]="hidden"
+  [type]="toast.type"
+  class="flex-col relative"
+>
+  <div class="flex flex-row w-full">
+    {{ toast.content }}
+    <div class="flex-1"></div>
+    <button
+      daisyButton
+      [size]="ButtonSize.XS"
+      [style]="ButtonStyle.GHOST"
+      [dimension]="ButtonDimension.SQUARE"
+      (click)="manualClose.emit(toast)"
+    >
+      X
+    </button>
+  </div>
+  <progress
+    class="progress bottom-0 rounded-none opacity-60 absolute"
+    [value]="progress$ | async"
+    max="1"
+  ></progress>
+</daisy-alert>
