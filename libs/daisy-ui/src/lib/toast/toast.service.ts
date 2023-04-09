@@ -28,6 +28,12 @@ export class ToastService {
   private _toasts = new BehaviorSubject<Toast[]>([])
   readonly toasts$ = this._toasts.asObservable()
 
+  private _hostIsReady = false
+
+  onHostReady() {
+    this._hostIsReady = true
+  }
+
   info(content: string) {
     this.newStandardAlert(AlertType.INFO, content)
   }
@@ -57,6 +63,14 @@ export class ToastService {
   }
 
   private newStandardAlert(type: AlertType, content: string) {
+    if (!this._hostIsReady) {
+      throw new Error(
+        'Cannot create a toast because no host was found. ' +
+          'Did you forget to mount a <daisy-toast-service-host> in your ' +
+          'application?',
+      )
+    }
+
     const newToast: StandardAlertToast = {
       type,
       content,

@@ -20,5 +20,7 @@ export class ToastServiceHostComponent {
   @Input()
   class?: string
 
-  constructor(readonly toastService: ToastService) {}
+  constructor(readonly toastService: ToastService) {
+    this.toastService.onHostReady()
+  }
 }
