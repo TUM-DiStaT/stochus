@@ -2,7 +2,7 @@ import { Route } from '@angular/router'
 import { LandingpageComponent } from './landingpage/landingpage.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { AuthGuard } from '@stochus/auth/frontend'
-import { PublicOnlyGuard } from '../../../../libs/auth/frontend/src/lib/public-only.guard'
+import { PublicOnlyGuard } from '@stochus/auth/frontend'
 import { UserRoles } from '@stochus/auth/shared'
 
 export type StochusRouteData = {
