@@ -9,6 +9,14 @@ import {
   ButtonSize,
   ButtonStyle,
 } from '../../button/button.component'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import {
+  heroXMark,
+  heroInformationCircle,
+  heroCheckCircle,
+  heroExclamationTriangle,
+  heroXCircle,
+} from '@ng-icons/heroicons/outline'
 
 export type StandardAlertToast = {
   type: AlertType
@@ -19,7 +27,16 @@ export type StandardAlertToast = {
 @Component({
   selector: 'daisy-standard-toast-alert',
   standalone: true,
-  imports: [CommonModule, AlertComponent, ButtonComponent],
+  imports: [CommonModule, AlertComponent, ButtonComponent, NgIconComponent],
+  providers: [
+    provideIcons({
+      heroXMark,
+      heroInformationCircle,
+      heroCheckCircle,
+      heroExclamationTriangle,
+      heroXCircle,
+    }),
+  ],
   templateUrl: './standard-toast-alert.component.html',
 })
 export class StandardToastAlertComponent {
@@ -39,6 +56,15 @@ export class StandardToastAlertComponent {
       return Math.min(1, passedTime / this.toast.options.duration)
     }),
   )
+
+  get prefixIcon() {
+    return {
+      [AlertType.INFO]: 'heroInformationCircle',
+      [AlertType.SUCCESS]: 'heroCheckCircle',
+      [AlertType.WARNING]: 'heroExclamationTriangle',
+      [AlertType.ERROR]: 'heroXCircle',
+    }[this.toast.type]
+  }
 
   protected readonly ButtonSize = ButtonSize
   protected readonly ButtonStyle = ButtonStyle

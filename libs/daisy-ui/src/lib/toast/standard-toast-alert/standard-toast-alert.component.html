@@ -4,6 +4,7 @@
   class="flex-col relative"
 >
   <div class="flex flex-row w-full">
+    <ng-icon [name]="prefixIcon" strokeWidth="2" class="text-lg"></ng-icon>
     {{ toast.content }}
     <div class="flex-1"></div>
     <button
@@ -13,7 +14,7 @@
       [dimension]="ButtonDimension.SQUARE"
       (click)="manualClose.emit(toast)"
     >
-      X
+      <ng-icon name="heroXMark" class="text-lg"></ng-icon>
     </button>
   </div>
   <progress

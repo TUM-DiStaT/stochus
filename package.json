@@ -16,6 +16,8 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@ng-icons/core": "^23.3.0",
+    "@ng-icons/heroicons": "^23.3.0",
     "axios": "^1.0.0",
     "classnames": "^2.3.2",
     "daisyui": "^2.51.0",
