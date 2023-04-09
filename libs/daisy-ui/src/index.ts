@@ -1,2 +1,6 @@
 export * from './lib/alert/alert.component'
 export * from './lib/button/button.component'
+export * from './lib/navbar/navbar.component'
+export * from './lib/navbar/navbar-start/navbar-start.component'
+export * from './lib/navbar/navbar-center/navbar-center.component'
+export * from './lib/navbar/navbar-end/navbar-end.component'
