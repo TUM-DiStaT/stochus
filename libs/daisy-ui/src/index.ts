@@ -1,1 +1,1 @@
-export * from './lib/button/alert.component'
+export * from './lib/alert/alert.component'
