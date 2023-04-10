@@ -59,10 +59,13 @@ export class StandardToastAlertComponent {
 
   get prefixIcon() {
     return {
-      [AlertType.INFO]: 'heroInformationCircle',
-      [AlertType.SUCCESS]: 'heroCheckCircle',
-      [AlertType.WARNING]: 'heroExclamationTriangle',
-      [AlertType.ERROR]: 'heroXCircle',
+      [AlertType.INFO]: { icon: 'heroInformationCircle', label: 'Info:' },
+      [AlertType.SUCCESS]: { icon: 'heroCheckCircle', label: 'Erfolg:' },
+      [AlertType.WARNING]: {
+        icon: 'heroExclamationTriangle',
+        label: 'Warnung:',
+      },
+      [AlertType.ERROR]: { icon: 'heroXCircle', label: 'Fehler:' },
     }[this.toast.type]
   }
 
