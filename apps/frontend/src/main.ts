@@ -1,8 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser'
-import {
-  provideRouter,
-  withEnabledBlockingInitialNavigation,
-} from '@angular/router'
+import { provideRouter } from '@angular/router'
 import { AppComponent } from './app/app.component'
 import { appRoutes } from './app/app.routes'
 import { APP_INITIALIZER, importProvidersFrom } from '@angular/core'
@@ -18,6 +15,6 @@ bootstrapApplication(AppComponent, {
       multi: true,
       deps: [KeycloakService],
     },
-    provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+    provideRouter(appRoutes),
   ],
 }).catch((err) => console.error(err))

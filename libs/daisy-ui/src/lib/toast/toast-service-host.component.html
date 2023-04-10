@@ -1,0 +1,11 @@
+<daisy-toast [class]="class">
+  <ng-container *ngFor="let toast of toastService.toasts$ | async">
+    <daisy-standard-toast-alert
+      *ngIf="toastService.isStandardAlertToast(toast)"
+      [toast]="toastService.asStandardAlertToast(toast)"
+      (manualClose)="toastService.close($event)"
+    >
+      {{ toast.content }}
+    </daisy-standard-toast-alert>
+  </ng-container>
+</daisy-toast>

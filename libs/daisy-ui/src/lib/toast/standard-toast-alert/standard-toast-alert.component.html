@@ -1,0 +1,34 @@
+<daisy-alert
+  [class.invisible]="hidden"
+  [type]="toast.type"
+  class="flex-col relative"
+  role="alert"
+  aria-live="assertive"
+>
+  <div class="flex flex-row w-full">
+    <ng-icon
+      [name]="prefixIcon.icon"
+      role="img"
+      [attr.aria-label]="prefixIcon.label"
+      strokeWidth="2"
+      class="text-lg"
+    ></ng-icon>
+    {{ toast.content }}
+    <div class="flex-1"></div>
+    <button
+      daisyButton
+      [size]="ButtonSize.XS"
+      [style]="ButtonStyle.GHOST"
+      [dimension]="ButtonDimension.SQUARE"
+      (click)="manualClose.emit(toast)"
+      aria-label="Schließen"
+    >
+      <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+    </button>
+  </div>
+  <progress
+    class="progress bottom-0 rounded-none opacity-60 absolute"
+    [value]="progress$ | async"
+    max="1"
+  ></progress>
+</daisy-alert>
