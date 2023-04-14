@@ -26,7 +26,7 @@ export const appRoutes: StochusRoute[] = [
     },
   },
   {
-    title: 'Stochus',
+    title: 'Dashboard | Stochus',
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
