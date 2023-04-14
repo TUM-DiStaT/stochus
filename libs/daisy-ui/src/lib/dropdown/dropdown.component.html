@@ -1,0 +1,8 @@
+<div [class]="labelClassnames">
+  <label tabindex="0" daisyButton [style]="ButtonStyle.GHOST">
+    <ng-content select="[button]"></ng-content>
+  </label>
+  <div class="dropdown-content">
+    <ng-content select="[body]"></ng-content>
+  </div>
+</div>
