@@ -68,6 +68,9 @@ export class ButtonComponent {
   @HostBinding('attr.role')
   role: 'button' | 'link' = 'button'
 
+  @Input()
+  class?: string
+
   @HostBinding('class')
   get computedClassnames() {
     return classNames(
@@ -83,6 +86,7 @@ export class ButtonComponent {
         'btn-disabled': this.disabled !== false,
         loading: this.loading !== false,
       },
+      this.class,
     )
   }
 }
