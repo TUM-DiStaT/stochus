@@ -38,7 +38,7 @@ export enum ButtonWidth {
   // Prefix is applied to attribute here instead of
   // tag name
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[daisyButton], a[daisyButton]',
+  selector: 'button[daisyButton], a[daisyButton], label[daisyButton]',
   standalone: true,
   templateUrl: './button.component.html',
 })

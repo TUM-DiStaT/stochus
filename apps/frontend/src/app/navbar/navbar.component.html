@@ -14,13 +14,16 @@
     </a>
   </daisy-navbar-center>
   <daisy-navbar-end>
-    <button
-      daisyButton
-      [style]="ButtonStyle.GHOST"
-      (click)="logout()"
-      class="text-primary-content"
-    >
-      Abmelden
-    </button>
+    <daisy-dropdown showOnHover alignEnd>
+      <ng-icon name="heroBars3" button></ng-icon>
+      <ul body daisyMenu class="w-max bg-base-100 rounded-box shadow">
+        <li daisyMenuItem>
+          <a (click)="logout()">
+            <ng-icon name="heroArrowRightOnRectangle" />
+            Abmelden
+          </a>
+        </li>
+      </ul>
+    </daisy-dropdown>
   </daisy-navbar-end>
 </daisy-navbar>

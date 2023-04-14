@@ -12,12 +12,20 @@ import { KeycloakService } from 'keycloak-angular'
 import {
   ButtonComponent,
   ButtonStyle,
+  DropdownComponent,
+  MenuComponent,
+  MenuItemComponent,
   NavbarCenterComponent,
   NavbarComponent as DaisyNavbarComponent,
   NavbarEndComponent,
   NavbarStartComponent,
   ToastService,
 } from '@stochus/daisy-ui'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import {
+  heroBars3,
+  heroArrowRightOnRectangle,
+} from '@ng-icons/heroicons/outline'
 
 @Component({
   selector: 'stochus-navbar',
@@ -30,7 +38,12 @@ import {
     NavbarCenterComponent,
     NavbarEndComponent,
     RouterLink,
+    NgIconComponent,
+    DropdownComponent,
+    MenuComponent,
+    MenuItemComponent,
   ],
+  providers: [provideIcons({ heroBars3, heroArrowRightOnRectangle })],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
