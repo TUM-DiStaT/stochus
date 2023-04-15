@@ -7,6 +7,14 @@ import {
   ButtonStyle,
   ButtonWidth,
 } from './button.component'
+import { Component } from '@angular/core'
+
+@Component({
+  standalone: true,
+  imports: [ButtonComponent],
+  template: `<button daisyButton class="test-class"></button>`,
+})
+class SetClassByParentTestComponent {}
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent
@@ -91,5 +99,17 @@ describe('ButtonComponent', () => {
     fixture.detectChanges()
 
     expect(nativeElement.getAttribute('role')).toBe('link')
+  })
+
+  it('should keep classes that were set by the parent', () => {
+    // when
+    const fixture = TestBed.createComponent(SetClassByParentTestComponent)
+    const parent: HTMLElement = fixture.nativeElement
+    const element = parent?.getElementsByTagName('button')?.[0]
+    fixture.detectChanges()
+
+    // then
+    expect(element).toBeTruthy()
+    expect(element.className).toContain('test-class')
   })
 })
