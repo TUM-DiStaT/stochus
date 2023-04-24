@@ -8,6 +8,7 @@ import {
   AppConfigurationModule,
   AppConfigurationService,
 } from '@stochus/core/backend'
+import { InteractionLogsModule } from '@stochus/interaction-logs/backend'
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import {
       },
     }),
     BackendAuthModule,
+    InteractionLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
