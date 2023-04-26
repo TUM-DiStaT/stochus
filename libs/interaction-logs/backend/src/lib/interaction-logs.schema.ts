@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 @Schema()
 export class InteractionLog {
-  // TODO: validate correct user ID
   @Prop({ required: true })
   userId!: string
 

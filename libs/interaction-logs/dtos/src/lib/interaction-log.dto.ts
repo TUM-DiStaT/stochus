@@ -1,4 +1,4 @@
-import { IsDate, IsMongoId, IsNotEmpty, MaxDate } from 'class-validator'
+import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
 import { Expose, Type } from 'class-transformer'
 import { OmitType } from '@nestjs/swagger'
 
@@ -17,6 +17,7 @@ export class InteractionLogDto {
   payload: unknown
 
   @IsNotEmpty()
+  @IsUUID()
   userId!: string
 }
 

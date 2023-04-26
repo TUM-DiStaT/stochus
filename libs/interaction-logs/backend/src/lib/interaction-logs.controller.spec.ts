@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing'
 import { InteractionLogsController } from './interaction-logs.controller'
 import { InteractionLogsService } from './interaction-logs.service'
 
-describe('InteractionLogsBackendController', () => {
+describe('InteractionLogsController', () => {
   let controller: InteractionLogsController
 
   beforeEach(async () => {
