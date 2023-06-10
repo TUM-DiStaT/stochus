@@ -25,12 +25,6 @@ describe('Interaction Logs', () => {
 
     const moduleRef = await Test.createTestingModule({
       imports: [MongooseModule.forRoot(mongod.getUri()), InteractionLogsModule],
-      providers: [
-        // {
-        //   provide: APP_GUARD,
-        //   useClass: RoleGuard,
-        // },
-      ],
     })
       .overrideGuard(AuthGuard)
       .useClass(MockAuthGuard)
