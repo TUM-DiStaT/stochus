@@ -17,6 +17,9 @@ export class InteractionLogDto {
   payload: unknown
 
   @IsNotEmpty()
+  foo!: string
+
+  @IsNotEmpty()
   @IsUUID()
   userId!: string
 }

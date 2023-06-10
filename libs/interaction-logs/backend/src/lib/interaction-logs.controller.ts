@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { InteractionLogsService } from './interaction-logs.service'
 import { plainToInstance } from 'class-transformer'
 import {
@@ -6,13 +6,16 @@ import {
   InteractionLogDto,
 } from '@stochus/interaction-logs/dtos'
 import { ParsedUser } from '@stochus/auth/backend'
-import { User } from '@stochus/auth/shared'
+import { User, UserRoles } from '@stochus/auth/shared'
+import { AuthGuard, RoleGuard, Roles } from 'nest-keycloak-connect'
 
 @Controller('interaction-logs')
 export class InteractionLogsController {
   constructor(private interactionLogsBackendService: InteractionLogsService) {}
 
   @Post()
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles({ roles: [UserRoles.STUDENT] })
   async createLog(
     @Body() dto: InteractionLogCreateDto,
     @ParsedUser() user: User,
@@ -21,6 +24,8 @@ export class InteractionLogsController {
       dto,
       user,
     )
+
+    console.log({ dto, entry })
 
     return plainToInstance(InteractionLogDto, entry, {
       excludeExtraneousValues: true,
