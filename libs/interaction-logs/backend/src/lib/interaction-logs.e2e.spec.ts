@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { InteractionLogsModule } from './interaction-logs.module'
 import * as request from 'supertest'
@@ -33,6 +33,7 @@ describe('Interaction Logs', () => {
       .compile()
 
     app = moduleRef.createNestApplication()
+    app.useGlobalPipes(new ValidationPipe())
 
     mockAuthGuard = await app.resolve(AuthGuard)
 
