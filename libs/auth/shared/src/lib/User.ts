@@ -29,3 +29,16 @@ export const parseUser = (unparsedUser: KeycloakTokenParsed): User => {
     lastName: undefinedIfEmpty(unparsedUser['family_name']),
   }
 }
+
+export const userToKeycloakTokenParsed = (user: User): KeycloakTokenParsed => {
+  return {
+    sub: user.id,
+    preferred_username: user.username,
+    email: user.email,
+    given_name: user.firstName,
+    family_name: user.lastName,
+    realm_access: {
+      roles: user.roles,
+    },
+  }
+}
