@@ -19,6 +19,15 @@
     "noUnusedLocals": true,
     "noImplicitOverride": true,
     "paths": {
+      "@stochus/assignment/core/frontend": [
+        "libs/assignments/core/frontend/src/index.ts"
+      ],
+      "@stochus/assignment/core/shared": [
+        "libs/assignments/core/shared/src/index.ts"
+      ],
+      "@stochus/assignments/core/backend": [
+        "libs/assignments/core/backend/src/index.ts"
+      ],
       "@stochus/auth/backend": ["libs/auth/backend/src/index.ts"],
       "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
       "@stochus/auth/shared": ["libs/auth/shared/src/index.ts"],
