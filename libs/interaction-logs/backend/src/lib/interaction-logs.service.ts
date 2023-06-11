@@ -22,4 +22,8 @@ export class InteractionLogsService {
       payload: log.payload,
     })
   }
+
+  async getAll(): Promise<Array<InteractionLog>> {
+    return await this.interactionLogsModel.find().exec()
+  }
 }

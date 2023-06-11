@@ -14,10 +14,8 @@ export class InteractionLogDto {
   datetime!: Date
 
   @Expose()
-  payload: unknown
-
   @IsNotEmpty()
-  foo!: string
+  payload: unknown
 
   @IsNotEmpty()
   @IsUUID()

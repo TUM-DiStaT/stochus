@@ -9,6 +9,8 @@ import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
 import { HttpStatusCode } from 'axios'
 import { researcherUser, studentUser } from '@stochus/auth/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
+import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
+import { plainToInstance } from '@stochus/core/shared'
 
 describe('Interaction Logs', () => {
   let app: INestApplication
@@ -73,5 +75,34 @@ describe('Interaction Logs', () => {
       .post('/interaction-logs')
       .send({})
       .expect(HttpStatusCode.BadRequest)
+  })
+
+  it('should save a request with payload', async () => {
+    mockAuthGuard.setCurrentUser(studentUser)
+
+    const dto: InteractionLogCreateDto = {
+      payload: {
+        biz: 123,
+        asdf: true,
+      },
+    }
+
+    await request(app.getHttpServer())
+      .post('/interaction-logs')
+      .send(dto)
+      .expect(HttpStatusCode.Created)
+
+    mockAuthGuard.setCurrentUser(researcherUser)
+    const response = await request(app.getHttpServer())
+      .get('/interaction-logs')
+      .send()
+      .expect(HttpStatusCode.Ok)
+
+    expect(response.body).toHaveLength(1)
+    expect(
+      plainToInstance(InteractionLogCreateDto, response.body[0], {
+        // excludeExtraneousValues: true,
+      }),
+    ).toEqual(dto)
   })
 })
