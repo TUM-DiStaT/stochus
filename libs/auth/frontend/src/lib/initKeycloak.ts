@@ -18,12 +18,7 @@ export const initKeycloak = (keycloak: KeycloakService) => () => {
   keycloak.keycloakEvents$.subscribe({
     next: async (event) => {
       if (event.type === KeycloakEventType.OnTokenExpired) {
-        // TODO: remove console logs
-        console.log('Refreshing token')
         await keycloak.updateToken(20)
-        console.log(
-          `Refresing finished. New token: ${await keycloak.getToken()}`,
-        )
       }
     },
   })
