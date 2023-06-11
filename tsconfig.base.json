@@ -23,6 +23,7 @@
       "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
       "@stochus/auth/shared": ["libs/auth/shared/src/index.ts"],
       "@stochus/core/backend": ["libs/core/backend/src/index.ts"],
+      "@stochus/core/shared": ["libs/core/shared/src/index.ts"],
       "@stochus/daisy-ui": ["libs/daisy-ui/src/index.ts"],
       "@stochus/interaction-logs/backend": [
         "libs/interaction-logs/backend/src/index.ts"
