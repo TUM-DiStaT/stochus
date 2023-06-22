@@ -1,5 +1,6 @@
 import { ClassConstructor } from 'class-transformer'
 import { IsNumber, Max, Min } from 'class-validator'
+import { plainToInstance } from '@stochus/core/shared'
 
 export class BaseCompletionData {
   /**
@@ -10,6 +11,10 @@ export class BaseCompletionData {
   @Max(1)
   progress!: number
 }
+
+export const emptyBaseCompletionData = plainToInstance(BaseCompletionData, {
+  progress: 0,
+} satisfies BaseCompletionData)
 
 export type BaseAssignment<
   ConfigurationType = unknown,

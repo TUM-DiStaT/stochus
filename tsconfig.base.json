@@ -28,6 +28,12 @@
       "@stochus/assignments/core/backend": [
         "libs/assignments/core/backend/src/index.ts"
       ],
+      "@stochus/assignments/demos/guess-random-number/frontend": [
+        "libs/assignments/demos/guess-random-number/frontend/src/index.ts"
+      ],
+      "@stochus/assignments/demos/guess-random-number/shared": [
+        "libs/assignments/demos/guess-random-number/shared/src/index.ts"
+      ],
       "@stochus/auth/backend": ["libs/auth/backend/src/index.ts"],
       "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
       "@stochus/auth/shared": ["libs/auth/shared/src/index.ts"],
