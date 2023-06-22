@@ -32,6 +32,14 @@ export const appRoutes: StochusRoute[] = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'assignments',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('@stochus/assignment/core/frontend').then(
+        (mod) => mod.AssignmentsCoreFrontendModule,
+      ),
+  },
+  {
     path: '*',
     redirectTo: '',
   },

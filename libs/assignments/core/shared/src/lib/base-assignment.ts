@@ -28,4 +28,5 @@ export type BaseAssignment<
 
   configurationClass: ClassConstructor<ConfigurationType>
   completionDataClass: ClassConstructor<CompletionDataType>
+  getInitialCompletionData: () => CompletionDataType
 }

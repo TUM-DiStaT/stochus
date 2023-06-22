@@ -13,6 +13,7 @@ describe('assertUniqueIds', () => {
       progress!: number
     },
     configurationClass: class CompletionData {},
+    getInitialCompletionData: () => ({ progress: 0 }),
     ...overrides,
   })
 
