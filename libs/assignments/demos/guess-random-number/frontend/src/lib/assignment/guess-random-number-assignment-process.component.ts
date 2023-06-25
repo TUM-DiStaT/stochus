@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { AssignmentProcessProps } from '@stochus/assignment/core/frontend'
+import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
 import {
   GuessRandomNumberAssignmentCompletionData,
   GuessRandomNumberAssignmentConfiguration,

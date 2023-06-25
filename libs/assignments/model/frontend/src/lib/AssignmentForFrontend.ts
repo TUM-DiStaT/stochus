@@ -1,7 +1,7 @@
 import {
   BaseAssignment,
   BaseCompletionData,
-} from '@stochus/assignment/core/shared'
+} from '@stochus/assignments/model/shared'
 import { EventEmitter, Type } from '@angular/core'
 
 export type AssignmentConfigFormProps<ConfigurationType> = {

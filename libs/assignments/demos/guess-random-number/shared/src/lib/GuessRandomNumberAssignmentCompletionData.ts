@@ -1,7 +1,7 @@
 import {
   BaseCompletionData,
   emptyBaseCompletionData,
-} from '@stochus/assignment/core/shared'
+} from '@stochus/assignments/model/shared'
 import { IsArray } from 'class-validator'
 import { plainToInstance } from '@stochus/core/shared'
 

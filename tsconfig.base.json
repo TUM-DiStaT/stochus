@@ -34,6 +34,12 @@
       "@stochus/assignments/demos/guess-random-number/shared": [
         "libs/assignments/demos/guess-random-number/shared/src/index.ts"
       ],
+      "@stochus/assignments/model/frontend": [
+        "libs/assignments/model/frontend/src/index.ts"
+      ],
+      "@stochus/assignments/model/shared": [
+        "libs/assignments/model/shared/src/index.ts"
+      ],
       "@stochus/auth/backend": ["libs/auth/backend/src/index.ts"],
       "@stochus/auth/frontend": ["libs/auth/frontend/src/index.ts"],
       "@stochus/auth/shared": ["libs/auth/shared/src/index.ts"],

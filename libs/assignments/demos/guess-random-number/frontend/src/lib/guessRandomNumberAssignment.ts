@@ -1,4 +1,4 @@
-import { AssignmentForFrontend } from '@stochus/assignment/core/frontend'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
 import {
   initialGuessNumberAssignmentCompletionData,
   GuessRandomNumberAssignmentCompletionData,

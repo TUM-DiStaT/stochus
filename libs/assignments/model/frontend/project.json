@@ -1,7 +1,8 @@
 {
-  "name": "guess-random-number-demo-assignment-frontend",
-  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/assignments/demos/guess-random-number/frontend/src",
+  "name": "assignments-model-frontend",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/assignments/model/frontend/src",
+  "prefix": "stochus",
   "tags": [],
   "projectType": "library",
   "targets": {
@@ -9,7 +10,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/assignments/demos/guess-random-number/frontend/jest.config.ts",
+        "jestConfig": "libs/assignments/model/frontend/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -24,8 +25,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/assignments/demos/guess-random-number/frontend/**/*.ts",
-          "libs/assignments/demos/guess-random-number/frontend/**/*.html"
+          "libs/assignments/model/frontend/**/*.ts",
+          "libs/assignments/model/frontend/**/*.html"
         ]
       }
     }
