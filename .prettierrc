@@ -2,5 +2,19 @@
   "singleQuote": true,
   "semi": false,
   "trailingComma": "all",
-  "printWidth": 80
+  "printWidth": 80,
+  "importOrder": [
+    "^@stochus/(.*?)/shared/?(.*)$",
+    "^@stochus/(.*?)/backend/?(.*)$",
+    "^@stochus/(.*?)/frontend/?(.*)$",
+    "^@stochus/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSortSpecifiers": true,
+  "importOrderParserPlugins": [
+    "typescript",
+    "jsx",
+    "classProperties",
+    "decorators-legacy"
+  ]
 }

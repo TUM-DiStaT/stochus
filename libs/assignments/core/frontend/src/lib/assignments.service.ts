@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
-import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
 
 @Injectable({
   providedIn: 'root',

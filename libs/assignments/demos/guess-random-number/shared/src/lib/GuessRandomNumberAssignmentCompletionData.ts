@@ -1,8 +1,8 @@
+import { IsArray } from 'class-validator'
 import {
   BaseCompletionData,
   emptyBaseCompletionData,
 } from '@stochus/assignments/model/shared'
-import { IsArray } from 'class-validator'
 import { plainToInstance } from '@stochus/core/shared'
 
 export class GuessRandomNumberAssignmentCompletionData extends BaseCompletionData {

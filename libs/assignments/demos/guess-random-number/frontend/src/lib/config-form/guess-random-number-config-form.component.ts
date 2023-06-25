@@ -1,6 +1,6 @@
 import { Component, EventEmitter } from '@angular/core'
-import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 import { GuessRandomNumberAssignmentConfiguration } from '@stochus/assignments/demos/guess-random-number/shared'
+import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 
 @Component({
   selector: 'stochus-guess-random-number-config-form',
