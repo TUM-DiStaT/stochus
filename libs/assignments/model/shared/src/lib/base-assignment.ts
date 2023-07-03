@@ -1,4 +1,4 @@
-import { ClassConstructor } from 'class-transformer'
+import { ClassConstructor, Expose } from 'class-transformer'
 import { IsNumber, Max, Min } from 'class-validator'
 import { plainToInstance } from '@stochus/core/shared'
 
@@ -9,6 +9,7 @@ export class BaseCompletionData {
   @IsNumber()
   @Min(0)
   @Max(1)
+  @Expose()
   progress!: number
 }
 
@@ -33,5 +34,6 @@ export type BaseAssignment<
 
   configurationClass: ClassConstructor<ConfigurationType>
   completionDataClass: ClassConstructor<CompletionDataType>
+  getRandomConfig: () => ConfigurationType
   getInitialCompletionData: () => CompletionDataType
 }

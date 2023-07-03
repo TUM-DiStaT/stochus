@@ -1,1 +1,1 @@
-export * from './lib/guessRandomNumberAssignment'
+export * from './lib/guessRandomNumberAssignmentForFrontend'

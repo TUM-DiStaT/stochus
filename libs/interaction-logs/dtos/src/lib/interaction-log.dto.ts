@@ -1,11 +1,11 @@
-import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
-import { Expose, Type } from 'class-transformer'
 import { OmitType } from '@nestjs/swagger'
+import { Expose, Type } from 'class-transformer'
+import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
 
 export class InteractionLogDto {
   @IsMongoId()
   @Expose()
-  _id!: string
+  id!: string
 
   @IsDate()
   @MaxDate(() => new Date())
@@ -23,7 +23,7 @@ export class InteractionLogDto {
 }
 
 export class InteractionLogCreateDto extends OmitType(InteractionLogDto, [
-  '_id',
+  'id',
   'userId',
   'datetime',
 ] as const) {}

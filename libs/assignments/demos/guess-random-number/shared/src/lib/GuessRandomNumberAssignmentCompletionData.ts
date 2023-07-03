@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer'
 import { IsArray } from 'class-validator'
 import {
   BaseCompletionData,
@@ -7,6 +8,7 @@ import { plainToInstance } from '@stochus/core/shared'
 
 export class GuessRandomNumberAssignmentCompletionData extends BaseCompletionData {
   @IsArray()
+  @Expose()
   guesses!: number[]
 }
 
