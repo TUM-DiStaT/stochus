@@ -1,4 +1,5 @@
-import { Module, Global } from '@nestjs/common'
+import { Global, Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
 import {
   AuthGuard,
   KeycloakConnectModule,
@@ -7,7 +8,6 @@ import {
   RoleGuard,
   TokenValidation,
 } from 'nest-keycloak-connect'
-import { APP_GUARD } from '@nestjs/core'
 
 const keycloakModule = KeycloakConnectModule.register({
   authServerUrl: 'http://localhost:8080',

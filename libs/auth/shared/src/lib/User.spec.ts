@@ -1,5 +1,5 @@
+import { User, parseUser, userToKeycloakTokenParsed } from './User'
 import { researcherUser, studentUser } from './user.fixture'
-import { parseUser, User, userToKeycloakTokenParsed } from './User'
 
 describe('userToKeycloakTokenParsed', () => {
   it.each([studentUser, researcherUser])(

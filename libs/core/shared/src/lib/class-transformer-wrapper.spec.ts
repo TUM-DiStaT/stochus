@@ -1,5 +1,5 @@
-import { plainToInstance } from './class-transformer-wrapper'
 import { IsNotEmpty } from 'class-validator'
+import { plainToInstance } from './class-transformer-wrapper'
 
 class SomeDto {
   @IsNotEmpty()

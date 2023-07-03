@@ -1,12 +1,12 @@
 import { Injectable, Type } from '@angular/core'
-import {
-  ToastHorizontalAlignment,
-  ToastVerticalAlignment,
-} from './toast.component'
 import { BehaviorSubject } from 'rxjs'
 import { AlertType } from '../alert/alert.component'
 import { StandardAlertToast } from './standard-toast-alert/standard-toast-alert.component'
 import { ToastOptions } from './toast'
+import {
+  ToastHorizontalAlignment,
+  ToastVerticalAlignment,
+} from './toast.component'
 
 type CustomContentToast = {
   component: Type<unknown>

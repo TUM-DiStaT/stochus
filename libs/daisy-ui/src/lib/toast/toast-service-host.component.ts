@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ToastComponent } from './toast.component'
+import { Component, Input } from '@angular/core'
 import { AlertComponent } from '../alert/alert.component'
-import { ToastService } from './toast.service'
 import { StandardToastAlertComponent } from './standard-toast-alert/standard-toast-alert.component'
+import { ToastComponent } from './toast.component'
+import { ToastService } from './toast.service'
 
 @Component({
   selector: 'daisy-toast-service-host',

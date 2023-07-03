@@ -1,5 +1,5 @@
-import { Component, HostBinding } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, HostBinding } from '@angular/core'
 
 @Component({
   selector: 'daisy-navbar-center',

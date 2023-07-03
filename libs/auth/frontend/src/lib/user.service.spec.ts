@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing'
-
-import { UserService } from './user.service'
-import { KeycloakTestingModule } from './KeycloakTestingModule'
 import { KeycloakService } from 'keycloak-angular'
 import Keycloak from 'keycloak-js'
+import { KeycloakTestingModule } from './KeycloakTestingModule'
+import { UserService } from './user.service'
 
 describe('UserService', () => {
   let service: UserService

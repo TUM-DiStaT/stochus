@@ -1,16 +1,16 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
-import { Test } from '@nestjs/testing'
-import { InteractionLogsModule } from './interaction-logs.module'
-import * as request from 'supertest'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import { connect, Connection } from 'mongoose'
 import { MongooseModule } from '@nestjs/mongoose'
-import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
+import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import { Connection, connect } from 'mongoose'
+import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
+import * as request from 'supertest'
 import { researcherUser, studentUser } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
-import { plainToInstance } from '@stochus/core/shared'
+import { InteractionLogsModule } from './interaction-logs.module'
 
 describe('Interaction Logs', () => {
   let app: INestApplication

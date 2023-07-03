@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing'
-import { ToastService } from './toast.service'
 import { Component } from '@angular/core'
+import { TestBed } from '@angular/core/testing'
 import { ToastServiceHostComponent } from './toast-service-host.component'
+import { ToastService } from './toast.service'
 
 @Component({
   selector: 'daisy-test-without-toast-host',

@@ -1,22 +1,22 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { AlertComponent, AlertType } from '../../alert/alert.component'
-import { ToastOptions } from '../toast'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import {
+  heroCheckCircle,
+  heroExclamationTriangle,
+  heroInformationCircle,
+  heroXCircle,
+  heroXMark,
+} from '@ng-icons/heroicons/outline'
 import { interval, map } from 'rxjs'
+import { AlertComponent, AlertType } from '../../alert/alert.component'
 import {
   ButtonComponent,
   ButtonDimension,
   ButtonSize,
   ButtonStyle,
 } from '../../button/button.component'
-import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import {
-  heroXMark,
-  heroInformationCircle,
-  heroCheckCircle,
-  heroExclamationTriangle,
-  heroXCircle,
-} from '@ng-icons/heroicons/outline'
+import { ToastOptions } from '../toast'
 
 export type StandardAlertToast = {
   type: AlertType

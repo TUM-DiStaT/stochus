@@ -1,3 +1,4 @@
+import { Component } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import {
   ButtonColor,
@@ -7,7 +8,6 @@ import {
   ButtonStyle,
   ButtonWidth,
 } from './button.component'
-import { Component } from '@angular/core'
 
 @Component({
   standalone: true,

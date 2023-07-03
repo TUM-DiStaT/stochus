@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { ToastServiceHostComponent } from './toast-service-host.component'
-import { AlertComponent, AlertType } from '../alert/alert.component'
-import { ToastService } from './toast.service'
 import { DebugElement } from '@angular/core'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { AlertComponent, AlertType } from '../alert/alert.component'
+import { ToastServiceHostComponent } from './toast-service-host.component'
+import { ToastService } from './toast.service'
 
 jest.useFakeTimers()
 

@@ -1,9 +1,9 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
+import { RouterTestingModule } from '@angular/router/testing'
+import { KeycloakTestingModule } from '@stochus/auth/frontend'
 import { AppComponent } from './app.component'
 import { NxWelcomeComponent } from './nx-welcome.component'
-import { RouterTestingModule } from '@angular/router/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { KeycloakTestingModule } from '@stochus/auth/frontend'
 
 describe('AppComponent', () => {
   beforeEach(async () => {

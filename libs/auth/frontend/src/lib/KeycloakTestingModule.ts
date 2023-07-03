@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
-import { KeycloakServiceMock } from './KeycloakServiceMock'
 import { KeycloakService } from 'keycloak-angular'
+import { KeycloakServiceMock } from './KeycloakServiceMock'
 
 @NgModule({
   providers: [

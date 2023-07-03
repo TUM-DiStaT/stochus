@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { StandardToastAlertComponent } from './standard-toast-alert.component'
 import { AlertType } from '../../alert/alert.component'
 import {
   ToastHorizontalAlignment,
   ToastVerticalAlignment,
 } from '../toast.component'
+import { StandardToastAlertComponent } from './standard-toast-alert.component'
 
 describe('StandardToastAlertComponent', () => {
   let component: StandardToastAlertComponent

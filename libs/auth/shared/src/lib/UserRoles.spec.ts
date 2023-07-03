@@ -1,4 +1,4 @@
-import { isValidRoles, UserRoles } from './UserRoles'
+import { UserRoles, isValidRoles } from './UserRoles'
 
 describe('isValidRoles', () => {
   it('should return true for an empty array', () => {

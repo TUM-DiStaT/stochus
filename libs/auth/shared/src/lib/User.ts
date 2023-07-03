@@ -1,5 +1,5 @@
-import { isValidRoles, UserRoles } from './UserRoles'
 import { KeycloakTokenParsed } from 'keycloak-js'
+import { UserRoles, isValidRoles } from './UserRoles'
 
 export type User = {
   id: string

@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common'
-
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { BackendAuthModule } from '@stochus/auth/backend'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
+import { BackendAuthModule } from '@stochus/auth/backend'
 import {
   AppConfigurationModule,
   AppConfigurationService,
 } from '@stochus/core/backend'
 import { InteractionLogsModule } from '@stochus/interaction-logs/backend'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
 
 @Module({
   imports: [
