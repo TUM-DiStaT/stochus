@@ -18,6 +18,12 @@
       <ng-icon name="heroBars3" button></ng-icon>
       <ul body daisyMenu class="w-max bg-base-100 rounded-box shadow">
         <li daisyMenuItem>
+          <a [routerLink]="['assignments']">
+            <ng-icon name="heroRectangleStack" />
+            Aufgaben
+          </a>
+        </li>
+        <li daisyMenuItem>
           <a (click)="logout()">
             <ng-icon name="heroArrowRightOnRectangle" />
             Abmelden

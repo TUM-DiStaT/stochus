@@ -1,1 +1,17 @@
-<p>assignments-list works!</p>
+<ul class="gap-8 flex-col flex p-12 items-stretch max-w-3xl">
+  <li
+    *ngFor="let assignment of assignments"
+    class="flex-1 w-full items-center flex gap-4 indicator border text-accent-content p-4 rounded-xl flex-col"
+  >
+    <div class="indicator-item indicator-bottom flex-shrink">
+      <button class="btn btn-circle btn-success btn-sm text-lg leading-none">
+        <ng-icon name="heroPlay"></ng-icon>
+      </button>
+    </div>
+
+    <em class="not-italic text-xl font-bold">{{ assignment.name }}</em>
+    <aside class="whitespace-normal flex-shrink text-sm">
+      {{ assignment.description }}
+    </aside>
+  </li>
+</ul>

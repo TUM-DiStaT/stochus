@@ -1,31 +1,32 @@
-import { Component } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component } from '@angular/core'
 import {
   ActivatedRouteSnapshot,
   NavigationEnd,
   Router,
   RouterLink,
 } from '@angular/router'
-import { filter, map } from 'rxjs'
-import { StochusRouteData } from '../app.routes'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import {
+  heroArrowRightOnRectangle,
+  heroBars3,
+  heroRectangleStack,
+} from '@ng-icons/heroicons/outline'
 import { KeycloakService } from 'keycloak-angular'
+import { filter, map } from 'rxjs'
 import {
   ButtonComponent,
   ButtonStyle,
+  NavbarComponent as DaisyNavbarComponent,
   DropdownComponent,
   MenuComponent,
   MenuItemComponent,
   NavbarCenterComponent,
-  NavbarComponent as DaisyNavbarComponent,
   NavbarEndComponent,
   NavbarStartComponent,
   ToastService,
 } from '@stochus/daisy-ui'
-import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import {
-  heroBars3,
-  heroArrowRightOnRectangle,
-} from '@ng-icons/heroicons/outline'
+import { StochusRouteData } from '../app.routes'
 
 @Component({
   selector: 'stochus-navbar',
@@ -43,7 +44,9 @@ import {
     MenuComponent,
     MenuItemComponent,
   ],
-  providers: [provideIcons({ heroBars3, heroArrowRightOnRectangle })],
+  providers: [
+    provideIcons({ heroBars3, heroArrowRightOnRectangle, heroRectangleStack }),
+  ],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {

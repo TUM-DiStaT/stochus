@@ -20,6 +20,7 @@ module.exports = {
           ...require('daisyui/src/colors/themes')['[data-theme=bumblebee]'],
           primary: '#749EBE',
           secondary: '#9BAFBF',
+          accent: '#F7B1AB',
         },
       },
       'light',
