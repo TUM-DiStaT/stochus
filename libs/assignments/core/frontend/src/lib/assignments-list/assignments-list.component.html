@@ -4,9 +4,12 @@
     class="flex-1 w-full items-center flex gap-4 indicator border text-accent-content p-4 rounded-xl flex-col"
   >
     <div class="indicator-item indicator-bottom flex-shrink">
-      <button class="btn btn-circle btn-success btn-sm text-lg leading-none">
+      <a
+        [routerLink]="[assignment.id]"
+        class="btn btn-circle btn-success btn-sm text-lg leading-none"
+      >
         <ng-icon name="heroPlay"></ng-icon>
-      </button>
+      </a>
     </div>
 
     <em class="not-italic text-xl font-bold">{{ assignment.name }}</em>

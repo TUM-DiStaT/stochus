@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, HostBinding } from '@angular/core'
+import { RouterLink } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroEllipsisVertical, heroPlay } from '@ng-icons/heroicons/outline'
 import { ButtonComponent } from '@stochus/daisy-ui'
@@ -8,7 +9,7 @@ import { AssignmentsService } from '../assignments.service'
 @Component({
   selector: 'stochus-assignments-list',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, NgIconComponent],
+  imports: [CommonModule, ButtonComponent, NgIconComponent, RouterLink],
   templateUrl: './assignments-list.component.html',
   providers: [provideIcons({ heroPlay, heroEllipsisVertical })],
 })
