@@ -10,7 +10,7 @@ export class AssignmentCompletion {
   assignmentId!: string
 
   @Prop({ type: Date, required: true })
-  created!: Date
+  createdAt!: Date
 
   @Prop({ type: Date, required: true })
   lastUpdated!: Date

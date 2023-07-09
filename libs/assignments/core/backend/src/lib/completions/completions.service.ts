@@ -20,6 +20,35 @@ export class CompletionsService {
     return this.assignmentCompletionModel.findById(id)
   }
 
+  async getForAssignment(
+    assignmentId: string,
+    user: User,
+  ): Promise<AssignmentCompletion[]> {
+    const assignment = AssignmentsCoreBackendService.getById(assignmentId)
+
+    if (!assignment) {
+      throw new NotFoundException()
+    }
+
+    return await this.assignmentCompletionModel
+      .find({
+        userId: user.id,
+        'completionData.progress': {
+          $lt: 1,
+        },
+      })
+      .exec()
+  }
+
+  async getMostRecentForAssignment(
+    assignmentId: string,
+    user: User,
+  ): Promise<AssignmentCompletion | undefined> {
+    return (await this.getForAssignment(assignmentId, user)).sort(
+      ({ lastUpdated: a }, { lastUpdated: b }) => b.valueOf() - a.valueOf(),
+    )[0]
+  }
+
   async createForAssignment(
     assignmentId: string,
     user: User,
@@ -31,16 +60,7 @@ export class CompletionsService {
       throw new NotFoundException()
     }
 
-    const activeCompletions = await this.assignmentCompletionModel
-      .find({
-        userId: user.id,
-        'completionData.progress': {
-          $lt: 1,
-        },
-      })
-      .exec()
-
-    if (activeCompletions.length) {
+    if (await this.getMostRecentForAssignment(assignmentId, user)) {
       throw new BadRequestException(
         'This user already has an active completion',
       )
@@ -50,11 +70,11 @@ export class CompletionsService {
 
     return await this.assignmentCompletionModel.create({
       assignmentId: assignmentId,
-      created: new Date(),
+      createdAt: new Date(),
       lastUpdated: new Date(),
       userId: user.id,
       config: config ?? assignment.getRandomConfig(),
       completionData: progress,
-    })
+    } satisfies AssignmentCompletion)
   }
 }
