@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
 import { BaseAssignment } from '@stochus/assignments/model/shared'
 
@@ -22,5 +22,15 @@ export class AssignmentsCoreBackendService {
     return this.getAllAssignments().find(
       (assignment) => assignment.id === assignmentId,
     )
+  }
+
+  static getByIdOrError(assignmentId: string) {
+    const assignment = this.getById(assignmentId)
+    if (!assignment) {
+      throw new NotFoundException(
+        `Assignment with ID ${assignmentId} not found`,
+      )
+    }
+    return assignment
   }
 }

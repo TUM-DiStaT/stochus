@@ -24,15 +24,12 @@ export class CompletionsService {
     assignmentId: string,
     user: User,
   ): Promise<AssignmentCompletion[]> {
-    const assignment = AssignmentsCoreBackendService.getById(assignmentId)
-
-    if (!assignment) {
-      throw new NotFoundException()
-    }
+    AssignmentsCoreBackendService.getByIdOrError(assignmentId)
 
     return await this.assignmentCompletionModel
       .find({
         userId: user.id,
+        assignmentId,
         'completionData.progress': {
           $lt: 1,
         },
@@ -76,5 +73,16 @@ export class CompletionsService {
       config: config ?? assignment.getRandomConfig(),
       completionData: progress,
     } satisfies AssignmentCompletion)
+  }
+
+  async getAllActive(user: User): Promise<Array<AssignmentCompletion>> {
+    return await this.assignmentCompletionModel
+      .find({
+        userId: user.id,
+        'completionData.progress': {
+          $lt: 1,
+        },
+      })
+      .exec()
   }
 }

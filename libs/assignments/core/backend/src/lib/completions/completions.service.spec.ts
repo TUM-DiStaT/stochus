@@ -8,7 +8,7 @@ import {
   GuessRandomNumberAssignment,
   GuessRandomNumberAssignmentConfiguration,
 } from '@stochus/assignments/demos/guess-random-number/shared'
-import { studentUser } from '@stochus/auth/shared'
+import { researcherUser, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import {
   AssignmentCompletion,
@@ -148,6 +148,43 @@ describe('CompletionsService', () => {
       )
 
       expect(newCompletion.id).not.toEqual(originalCompletion.id)
+    })
+  })
+
+  describe('get active completions for user', () => {
+    it('should return an empty list if user has no active completions', async () => {
+      const user = studentUser
+      const completion = await service.createForAssignment(
+        GuessRandomNumberAssignment.id,
+        user,
+      )
+      await completionsModel.updateOne(
+        {
+          _id: completion.id,
+        },
+        {
+          completionData: {
+            progress: 1,
+          },
+        } satisfies Partial<AssignmentCompletion>,
+      )
+
+      const allActive = await service.getAllActive(user)
+
+      expect(allActive).toHaveLength(0)
+    })
+
+    it("should return only the given user's active completions", async () => {
+      const user = studentUser
+      await service.createForAssignment(GuessRandomNumberAssignment.id, user)
+      await service.createForAssignment(
+        GuessRandomNumberAssignment.id,
+        researcherUser,
+      )
+
+      const allActive = await service.getAllActive(user)
+
+      expect(allActive).toHaveLength(1)
     })
   })
 })

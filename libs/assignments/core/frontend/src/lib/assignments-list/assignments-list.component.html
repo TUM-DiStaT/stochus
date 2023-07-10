@@ -5,10 +5,13 @@
   >
     <div class="indicator-item indicator-bottom flex-shrink">
       <a
-        [routerLink]="[assignment.id]"
+        [routerLink]="['complete', (activeCompletions$ | async)?.[assignment.id]]"
         class="btn btn-circle btn-success btn-sm text-lg leading-none"
+        (click)="startAssignment(assignment.id, $event)"
       >
-        <ng-icon name="heroPlay"></ng-icon>
+        <ng-icon
+          [name]="(activeCompletions$ | async)?.[assignment.id] ? 'heroForward' : 'heroPlay'"
+        ></ng-icon>
       </a>
     </div>
 

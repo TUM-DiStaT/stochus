@@ -17,6 +17,14 @@ import { CompletionsService } from './completions.service'
 export class CompletionsController {
   constructor(private readonly completionsService: CompletionsService) {}
 
+  @Get('active')
+  @UseGuards(AuthGuard)
+  async getAllActive(@ParsedUser() user: User) {
+    const completions = await this.completionsService.getAllActive(user)
+
+    return plainToInstance(AssignmentCompletionDto, completions)
+  }
+
   @Get(':assignmentId/active')
   @UseGuards(AuthGuard)
   async getActive(
