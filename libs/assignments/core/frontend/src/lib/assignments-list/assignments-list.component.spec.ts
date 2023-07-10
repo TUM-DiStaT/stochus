@@ -1,4 +1,7 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { ActivatedRoute } from '@angular/router'
+import 'reflect-metadata'
 import { AssignmentsListComponent } from './assignments-list.component'
 
 describe('AssignmentsListComponent', () => {
@@ -7,7 +10,13 @@ describe('AssignmentsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AssignmentsListComponent],
+      imports: [AssignmentsListComponent, HttpClientTestingModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {},
+        },
+      ],
     }).compileComponents()
 
     fixture = TestBed.createComponent(AssignmentsListComponent)
