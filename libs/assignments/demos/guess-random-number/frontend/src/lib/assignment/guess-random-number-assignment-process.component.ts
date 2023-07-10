@@ -20,8 +20,8 @@ export class GuessRandomNumberAssignmentProcessComponent
     >
 {
   @Input()
-  completionData!: GuessRandomNumberAssignmentCompletionData
+  completionData?: GuessRandomNumberAssignmentCompletionData
 
   @Input()
-  config!: GuessRandomNumberAssignmentConfiguration
+  config?: GuessRandomNumberAssignmentConfiguration
 }

@@ -5,7 +5,7 @@
   >
     <div class="indicator-item indicator-bottom flex-shrink">
       <a
-        [routerLink]="['complete', (activeCompletions$ | async)?.[assignment.id]]"
+        [routerLink]="[assignment.id]"
         class="btn btn-circle btn-success btn-sm text-lg leading-none"
         (click)="startAssignment(assignment.id, $event)"
       >

@@ -25,12 +25,14 @@ describe('CompletionsService', () => {
   it('should transform the completions correctly', inject(
     [CompletionsService, HttpTestingController],
     (service: CompletionsService, httpMock: HttpTestingController) => {
-      service.getRecentForAssignment().subscribe((completion) => {
-        expect(completion).toBeDefined()
-        expect(completion?.createdAt).toBeInstanceOf(Date)
-        expect(completion?.config).toBeDefined()
-        expect(completion?.completionData).toBeDefined()
-      })
+      service
+        .getActive(GuessRandomNumberAssignment.id)
+        .subscribe((completion) => {
+          expect(completion).toBeDefined()
+          expect(completion?.createdAt).toBeInstanceOf(Date)
+          expect(completion?.config).toBeDefined()
+          expect(completion?.completionData).toBeDefined()
+        })
 
       const mockRequest = httpMock.expectOne(
         `${service.baseUrl}/${GuessRandomNumberAssignment.id}/active`,

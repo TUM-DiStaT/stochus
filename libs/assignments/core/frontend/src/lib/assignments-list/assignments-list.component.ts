@@ -20,7 +20,7 @@ import { CompletionsService } from '../completions.service'
   providers: [provideIcons({ heroForward, heroPlay, heroEllipsisVertical })],
 })
 export class AssignmentsListComponent {
-  activeCompletions$ = this.completionsService.getActive().pipe(
+  activeCompletions$ = this.completionsService.getAllActive().pipe(
     map((completions) =>
       completions.reduce(
         (acc, { assignmentId, id }) => ({
@@ -53,8 +53,8 @@ export class AssignmentsListComponent {
       event.preventDefault()
 
       this.completionsService.createNewForAssignment(assignmentId).subscribe({
-        next: (completion) => {
-          this.router.navigate(['complete', completion?.id])
+        next: () => {
+          this.router.navigate([assignmentId])
         },
       })
     }

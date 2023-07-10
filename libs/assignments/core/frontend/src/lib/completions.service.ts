@@ -12,10 +12,12 @@ export class CompletionsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getRecentForAssignment(): Observable<AssignmentCompletionDto | undefined> {
+  getActive(
+    assignmentId: string,
+  ): Observable<AssignmentCompletionDto | undefined> {
     return this.http
       .get<AssignmentCompletionDto | undefined>(
-        `${this.baseUrl}/GuessRandomNumberAssignment/active`,
+        `${this.baseUrl}/${assignmentId}/active`,
       )
       .pipe(
         map((completion) =>
@@ -24,7 +26,7 @@ export class CompletionsService {
       )
   }
 
-  getActive(): Observable<Array<AssignmentCompletionDto>> {
+  getAllActive(): Observable<Array<AssignmentCompletionDto>> {
     return this.http
       .get<Array<AssignmentCompletionDto>>(`${this.baseUrl}/active`)
       .pipe(
@@ -40,6 +42,21 @@ export class CompletionsService {
     return this.http
       .post<AssignmentCompletionDto | undefined>(
         `${this.baseUrl}/${assignmentId}`,
+        {},
+      )
+      .pipe(
+        map((completion) =>
+          plainToInstance(AssignmentCompletionDto, completion),
+        ),
+      )
+  }
+
+  getById(
+    completionId: string,
+  ): Observable<AssignmentCompletionDto | undefined> {
+    return this.http
+      .get<AssignmentCompletionDto | undefined>(
+        `${this.baseUrl}/${completionId}`,
         {},
       )
       .pipe(

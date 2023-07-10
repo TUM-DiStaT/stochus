@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
-import { map } from 'rxjs'
+import { ActivatedRoute, Router } from '@angular/router'
+import { EMPTY, catchError, combineLatest, filter, map, switchMap } from 'rxjs'
 import { DynamicContentDirective } from '@stochus/core/frontend'
 import { AssignmentsService } from '../assignments.service'
+import { CompletionsService } from '../completions.service'
 
 @Component({
   selector: 'stochus-assignment-completion-process-host',
@@ -23,21 +24,38 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
       return assignment
     }),
   )
+
+  completion$ = this.assignment$.pipe(
+    switchMap((assignment) => {
+      return this.completionsService.getActive(assignment.id)
+    }),
+    filter(Boolean),
+    catchError(() => {
+      this.router.navigate(['assignments'])
+      return EMPTY
+    }),
+  )
+
   @ViewChild(DynamicContentDirective, { static: true })
   host!: DynamicContentDirective
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly completionsService: CompletionsService,
+    private readonly router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.assignment$.subscribe((assignment) => {
-      const viewContainerRef = this.host.viewContainerRef
-      viewContainerRef.clear()
-      const componentRef = viewContainerRef.createComponent(
-        assignment.completionProcessComponent,
-      )
-      // componentRef.instance.config = assignment.conf
-      componentRef.instance.completionData =
-        assignment.getInitialCompletionData()
-    })
+    combineLatest([this.assignment$, this.completion$]).subscribe(
+      ([assignment, completion]) => {
+        const viewContainerRef = this.host.viewContainerRef
+        viewContainerRef.clear()
+        const componentRef = viewContainerRef.createComponent(
+          assignment.completionProcessComponent,
+        )
+        componentRef.instance.config = completion.config
+        componentRef.instance.completionData = completion.completionData
+      },
+    )
   }
 }

@@ -12,8 +12,8 @@ export type AssignmentProcessProps<
   ConfigurationType,
   CompletionDataType extends BaseCompletionData,
 > = {
-  config: ConfigurationType
-  completionData: CompletionDataType
+  config?: ConfigurationType
+  completionData?: CompletionDataType
 }
 
 export type AssignmentForFrontend<
