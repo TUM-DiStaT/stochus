@@ -1,11 +1,11 @@
-import { NxWelcomeComponent } from './nx-welcome.component'
-import { RouterModule } from '@angular/router'
-import { Component, OnInit } from '@angular/core'
-import { HttpClient, HttpClientModule } from '@angular/common/http'
-import { Subject } from 'rxjs'
 import { AsyncPipe, JsonPipe } from '@angular/common'
-import { NavbarComponent } from './navbar/navbar.component'
+import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { Component, OnInit } from '@angular/core'
+import { RouterModule } from '@angular/router'
+import { Subject } from 'rxjs'
 import { ToastServiceHostComponent } from '@stochus/daisy-ui'
+import { NavbarComponent } from './navbar/navbar.component'
+import { NxWelcomeComponent } from './nx-welcome.component'
 
 @Component({
   standalone: true,

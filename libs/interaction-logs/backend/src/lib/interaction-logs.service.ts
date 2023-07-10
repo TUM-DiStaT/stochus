@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { Model } from 'mongoose'
-import { InteractionLog } from './interaction-logs.schema'
 import { InjectModel } from '@nestjs/mongoose'
-import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
+import { Model } from 'mongoose'
 import { User } from '@stochus/auth/shared'
+import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
+import { InteractionLog } from './interaction-logs.schema'
 
 @Injectable()
 export class InteractionLogsService {

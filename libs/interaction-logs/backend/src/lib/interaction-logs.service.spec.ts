@@ -1,11 +1,11 @@
-import { Test } from '@nestjs/testing'
-import { InteractionLogsService } from './interaction-logs.service'
 import { getModelToken } from '@nestjs/mongoose'
-import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
+import { Test } from '@nestjs/testing'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { connect, Connection, Model } from 'mongoose'
-import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
+import { Connection, Model, connect } from 'mongoose'
 import { studentUser } from '@stochus/auth/shared'
+import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
+import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
+import { InteractionLogsService } from './interaction-logs.service'
 
 describe('InteractionLogsService', () => {
   let service: InteractionLogsService

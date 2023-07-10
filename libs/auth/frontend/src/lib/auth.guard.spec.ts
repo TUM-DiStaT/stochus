@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing'
-
-import { AuthGuard } from './auth.guard'
-import { KeycloakTestingModule } from './KeycloakTestingModule'
-import { KeycloakService } from 'keycloak-angular'
-import { RouterTestingModule } from '@angular/router/testing'
-import { UserRoles } from '@stochus/auth/shared'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
+import { RouterTestingModule } from '@angular/router/testing'
+import { KeycloakService } from 'keycloak-angular'
+import { UserRoles } from '@stochus/auth/shared'
+import { KeycloakTestingModule } from './KeycloakTestingModule'
+import { AuthGuard } from './auth.guard'
 
 describe('AuthGuard', () => {
   let guard: AuthGuard

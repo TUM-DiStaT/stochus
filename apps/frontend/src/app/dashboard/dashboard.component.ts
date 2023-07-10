@@ -1,9 +1,9 @@
-import { Component, HostBinding } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ButtonColor, ButtonComponent } from '@stochus/daisy-ui'
+import { Component, HostBinding } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import { heroCalendar, heroAcademicCap } from '@ng-icons/heroicons/outline'
+import { heroAcademicCap, heroCalendar } from '@ng-icons/heroicons/outline'
+import { ButtonColor, ButtonComponent } from '@stochus/daisy-ui'
 
 @Component({
   selector: 'stochus-dashboard',

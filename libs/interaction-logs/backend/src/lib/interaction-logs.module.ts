@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { InteractionLogsController } from './interaction-logs.controller'
-import { InteractionLogsService } from './interaction-logs.service'
 import { MongooseModule } from '@nestjs/mongoose'
+import { InteractionLogsController } from './interaction-logs.controller'
 import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
+import { InteractionLogsService } from './interaction-logs.service'
 
 @Module({
   imports: [

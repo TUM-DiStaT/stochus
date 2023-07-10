@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { KeycloakService } from 'keycloak-angular'
-import { parseUser, User } from '@stochus/auth/shared'
+import { User, parseUser } from '@stochus/auth/shared'
 
 @Injectable({
   providedIn: 'root',

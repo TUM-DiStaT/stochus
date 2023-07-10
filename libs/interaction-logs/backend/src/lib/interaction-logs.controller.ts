@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { InteractionLogsService } from './interaction-logs.service'
+import { AuthGuard, RoleGuard, Roles } from 'nest-keycloak-connect'
+import { User, UserRoles } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
+import { ParsedUser } from '@stochus/auth/backend'
 import {
   InteractionLogCreateDto,
   InteractionLogDto,
 } from '@stochus/interaction-logs/dtos'
-import { ParsedUser } from '@stochus/auth/backend'
-import { User, UserRoles } from '@stochus/auth/shared'
-import { AuthGuard, RoleGuard, Roles } from 'nest-keycloak-connect'
-import { plainToInstance } from '@stochus/core/shared'
+import { InteractionLogsService } from './interaction-logs.service'
 
 @Controller('interaction-logs')
 export class InteractionLogsController {

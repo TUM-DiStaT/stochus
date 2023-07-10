@@ -1,6 +1,7 @@
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppConfigurationService } from './app-configuration.service'
-import { ConfigService } from '@nestjs/config'
+
 import SpyInstance = jest.SpyInstance
 
 const expectedConfigKeys = [

@@ -6,7 +6,7 @@ import {
   UrlTree,
 } from '@angular/router'
 import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular'
-import { isValidRoles, UserRoles } from '@stochus/auth/shared'
+import { UserRoles, isValidRoles } from '@stochus/auth/shared'
 
 @Injectable({
   providedIn: 'root',
