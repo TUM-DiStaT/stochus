@@ -1,13 +1,16 @@
 import { NotFoundException } from '@nestjs/common'
 import { getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
+import { validateOrReject } from 'class-validator'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, Model, connect } from 'mongoose'
 import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import {
   GuessRandomNumberAssignment,
+  GuessRandomNumberAssignmentCompletionData,
   GuessRandomNumberAssignmentConfiguration,
 } from '@stochus/assignments/demos/guess-random-number/shared'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { researcherUser, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import {
@@ -185,6 +188,66 @@ describe('CompletionsService', () => {
       const allActive = await service.getAllActive(user)
 
       expect(allActive).toHaveLength(1)
+    })
+  })
+
+  describe('update completion', () => {
+    it("should throw an error if the ID doesn't belong to the user", async () => {
+      const completion = await service.createForAssignment(
+        GuessRandomNumberAssignment.id,
+        studentUser,
+      )
+
+      await expect(() =>
+        service.updateCompletionData(completion.id, researcherUser, {}),
+      ).rejects.toThrowError()
+    })
+
+    it("should throw an error if the new data isn't valid", async () => {
+      const completion = await service.createForAssignment(
+        GuessRandomNumberAssignment.id,
+        studentUser,
+      )
+
+      // Sanity check
+      const update = {
+        guesses: 123,
+      }
+      const updated = plainToInstance(
+        GuessRandomNumberAssignment.completionDataClass,
+        {
+          ...completion.completionData,
+          ...update,
+        },
+      )
+      await expect(validateOrReject(updated)).rejects.toBeDefined()
+
+      await expect(() =>
+        service.updateCompletionData(
+          completion.id,
+          studentUser,
+          update as Partial<BaseCompletionData>,
+        ),
+      ).rejects.toThrowError()
+    })
+
+    it('should correctly update the data', async () => {
+      const completion = await service.createForAssignment(
+        GuessRandomNumberAssignment.id,
+        studentUser,
+      )
+      const newGuesses = [1, 3, 5]
+      const updated = await service.updateCompletionData(
+        completion.id,
+        studentUser,
+        {
+          guesses: newGuesses,
+        } as Partial<GuessRandomNumberAssignmentCompletionData>,
+      )
+      expect(
+        (updated?.completionData as GuessRandomNumberAssignmentCompletionData)
+          .guesses,
+      ).toEqual(newGuesses)
     })
   })
 })

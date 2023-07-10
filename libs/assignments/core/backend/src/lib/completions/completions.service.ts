@@ -2,10 +2,14 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { validate } from 'class-validator'
 import { Model } from 'mongoose'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { User } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
 import { AssignmentsCoreBackendService } from '../assignments-core-backend.service'
 import { AssignmentCompletion } from './completion.schema'
 
@@ -84,5 +88,47 @@ export class CompletionsService {
         },
       })
       .exec()
+  }
+
+  async updateCompletionData(
+    completionId: string,
+    user: User,
+    update: Partial<BaseCompletionData>,
+  ) {
+    const old = await this.assignmentCompletionModel
+      .findById(completionId)
+      .exec()
+
+    if (old === null) {
+      throw new NotFoundException()
+    }
+
+    if (old.userId !== user.id) {
+      throw new UnauthorizedException()
+    }
+
+    const assignment = AssignmentsCoreBackendService.getByIdOrError(
+      old.assignmentId,
+    )
+
+    const updateInstance = plainToInstance(assignment.completionDataClass, {
+      ...old.completionData,
+      ...update,
+    })
+    const validationErrors = await validate(updateInstance)
+    if (validationErrors.length > 0) {
+      throw new BadRequestException(validationErrors)
+    }
+
+    return this.assignmentCompletionModel.findByIdAndUpdate(
+      completionId,
+      {
+        lastUpdated: new Date(),
+        completionData: updateInstance,
+      } satisfies Partial<AssignmentCompletion>,
+      {
+        new: true,
+      },
+    )
   }
 }
