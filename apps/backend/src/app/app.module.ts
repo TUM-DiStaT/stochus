@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
+import { AssignmentsCoreBackendModule } from '@stochus/assignments/core/backend'
 import { BackendAuthModule } from '@stochus/auth/backend'
 import {
   AppConfigurationModule,
@@ -30,6 +31,7 @@ import { AppService } from './app.service'
     }),
     BackendAuthModule,
     InteractionLogsModule,
+    AssignmentsCoreBackendModule,
   ],
   controllers: [AppController],
   providers: [AppService],
