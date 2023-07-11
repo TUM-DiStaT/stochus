@@ -1,2 +1,4 @@
 Correct answer: {{ config?.result }}
 {{ completionData?.guesses | json }}
+<input [formControl]="input" />
+<button daisyButton (click)="guess()">Guess</button>

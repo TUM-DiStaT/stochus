@@ -14,6 +14,7 @@ export type AssignmentProcessProps<
 > = {
   config?: ConfigurationType
   completionData?: CompletionDataType
+  updateCompletionData: EventEmitter<Partial<CompletionDataType>>
 }
 
 export type AssignmentForFrontend<

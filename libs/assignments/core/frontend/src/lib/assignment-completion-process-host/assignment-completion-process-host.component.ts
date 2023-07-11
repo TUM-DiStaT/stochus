@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { EMPTY, catchError, combineLatest, filter, map, switchMap } from 'rxjs'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
 import { AssignmentsService } from '../assignments.service'
 import { CompletionsService } from '../completions.service'
@@ -55,6 +56,23 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
         )
         componentRef.instance.config = completion.config
         componentRef.instance.completionData = completion.completionData
+        componentRef.instance.updateCompletionData
+          .pipe(
+            switchMap((completionData: Partial<BaseCompletionData>) => {
+              return this.completionsService.updateCompletionData(
+                completion.id,
+                completionData,
+              )
+            }),
+          )
+          .subscribe({
+            next: (updatedCompletionData) => {
+              componentRef.setInput(
+                'completionData',
+                updatedCompletionData.completionData,
+              )
+            },
+          })
       },
     )
   }

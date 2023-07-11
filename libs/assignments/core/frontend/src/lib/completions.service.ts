@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable, map } from 'rxjs'
 import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { plainToInstance } from '@stochus/core/shared'
 
 @Injectable({
@@ -59,6 +60,19 @@ export class CompletionsService {
         `${this.baseUrl}/${completionId}`,
         {},
       )
+      .pipe(
+        map((completion) =>
+          plainToInstance(AssignmentCompletionDto, completion),
+        ),
+      )
+  }
+
+  updateCompletionData(
+    completionId: string,
+    update: Partial<BaseCompletionData>,
+  ) {
+    return this.http
+      .put(`${this.baseUrl}/${completionId}/completionData`, update)
       .pipe(
         map((completion) =>
           plainToInstance(AssignmentCompletionDto, completion),

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
@@ -15,6 +16,7 @@ import { AssignmentCompletion } from './completion.schema'
 
 @Injectable()
 export class CompletionsService {
+  private readonly logger = new Logger(CompletionsService.name)
   constructor(
     @InjectModel(AssignmentCompletion.name)
     private readonly assignmentCompletionModel: Model<AssignmentCompletion>,
@@ -115,6 +117,7 @@ export class CompletionsService {
       ...old.completionData,
       ...update,
     })
+    this.logger.debug(old.completionData, update, updateInstance)
     const validationErrors = await validate(updateInstance)
     if (validationErrors.length > 0) {
       throw new BadRequestException(validationErrors)
