@@ -38,10 +38,12 @@ export class GuessRandomNumberAssignmentProcessComponent
   input = new FormControl<number | null>(null)
 
   guess() {
-    const value = this.input.value
-    if (value === null) {
+    const value = parseInt(this.input.value?.toString() ?? '')
+    if (value === null || isNaN(value)) {
       return
     }
+
+    this.input.setValue(null)
 
     this.completionData?.guesses.unshift(value)
     const update: Partial<GuessRandomNumberAssignmentCompletionData> = {

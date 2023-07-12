@@ -1,4 +1,17 @@
 Correct answer: {{ config?.result }}
 {{ completionData?.guesses | json }}
-<input [formControl]="input" />
+<div class="p-10 card bg-base-200">
+  <label class="form-control">
+    <div class="label">
+      <span class="label-text">Guess</span>
+    </div>
+    <input
+      type="text"
+      placeholder="Guess"
+      class="input"
+      [formControl]="input"
+      (keyup.enter)="guess()"
+    />
+  </label>
+</div>
 <button daisyButton (click)="guess()">Guess</button>
