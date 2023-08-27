@@ -54,7 +54,7 @@ export class AssignmentsListComponent {
 
       this.completionsService.createNewForAssignment(assignmentId).subscribe({
         next: () => {
-          this.router.navigate([assignmentId])
+          this.router.navigate(['assignments', assignmentId])
         },
       })
     }
