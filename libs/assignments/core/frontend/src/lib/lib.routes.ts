@@ -2,8 +2,8 @@ import { inject } from '@angular/core'
 import { ActivatedRouteSnapshot, Route, Router } from '@angular/router'
 import { firstValueFrom, map } from 'rxjs'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
-import { AlertComponent } from '@stochus/daisy-ui'
 import { AssignmentCompletionProcessHostComponent } from './assignment-completion-process-host/assignment-completion-process-host.component'
+import { AssignmentFeedbackHostComponent } from './assignment-feedback-host/assignment-feedback-host.component'
 import { AssignmentsListComponent } from './assignments-list/assignments-list.component'
 import { AssignmentsService } from './assignments.service'
 import { CompletionsService } from './completions.service'
@@ -31,8 +31,7 @@ export const assignmentsCoreFrontendRoutes: Route[] = [
 export const completionsCoreForFrontendRoutes: Route[] = [
   {
     path: ':completionId/feedback',
-    // TODO: replace me
-    component: AlertComponent,
+    component: AssignmentFeedbackHostComponent,
     canActivate: [
       async (route: ActivatedRouteSnapshot) => {
         const completionId = route.paramMap.get('completionId')
