@@ -28,6 +28,18 @@ export class CompletionsController {
     return plainToInstance(AssignmentCompletionDto, completions)
   }
 
+  @Get(':completionId')
+  @UseGuards(AuthGuard)
+  async getById(@Param() { completionId }: { completionId: string }) {
+    const completion = await this.completionsService.getById(completionId)
+
+    if (!completion) {
+      throw new NotFoundException(`No completion found for ID ${completionId}`)
+    }
+
+    return plainToInstance(AssignmentCompletionDto, completion)
+  }
+
   @Get(':assignmentId/active')
   @UseGuards(AuthGuard)
   async getActive(

@@ -27,4 +27,7 @@ export type AssignmentForFrontend<
   completionProcessComponent: Type<
     AssignmentProcessProps<ConfigurationType, CompletionDataType>
   >
+  feedbackComponent: Type<
+    AssignmentProcessProps<ConfigurationType, CompletionDataType>
+  >
 }

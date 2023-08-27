@@ -14,4 +14,5 @@ export const GuessRandomNumberAssignmentForFrontend: AssignmentForFrontend<
   ...GuessRandomNumberAssignment,
   completionProcessComponent: GuessRandomNumberAssignmentProcessComponent,
   configurationInputFormComponent: GuessRandomNumberConfigFormComponent,
+  feedbackComponent: GuessRandomNumberAssignmentProcessComponent,
 }
