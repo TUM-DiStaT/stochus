@@ -32,9 +32,6 @@ export class GuessRandomNumberAssignmentProcessComponent
   @Input()
   config?: GuessRandomNumberAssignmentConfiguration
 
-  @Input()
-  completionId?: string
-
   input = new FormControl<number | null>(null)
 
   guess() {
@@ -45,7 +42,7 @@ export class GuessRandomNumberAssignmentProcessComponent
 
     this.input.setValue(null)
 
-    this.completionData?.guesses.unshift(value)
+    this.completionData?.guesses.push(value)
     const update: Partial<GuessRandomNumberAssignmentCompletionData> = {
       guesses: this.completionData?.guesses,
     }

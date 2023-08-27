@@ -1,0 +1,23 @@
+<div class="foo">
+  Du hast {{ stats.actualNumberOfGuesses }} Versuche gebraucht.
+  <span
+    *ngIf="
+      (stats.actualNumberOfGuesses ?? -1) <= stats.optimalNumberOfGuesses;
+      else notOptimal
+    "
+  >
+    Das war optimal! Sehr gut!
+  </span>
+  <ng-template #notOptimal>
+    <div>
+      Das wäre auch besser gegangen. Deine Rateversuche waren:
+      <ul>
+        <li *ngFor="let guess of completionData?.guesses ?? []">{{ guess }}</li>
+      </ul>
+      Besser wäre gewesen:
+      <ul>
+        <li *ngFor="let guess of stats.optimalGuesses">{{ guess }}</li>
+      </ul>
+    </div>
+  </ng-template>
+</div>
