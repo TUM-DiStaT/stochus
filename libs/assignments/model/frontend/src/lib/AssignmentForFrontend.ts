@@ -14,6 +14,15 @@ export type AssignmentProcessProps<
 > = {
   config?: ConfigurationType
   completionData?: CompletionDataType
+  updateCompletionData: EventEmitter<Partial<CompletionDataType>>
+}
+
+export type AssignmentFeedbackProps<
+  ConfigurationType,
+  CompletionDataType extends BaseCompletionData,
+> = {
+  config?: ConfigurationType
+  completionData?: CompletionDataType
 }
 
 export type AssignmentForFrontend<
@@ -25,5 +34,8 @@ export type AssignmentForFrontend<
   >
   completionProcessComponent: Type<
     AssignmentProcessProps<ConfigurationType, CompletionDataType>
+  >
+  feedbackComponent: Type<
+    AssignmentFeedbackProps<ConfigurationType, CompletionDataType>
   >
 }

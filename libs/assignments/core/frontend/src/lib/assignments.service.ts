@@ -22,6 +22,16 @@ export class AssignmentsService {
     )
   }
 
+  static getByIdOrError(assignmentId?: string | null, message?: string) {
+    const result = AssignmentsService.getById(assignmentId)
+    const errorMessage =
+      message ?? `Couldn't find assignment with ID ${assignmentId}`
+    if (!result) {
+      throw new Error(errorMessage)
+    }
+    return result
+  }
+
   getAllAssignments() {
     return [...AssignmentsService.assignments]
   }

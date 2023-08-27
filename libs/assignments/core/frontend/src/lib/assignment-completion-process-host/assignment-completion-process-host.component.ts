@@ -1,7 +1,16 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { EMPTY, catchError, combineLatest, filter, map, switchMap } from 'rxjs'
+import {
+  EMPTY,
+  catchError,
+  combineLatest,
+  filter,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
 import { AssignmentsService } from '../assignments.service'
 import { CompletionsService } from '../completions.service'
@@ -14,15 +23,12 @@ import { CompletionsService } from '../completions.service'
 })
 export class AssignmentCompletionProcessHostComponent implements OnInit {
   assignment$ = this.activatedRoute.paramMap.pipe(
-    map((v) => {
-      const assignment = AssignmentsService.getById(v.get('assignmentId'))
-      if (!assignment) {
-        throw new Error(
-          'This should be impossible as per the canActivate check!',
-        )
-      }
-      return assignment
-    }),
+    map((v) =>
+      AssignmentsService.getByIdOrError(
+        v.get('assignmentId'),
+        'This should be impossible as per the canActivate check!',
+      ),
+    ),
   )
 
   completion$ = this.assignment$.pipe(
@@ -48,14 +54,45 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([this.assignment$, this.completion$]).subscribe(
       ([assignment, completion]) => {
+        // Render component into host
         const viewContainerRef = this.host.viewContainerRef
         viewContainerRef.clear()
         const componentRef = viewContainerRef.createComponent(
           assignment.completionProcessComponent,
         )
+
+        // Set component props, subscribe to event emitters
         componentRef.instance.config = completion.config
         componentRef.instance.completionData = completion.completionData
+        componentRef.instance.updateCompletionData
+          .pipe(
+            switchMap((completionData: Partial<BaseCompletionData>) => {
+              return this.completionsService.updateCompletionData(
+                completion.id,
+                completionData,
+              )
+            }),
+            tap((completion) => {
+              if (
+                (completion.completionData as BaseCompletionData).progress === 1
+              ) {
+                this.onCompleteAssignment(completion.id)
+              }
+            }),
+          )
+          .subscribe({
+            next: (updatedCompletionData) => {
+              componentRef.setInput(
+                'completionData',
+                updatedCompletionData.completionData,
+              )
+            },
+          })
       },
     )
+  }
+
+  onCompleteAssignment(completionId: string) {
+    this.router.navigate(['completions', completionId, 'feedback'])
   }
 }

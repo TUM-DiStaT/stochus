@@ -35,7 +35,15 @@ export const appRoutes: StochusRoute[] = [
     canActivate: [AuthGuard],
     loadChildren: () =>
       import('@stochus/assignment/core/frontend').then(
-        (mod) => mod.AssignmentsCoreFrontendModule,
+        (mod) => mod.assignmentsCoreFrontendRoutes,
+      ),
+  },
+  {
+    path: 'completions',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('@stochus/assignment/core/frontend').then(
+        (mod) => mod.completionsCoreForFrontendRoutes,
       ),
   },
   {
