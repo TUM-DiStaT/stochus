@@ -6,7 +6,7 @@ import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto } from '@stochus/studies/shared'
 import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
-import { Study } from './study.schema'
+import { Study, StudyTask } from './study.schema'
 
 @Injectable()
 export class StudiesBackendService {
@@ -20,6 +20,7 @@ export class StudiesBackendService {
   }
 
   async create(dto: StudyCreateDto, owner: User) {
+    const mappedTasks: StudyTask[] = []
     for (const task of dto.tasks) {
       const assignment = AssignmentsCoreBackendService.getById(
         task.assignmentId,
@@ -29,17 +30,24 @@ export class StudiesBackendService {
           `No assignment with ID ${task.assignmentId} exists.`,
         )
       }
-      const validationErrors = await validate(
-        plainToInstance(assignment.configurationClass, task.config),
+      const mappedConfig = plainToInstance(
+        assignment.configurationClass,
+        task.config,
       )
+      const validationErrors = await validate(mappedConfig)
       if (validationErrors.length > 0) {
         throw new BadRequestException(JSON.stringify(validationErrors))
       }
+      mappedTasks.push({
+        ...task,
+        config: mappedConfig,
+      })
     }
 
     return this.studyModel.create({
       ...dto,
       ownerId: owner.id,
+      tasks: mappedTasks,
     })
   }
 
