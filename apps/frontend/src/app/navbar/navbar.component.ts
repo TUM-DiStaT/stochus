@@ -8,12 +8,16 @@ import {
 } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import {
+  heroAcademicCap,
   heroArrowRightOnRectangle,
   heroBars3,
+  heroBeaker,
   heroRectangleStack,
 } from '@ng-icons/heroicons/outline'
 import { KeycloakService } from 'keycloak-angular'
 import { filter, map } from 'rxjs'
+import { UserRoles } from '@stochus/auth/shared'
+import { UserService } from '@stochus/auth/frontend'
 import {
   ButtonComponent,
   ButtonStyle,
@@ -45,12 +49,19 @@ import { StochusRouteData } from '../app.routes'
     MenuItemComponent,
   ],
   providers: [
-    provideIcons({ heroBars3, heroArrowRightOnRectangle, heroRectangleStack }),
+    provideIcons({
+      heroBars3,
+      heroArrowRightOnRectangle,
+      heroRectangleStack,
+      heroAcademicCap,
+      heroBeaker,
+    }),
   ],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
   protected readonly ButtonStyle = ButtonStyle
+  protected readonly UserRoles = UserRoles
 
   showAppUi$ = this.router.events.pipe(
     filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -75,7 +86,12 @@ export class NavbarComponent {
     private readonly router: Router,
     private readonly keycloakService: KeycloakService,
     private readonly toastService: ToastService,
+    private readonly userService: UserService,
   ) {}
+
+  userHasRole(role: UserRoles) {
+    return this.userService.getUser()?.roles.includes(role) ?? false
+  }
 
   logout() {
     this.keycloakService.logout(window.location.origin).catch((e) => {
