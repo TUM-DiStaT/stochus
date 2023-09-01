@@ -15,7 +15,7 @@ export const studentUser: User = {
   lastName: 'Student',
 }
 
-export const researcherUser: User = {
+export const researcherUserReggie: User = {
   id: '8dcccd01-8eee-4b1c-a23c-ec6aa2bb1055',
   roles: [
     UserRoles.RESEARCHER,
@@ -26,5 +26,19 @@ export const researcherUser: User = {
   username: 'researcher',
   email: 'researcher@example.com',
   firstName: 'Reggie',
+  lastName: 'Researcher',
+}
+
+export const researcherUserRaymond: User = {
+  id: '8dcccd01-8eee-4b1c-a23c-ec6aa2bb1056',
+  roles: [
+    UserRoles.RESEARCHER,
+    UserRoles.OFFLINE_ACCESS,
+    UserRoles.UMA_AUTHORIZATION,
+    UserRoles.DEFAULT_ROLES_STOCHUS,
+  ],
+  username: 'raymondResearches',
+  email: 'raymond@example.com',
+  firstName: 'Raymond',
   lastName: 'Researcher',
 }

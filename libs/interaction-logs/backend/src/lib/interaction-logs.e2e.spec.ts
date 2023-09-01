@@ -6,7 +6,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, connect } from 'mongoose'
 import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
 import * as request from 'supertest'
-import { researcherUser, studentUser } from '@stochus/auth/shared'
+import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
@@ -60,7 +60,7 @@ describe('Interaction Logs', () => {
   })
 
   it('should deny the request if roles are missing', async () => {
-    mockAuthGuard.setCurrentUser(researcherUser)
+    mockAuthGuard.setCurrentUser(researcherUserReggie)
 
     await request(app.getHttpServer())
       .post('/interaction-logs')
@@ -92,7 +92,7 @@ describe('Interaction Logs', () => {
       .send(dto)
       .expect(HttpStatusCode.Created)
 
-    mockAuthGuard.setCurrentUser(researcherUser)
+    mockAuthGuard.setCurrentUser(researcherUserReggie)
     const response = await request(app.getHttpServer())
       .get('/interaction-logs')
       .send()
