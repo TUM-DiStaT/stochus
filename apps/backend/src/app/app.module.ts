@@ -7,6 +7,7 @@ import {
   AppConfigurationService,
 } from '@stochus/core/backend'
 import { InteractionLogsModule } from '@stochus/interaction-logs/backend'
+import { StudiesBackendModule } from '@stochus/studies/backend'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 
@@ -32,6 +33,7 @@ import { AppService } from './app.service'
     BackendAuthModule,
     InteractionLogsModule,
     AssignmentsCoreBackendModule,
+    StudiesBackendModule,
   ],
   controllers: [AppController],
   providers: [AppService],
