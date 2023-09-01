@@ -36,7 +36,14 @@ describe('Assignments', () => {
       .compile()
 
     app = moduleRef.createNestApplication()
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transformOptions: {
+          excludeExtraneousValues: true,
+        },
+        transform: true,
+      }),
+    )
 
     mockAuthGuard = await app.resolve(AuthGuard)
 
