@@ -52,7 +52,8 @@
       ],
       "@stochus/interaction-logs/dtos": [
         "libs/interaction-logs/dtos/src/index.ts"
-      ]
+      ],
+      "@stochus/studies/shared": ["libs/studies/shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
