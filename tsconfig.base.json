@@ -54,6 +54,7 @@
         "libs/interaction-logs/dtos/src/index.ts"
       ],
       "@stochus/studies/backend": ["libs/studies/backend/src/index.ts"],
+      "@stochus/studies/frontend": ["libs/studies/frontend/src/index.ts"],
       "@stochus/studies/shared": ["libs/studies/shared/src/index.ts"]
     }
   },
