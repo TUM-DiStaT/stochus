@@ -23,4 +23,8 @@ export class StudiesService {
       .post(`${this.baseUrl}`, dto)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
+
+  delete(study: StudyDto) {
+    return this.http.delete<void>(`${this.baseUrl}/${study.id}`)
+  }
 }

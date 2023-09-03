@@ -1,8 +1,9 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { instanceToPlain } from 'class-transformer'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Connection, Model, connect } from 'mongoose'
+import { Connection, Model, Types, connect } from 'mongoose'
 import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
 import {
   researcherUserRaymond,
@@ -124,6 +125,50 @@ describe('StudiesBackendService', () => {
       expect(plainToInstance(StudyDto, fromGetAll)).toEqual(
         plainToInstance(StudyDto, [fromCreate]),
       )
+    })
+  })
+
+  describe('delete', () => {
+    it('should throw 403 Forbidden if study is owned by other user', async () => {
+      const study = await service.create(
+        validStudyCreateDto,
+        researcherUserReggie,
+      )
+
+      await expect(() =>
+        service.delete(study.id, researcherUserRaymond),
+      ).rejects.toBeInstanceOf(ForbiddenException)
+      await expect(
+        studiesModel.findById(study.id).exec(),
+      ).resolves.toBeDefined()
+    })
+
+    it("should throw 404 Not Found if study doesn't exist", async () => {
+      const study = await service.create(
+        validStudyCreateDto,
+        researcherUserReggie,
+      )
+
+      await expect(() =>
+        service.delete(
+          Types.ObjectId.createFromTime(1234).toString(),
+          researcherUserReggie,
+        ),
+      ).rejects.toBeInstanceOf(NotFoundException)
+      await expect(
+        studiesModel.findById(study.id).exec(),
+      ).resolves.toBeDefined()
+    })
+
+    it('should delete study if everything else is ok', async () => {
+      const study = await service.create(
+        validStudyCreateDto,
+        researcherUserReggie,
+      )
+
+      await service.delete(study.id.toString(), researcherUserReggie)
+
+      await expect(studiesModel.findById(study.id).exec()).resolves.toBeNull()
     })
   })
 })

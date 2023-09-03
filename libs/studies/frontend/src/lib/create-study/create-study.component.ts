@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
+import { Router } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroTrash } from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
@@ -107,6 +108,7 @@ export class CreateStudyComponent implements OnDestroy {
     private assignmentsService: AssignmentsService,
     private studiesService: StudiesService,
     private toastService: ToastService,
+    private router: Router,
   ) {}
 
   ngOnDestroy() {
@@ -136,6 +138,7 @@ export class CreateStudyComponent implements OnDestroy {
         .subscribe({
           next: () => {
             this.toastService.success('Studie wurde erfolgreich erstellt')
+            this.router.navigate(['studiesManagement'])
           },
           error: (e) => {
             console.error(e)

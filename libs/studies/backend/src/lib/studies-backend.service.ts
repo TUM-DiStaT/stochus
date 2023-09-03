@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
 import { Model } from 'mongoose'
@@ -55,5 +61,16 @@ export class StudiesBackendService {
     return this.studyModel.find({
       ownerId: owner.id,
     })
+  }
+
+  async delete(studyId: string, user: User) {
+    const study = await this.studyModel.findById(studyId).exec()
+    if (study === null) {
+      throw new NotFoundException()
+    }
+    if (study.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+    await this.studyModel.findByIdAndDelete(studyId).exec()
   }
 }

@@ -36,7 +36,10 @@
               <ng-icon name="heroPencil" class="mr-2" />
               Bearbeiten
             </button>
-            <button class="btn btn-outline btn-error">
+            <button
+              class="btn btn-outline btn-error"
+              (click)="deleteStudy(study)"
+            >
               <ng-icon name="heroTrash" class="mr-2" />
               Löschen
             </button>

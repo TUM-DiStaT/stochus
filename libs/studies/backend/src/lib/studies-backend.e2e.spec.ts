@@ -8,7 +8,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, Types, connect } from 'mongoose'
 import * as request from 'supertest'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
-import { validStudyCreateDto } from '@stochus/studies/shared'
+import { StudyDto, validStudyCreateDto } from '@stochus/studies/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
 import { StudiesBackendModule } from './studies-backend.module'
 
@@ -120,5 +120,35 @@ describe('Studies', () => {
       _id: expect.anything(),
       ownerId: researcherUserReggie.id,
     })
+  })
+
+  it('should not allow a student to delete a study but owner should be allowed to', async () => {
+    mockAuthGuard.setCurrentUser(researcherUserReggie)
+    const response = await request(app.getHttpServer())
+      .post('/studies/manage/')
+      .send(validStudyCreateDto)
+      .expect(HttpStatusCode.Created)
+    const study = response.body as StudyDto
+
+    mockAuthGuard.setCurrentUser(studentUser)
+    await request(app.getHttpServer())
+      .delete(`/studies/manage/${study.id}`)
+      .send()
+      .expect(HttpStatusCode.Forbidden)
+
+    mockAuthGuard.setCurrentUser(researcherUserReggie)
+    await request(app.getHttpServer())
+      .delete(`/studies/manage/${study.id}`)
+      .send()
+      .expect(HttpStatusCode.Ok)
+  })
+
+  it('should throw an error if the ID is not a valid mongo ID', async () => {
+    mockAuthGuard.setCurrentUser(researcherUserReggie)
+
+    await request(app.getHttpServer())
+      .delete(`/studies/manage/not-a-mongo-id`)
+      .send()
+      .expect(HttpStatusCode.BadRequest)
   })
 })
