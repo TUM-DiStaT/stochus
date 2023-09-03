@@ -1,0 +1,60 @@
+<div class="p-12">
+  <div class="mx-auto flex flex-col max-w-7xl gap-4">
+    <h1 class="text-4xl font-semibold mb-8">Meine Studien</h1>
+    <ul class="grid grid-cols-2 gap-4">
+      <li
+        *ngFor="let study of studies$ | async"
+        class="card card-bordered card-normal"
+      >
+        <div class="card-body">
+          <div class="card-title">
+            <em class="not-italic">{{ study.name }}</em>
+            <aside
+              class="badge badge-outline uppercase badge-ghost"
+              *ngIf="getActivityStatus(study) === 'completed'"
+            >
+              Abgeschlossen
+            </aside>
+            <aside
+              class="badge badge-outline uppercase badge-error"
+              *ngIf="getActivityStatus(study) === 'active'"
+            >
+              Aktiv
+            </aside>
+            <aside
+              class="badge badge-outline uppercase badge-info"
+              *ngIf="getActivityStatus(study) === 'planned'"
+            >
+              In Planung
+            </aside>
+          </div>
+          <p>
+            {{ study.description }}
+          </p>
+          <div class="card-actions justify-end">
+            <button class="btn btn-outline">
+              <ng-icon name="heroPencil" class="mr-2" />
+              Bearbeiten
+            </button>
+            <button class="btn btn-outline btn-error">
+              <ng-icon name="heroTrash" class="mr-2" />
+              Löschen
+            </button>
+          </div>
+        </div>
+      </li>
+      <li class="card card-bordered border-dashed text-gray-400">
+        <a
+          [routerLink]="['new']"
+          class="w-full h-full flex place-content-center place-items-center"
+        >
+          <ng-icon
+            name="heroPlus"
+            size="32"
+            aria-label="Neue Studie erstellen"
+          />
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
