@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common'
-import { AuthGuard, RoleGuard, Roles } from 'nest-keycloak-connect'
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
-import { ParsedUser } from '@stochus/auth/backend'
+import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
 import { StudiesBackendService } from './studies-backend.service'
 
 @Controller('studies/manage')
@@ -15,8 +14,7 @@ export class StudiesBackendController {
   }
 
   @Get()
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles({ roles: [UserRoles.RESEARCHER] })
+  @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async getAllByOwner(
     @ParsedUser()
     user: User,
@@ -25,8 +23,7 @@ export class StudiesBackendController {
   }
 
   @Post()
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles({ roles: [UserRoles.RESEARCHER] })
+  @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async create(
     @ParsedUser()
     user: User,

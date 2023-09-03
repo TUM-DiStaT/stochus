@@ -67,10 +67,14 @@ export class MockRoleGuard implements CanActivate {
     const granted =
       roleMatchingMode === RoleMatchingMode.ANY
         ? combinedRoles.some(
-            (r) => user.realm_access?.roles.includes(r) ?? false,
+            (r) =>
+              user.realm_access?.roles.includes(r.replace('realm:', '')) ??
+              false,
           )
         : combinedRoles.every(
-            (r) => user.realm_access?.roles.includes(r) ?? false,
+            (r) =>
+              user.realm_access?.roles.includes(r.replace('realm:', '')) ??
+              false,
           )
 
     if (granted) {

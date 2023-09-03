@@ -1,11 +1,11 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
 import { instanceToPlain } from 'class-transformer'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, Types, connect } from 'mongoose'
-import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
 import * as request from 'supertest'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { validStudyCreateDto } from '@stochus/studies/shared'
@@ -26,12 +26,7 @@ describe('Studies', () => {
 
     const moduleRef = await Test.createTestingModule({
       imports: [MongooseModule.forRoot(mongod.getUri()), StudiesBackendModule],
-    })
-      .overrideGuard(AuthGuard)
-      .useClass(MockAuthGuard)
-      .overrideGuard(RoleGuard)
-      .useClass(MockRoleGuard)
-      .compile()
+    }).compile()
 
     app = moduleRef.createNestApplication()
     app.useGlobalPipes(
@@ -42,8 +37,9 @@ describe('Studies', () => {
         transform: true,
       }),
     )
-
-    mockAuthGuard = await app.resolve(AuthGuard)
+    mockAuthGuard = new MockAuthGuard()
+    app.useGlobalGuards(mockAuthGuard)
+    app.useGlobalGuards(new MockRoleGuard(await app.resolve(Reflector)))
 
     await app.init()
   })
