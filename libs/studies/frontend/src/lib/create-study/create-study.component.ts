@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, OnDestroy } from '@angular/core'
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -10,41 +9,75 @@ import {
 } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroTrash } from '@ng-icons/heroicons/outline'
-import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
-import { AssignmentsService } from '@stochus/assignment/core/frontend'
+import { FormModel } from 'ngx-mf'
+import { map, pairwise } from 'rxjs'
+import {
+  AssignmentConfigFormHostComponent,
+  AssignmentsService,
+} from '@stochus/assignment/core/frontend'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
+  config?: FormModel<any>
 }>
 
 @Component({
   selector: 'stochus-create-study',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIconComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgIconComponent,
+    AssignmentConfigFormHostComponent,
+  ],
   providers: [provideIcons({ heroTrash })],
   templateUrl: './create-study.component.html',
 })
-export class CreateStudyComponent {
-  formGroup = new FormGroup({
-    name: new FormControl<string | null>(null, {
-      validators: [],
-    }),
-    description: new FormControl<string | null>(null),
-    tasks: new FormArray<TaskFormControl>([
-      this.fb.group({
-        assignmentId: [GuessRandomNumberAssignment.id, Validators.required],
-      }),
-      this.fb.group({
-        assignmentId: [GuessRandomNumberAssignment.id, Validators.required],
-      }),
-    ]),
+export class CreateStudyComponent implements OnDestroy {
+  formGroup = this.fb.group({
+    name: [null as string | null, [Validators.required]],
+    description: [null as string | null, [Validators.required]],
+    tasks: this.fb.array([] as TaskFormControl[]),
   })
   assignments = this.assignmentsService.getAllAssignments()
+
+  private tasksChangeSubscription = this.formGroup.controls.tasks.valueChanges
+    .pipe(
+      pairwise(),
+      map(([prev, curr]) =>
+        curr.flatMap(({ assignmentId }, index) =>
+          prev[index]?.assignmentId === assignmentId
+            ? []
+            : [{ index, assignmentId }],
+        ),
+      ),
+    )
+    .subscribe((changed) => {
+      changed.forEach(({ assignmentId, index }) => {
+        const taskControl = this.formGroup.controls.tasks.at(index)
+        taskControl.removeControl('config')
+
+        if (assignmentId) {
+          const assignment = AssignmentsService.getByIdOrError(assignmentId)
+          taskControl.addControl(
+            'config',
+            assignment.generateConfigFormControl(
+              this.fb,
+              assignment.getRandomConfig(),
+            ),
+          )
+        }
+      })
+    })
 
   constructor(
     private fb: FormBuilder,
     private assignmentsService: AssignmentsService,
   ) {}
+
+  ngOnDestroy() {
+    this.tasksChangeSubscription.unsubscribe()
+  }
 
   addTask() {
     const taskFormGroup = this.fb.group({

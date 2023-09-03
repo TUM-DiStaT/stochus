@@ -23,18 +23,20 @@
           *ngFor="let task of taskControls; let i = index"
           [formGroup]="task"
           class="indicator w-full"
+          data-testid="task-wrapper"
         >
           <div class="indicator-item indicator-top">
             <button
               class="btn btn-error btn-circle btn-sm"
               (click)="deleteTask(i)"
+              data-testid="delete-task-button"
             >
               <ng-icon name="heroTrash" aria-label="Aufgabe löschen" />
             </button>
           </div>
 
           <div
-            class="border p-4 rounded-lg w-full"
+            class="border p-4 rounded-lg w-full flex flex-col gap-4"
             [ngClass]="{
               'border-error': task.invalid && task.touched
             }"
@@ -65,12 +67,28 @@
                 {{ task.controls.assignmentId.errors?.['required'] && "Bitte Aufgabentypen auswählen" }}
               </span>
             </label>
+            <stochus-assignment-config-form-host
+              *ngIf="task.controls.assignmentId.value !== null"
+              [assignmentId]="task.controls.assignmentId.value!"
+              [configFormControl]="task.controls.config!"
+            />
           </div>
         </div>
-        <button class="btn btn-outline btn-info" (click)="addTask()">
+        <button
+          class="btn btn-outline btn-info"
+          (click)="addTask()"
+          data-testid="add-task-button"
+        >
           + Neue Aufgabe hinzufügen
         </button>
       </div>
+      <input
+        type="submit"
+        data-testid="submit-button"
+        value="Speichern"
+        class="btn btn-primary"
+        [disabled]="formGroup.invalid"
+      />
     </form>
   </div>
 </div>
