@@ -1,3 +1,4 @@
+import { FormBuilder, Validators } from '@angular/forms'
 import {
   GuessRandomNumberAssignment,
   GuessRandomNumberAssignmentCompletionData,
@@ -16,4 +17,11 @@ export const GuessRandomNumberAssignmentForFrontend: AssignmentForFrontend<
   completionProcessComponent: GuessRandomNumberAssignmentProcessComponent,
   configurationInputFormComponent: GuessRandomNumberConfigFormComponent,
   feedbackComponent: GuessRandomNumberAssignmentFeedbackComponent,
+  generateConfigFormControl: (fb: FormBuilder, { result }) =>
+    fb.group({
+      result: [
+        result,
+        [Validators.required, Validators.min(1), Validators.max(99)],
+      ],
+    }),
 }

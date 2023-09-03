@@ -13,7 +13,8 @@ export class AssignmentsService {
   // at runtime using the id as a discriminator. Not nice, but it should work
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static readonly assignments: AssignmentForFrontend<any, any>[] = [
-    GuessRandomNumberAssignmentForFrontend,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    GuessRandomNumberAssignmentForFrontend as any,
   ]
 
   static getById(assignmentId?: string | null) {
