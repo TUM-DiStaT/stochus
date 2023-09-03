@@ -1,4 +1,3 @@
-import { OmitType } from '@nestjs/mapped-types'
 import { Expose, Type } from 'class-transformer'
 import {
   IsDate,
@@ -23,15 +22,7 @@ export class StudyTaskDto {
   config: unknown
 }
 
-export class StudyDto {
-  @IsMongoId()
-  @Expose()
-  id!: string
-
-  @Expose()
-  @IsString()
-  ownerId!: string
-
+export class StudyCreateDto {
   @Expose()
   @IsString()
   @IsNotEmpty()
@@ -39,7 +30,7 @@ export class StudyDto {
 
   @Type(() => Date)
   @IsDate()
-  @IsBefore<StudyDto>('endDate')
+  @IsBefore<StudyCreateDto>('endDate')
   @Expose()
   startDate!: Date
 
@@ -59,4 +50,12 @@ export class StudyDto {
   tasks!: Array<StudyTaskDto>
 }
 
-export class StudyCreateDto extends OmitType(StudyDto, ['id', 'ownerId']) {}
+export class StudyDto extends StudyCreateDto {
+  @IsMongoId()
+  @Expose()
+  id!: string
+
+  @Expose()
+  @IsString()
+  ownerId!: string
+}
