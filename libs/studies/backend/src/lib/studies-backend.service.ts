@@ -10,7 +10,7 @@ import { validate } from 'class-validator'
 import { Model } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto } from '@stochus/studies/shared'
+import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
 import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
 import { Study, StudyTask } from './study.schema'
 
@@ -26,6 +26,16 @@ export class StudiesBackendService {
   }
 
   async create(dto: StudyCreateDto, owner: User) {
+    const tasks = await this.parseAndValidateTasks(dto)
+
+    return this.studyModel.create({
+      ...dto,
+      ownerId: owner.id,
+      tasks,
+    })
+  }
+
+  private async parseAndValidateTasks(dto: StudyCreateDto) {
     const mappedTasks: StudyTask[] = []
     for (const task of dto.tasks) {
       const assignment = AssignmentsCoreBackendService.getById(
@@ -49,18 +59,38 @@ export class StudiesBackendService {
         config: mappedConfig,
       })
     }
-
-    return this.studyModel.create({
-      ...dto,
-      ownerId: owner.id,
-      tasks: mappedTasks,
-    })
+    return mappedTasks
   }
 
   async getAllByOwner(owner: User): Promise<Study[]> {
     return this.studyModel.find({
       ownerId: owner.id,
     })
+  }
+
+  async getById(id: string, user: User) {
+    const result = await this.studyModel.findById(id).exec()
+    if (!result) {
+      throw new NotFoundException()
+    }
+    if (result.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+    return result
+  }
+
+  async update(id: string, update: StudyUpdateDto, user: User) {
+    const oldStudy = await this.studyModel.findById(id).exec()
+    if (!oldStudy) {
+      throw new NotFoundException()
+    }
+    if (oldStudy.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+    const tasks = await this.parseAndValidateTasks(update)
+    return await this.studyModel
+      .findByIdAndUpdate(id, { ...update, tasks, ownerId: user.id })
+      .exec()
   }
 
   async delete(studyId: string, user: User) {

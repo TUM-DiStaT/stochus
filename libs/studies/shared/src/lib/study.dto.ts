@@ -50,6 +50,8 @@ export class StudyCreateDto {
   tasks!: Array<StudyTaskDto>
 }
 
+export class StudyUpdateDto extends StudyCreateDto {}
+
 export class StudyDto extends StudyCreateDto {
   @IsMongoId()
   @Expose()

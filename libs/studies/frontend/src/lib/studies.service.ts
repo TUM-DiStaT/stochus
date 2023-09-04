@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { map } from 'rxjs'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
+import {
+  StudyCreateDto,
+  StudyDto,
+  StudyUpdateDto,
+} from '@stochus/studies/shared'
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +35,12 @@ export class StudiesService {
   getById(studyId: string) {
     return this.http
       .get(`${this.baseUrl}/${studyId}`)
+      .pipe(map((studies) => plainToInstance(StudyDto, studies)))
+  }
+
+  update(id: string, dto: StudyUpdateDto) {
+    return this.http
+      .put(`${this.baseUrl}/${id}`, dto)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
 }

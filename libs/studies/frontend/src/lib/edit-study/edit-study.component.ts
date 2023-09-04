@@ -3,7 +3,9 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { Component, ViewChild } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { EMPTY, catchError, switchMap } from 'rxjs'
+import { EMPTY, catchError, firstValueFrom, shareReplay, switchMap } from 'rxjs'
+import { plainToInstance } from '@stochus/core/shared'
+import { StudyUpdateDto } from '@stochus/studies/shared'
 import { ToastService } from '@stochus/daisy-ui'
 import { EditStudyFormComponent } from '../edit-study-form/edit-study-form.component'
 import { StudiesService } from '../studies.service'
@@ -54,6 +56,7 @@ export class EditStudyComponent {
       this.router.navigate(['studiesManagement'])
       return EMPTY
     }),
+    shareReplay(),
   )
 
   constructor(
@@ -63,7 +66,24 @@ export class EditStudyComponent {
     private router: Router,
   ) {}
 
-  submit() {
-    //
+  async submit() {
+    const formGroup = this.studyEditForm?.formGroup
+    const study = await firstValueFrom(this.study$)
+    if (formGroup?.valid) {
+      this.studiesService
+        .update(study.id, plainToInstance(StudyUpdateDto, formGroup.value))
+        .subscribe({
+          next: () => {
+            this.toastService.success('Studie wurde erfolgreich upgedatet')
+            this.router.navigate(['studiesManagement'])
+          },
+          error: (e) => {
+            console.error(e)
+            this.toastService.error(
+              'Beim Speichern der Studie ist ein Fehler aufgetreten',
+            )
+          },
+        })
+    }
   }
 }
