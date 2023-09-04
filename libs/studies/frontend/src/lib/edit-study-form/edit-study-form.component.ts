@@ -43,7 +43,7 @@ export class EditStudyFormComponent implements OnDestroy {
   private tasksChangeSubscription?: Subscription
 
   @Input()
-  set initialStudy(study: StudyDto) {
+  set initialStudy(study: StudyDto | null) {
     this.formGroup = this.generateFormGroup(study)
   }
 
@@ -56,7 +56,7 @@ export class EditStudyFormComponent implements OnDestroy {
     return date?.toISOString().split('T')[0]
   }
 
-  private generateFormGroup(study?: StudyDto) {
+  private generateFormGroup(study?: StudyDto | null) {
     const result = this.fb.group(
       {
         name: [study?.name ?? null, [Validators.required]],

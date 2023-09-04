@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto } from '@stochus/studies/shared'
-import { AssignmentsService } from '@stochus/assignment/core/frontend'
 import { ToastService } from '@stochus/daisy-ui'
 import { EditStudyFormComponent } from '../edit-study-form/edit-study-form.component'
 import { StudiesService } from '../studies.service'
@@ -18,10 +17,8 @@ import { StudiesService } from '../studies.service'
 export class CreateStudyComponent {
   @ViewChild('studyEditForm')
   studyEditForm!: EditStudyFormComponent
-  assignments = this.assignmentsService.getAllAssignments()
 
   constructor(
-    private assignmentsService: AssignmentsService,
     private studiesService: StudiesService,
     private toastService: ToastService,
     private router: Router,

@@ -27,4 +27,10 @@ export class StudiesService {
   delete(study: StudyDto) {
     return this.http.delete<void>(`${this.baseUrl}/${study.id}`)
   }
+
+  getById(studyId: string) {
+    return this.http
+      .get(`${this.baseUrl}/${studyId}`)
+      .pipe(map((studies) => plainToInstance(StudyDto, studies)))
+  }
 }
