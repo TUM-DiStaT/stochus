@@ -1,0 +1,100 @@
+<label class="form-control">
+  <span class="label">Name</span>
+  <input
+    type="text"
+    class="input input-bordered"
+    [formControl]="formGroup.controls.name"
+  />
+</label>
+<label class="form-control">
+  <span class="label">Beschreibung</span>
+  <textarea
+    class="textarea textarea-bordered"
+    [formControl]="formGroup.controls.description"
+  ></textarea>
+</label>
+<div class="flex flex-row gap-4 w-full">
+  <label class="form-control flex-1">
+    <span class="label">Startdatum</span>
+    <input
+      type="date"
+      [formControl]="formGroup.controls.startDate"
+      class="input input-bordered"
+      data-testid="start-date-input"
+    />
+  </label>
+  <label class="form-control flex-1">
+    <span class="label">Enddatum</span>
+    <input
+      type="date"
+      [formControl]="formGroup.controls.endDate"
+      class="input input-bordered"
+      data-testid="end-date-input"
+    />
+  </label>
+</div>
+<div class="divider"></div>
+<div class="flex flex-col gap-10">
+  <div
+    *ngFor="let task of taskControls; let i = index"
+    [formGroup]="task"
+    class="indicator w-full"
+    data-testid="task-wrapper"
+  >
+    <div class="indicator-item indicator-top">
+      <button
+        class="btn btn-error btn-circle btn-sm"
+        (click)="$event.preventDefault(); deleteTask(i)"
+        data-testid="delete-task-button"
+      >
+        <ng-icon name="heroTrash" aria-label="Aufgabe löschen" />
+      </button>
+    </div>
+
+    <div
+      class="border p-4 rounded-lg w-full flex flex-col gap-4"
+      [ngClass]="{
+        'border-error': task.invalid && task.touched
+      }"
+    >
+      <label class="form-control">
+        <span class="label">Aufgabentyp</span>
+        <select
+          class="select select-bordered ng-invalid:select-error"
+          [formControl]="task.controls.assignmentId"
+        >
+          <option [value]="null" disabled selected>
+            Aufgabentyp auswählen
+          </option>
+          <option
+            *ngFor="let assignment of assignments"
+            [value]="assignment.id"
+          >
+            {{ assignment.name }}
+          </option>
+        </select>
+        <span
+          class="text-error"
+          *ngIf="
+            task.controls.assignmentId.touched &&
+            task.controls.assignmentId.invalid
+          "
+        >
+          {{ task.controls.assignmentId.errors?.['required'] && "Bitte Aufgabentypen auswählen" }}
+        </span>
+      </label>
+      <stochus-assignment-config-form-host
+        *ngIf="task.controls.assignmentId.value !== null"
+        [assignmentId]="task.controls.assignmentId.value!"
+        [configFormControl]="task.controls.config!"
+      />
+    </div>
+  </div>
+  <button
+    class="btn btn-outline btn-info"
+    (click)="$event.preventDefault(); addTask()"
+    data-testid="add-task-button"
+  >
+    + Neue Aufgabe hinzufügen
+  </button>
+</div>
