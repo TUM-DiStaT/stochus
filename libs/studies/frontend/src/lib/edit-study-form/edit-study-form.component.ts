@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnDestroy } from '@angular/core'
+import { Component, Input, OnDestroy } from '@angular/core'
 import {
   FormBuilder,
   FormControl,
@@ -13,7 +13,7 @@ import { validate } from 'class-validator'
 import { FormModel } from 'ngx-mf'
 import { Subscription, map, pairwise } from 'rxjs'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto } from '@stochus/studies/shared'
+import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
 import {
   AssignmentConfigFormHostComponent,
   AssignmentsService,
@@ -41,19 +41,46 @@ export class EditStudyFormComponent implements OnDestroy {
   formGroup = this.generateFormGroup()
   assignments = this.assignmentsService.getAllAssignments()
   private tasksChangeSubscription?: Subscription
+
+  @Input()
+  set initialStudy(study: StudyDto) {
+    this.formGroup = this.generateFormGroup(study)
+  }
+
   constructor(
     private fb: FormBuilder,
     private assignmentsService: AssignmentsService,
   ) {}
 
-  private generateFormGroup() {
+  private toYyyyMmDd(date?: Date) {
+    return date?.toISOString().split('T')[0]
+  }
+
+  private generateFormGroup(study?: StudyDto) {
     const result = this.fb.group(
       {
-        name: [null as string | null, [Validators.required]],
-        description: [null as string | null, [Validators.required]],
-        startDate: [null as Date | null, [Validators.required]],
-        endDate: [null as Date | null],
-        tasks: this.fb.array([] as TaskFormControl[]),
+        name: [study?.name ?? null, [Validators.required]],
+        description: [study?.description ?? null, [Validators.required]],
+        startDate: [
+          this.toYyyyMmDd(study?.startDate) ?? null,
+          [Validators.required],
+        ],
+        endDate: [this.toYyyyMmDd(study?.endDate) ?? null],
+        tasks: this.fb.array(
+          study?.tasks.map((task): TaskFormControl => {
+            const assignment = AssignmentsService.getByIdOrError(
+              task.assignmentId,
+            )
+            return this.fb.group({
+              assignmentId: [task.assignmentId],
+              assignmentVersion: [task.assignmentVersion],
+              config: assignment.generateConfigFormControl(
+                this.fb,
+                task.config,
+              ),
+            }) as unknown as TaskFormControl
+          }) ?? [],
+        ),
       },
       {
         asyncValidators: [
