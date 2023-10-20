@@ -1,4 +1,5 @@
 import { validateOrReject } from 'class-validator'
+import 'reflect-metadata'
 import { plainToInstance } from '@stochus/core/shared'
 import { validStudyDto } from './studies.dto.fixture'
 import { StudyDto } from './study.dto'

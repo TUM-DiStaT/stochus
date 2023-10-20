@@ -1,11 +1,37 @@
 import {
   HttpClientTestingModule,
   HttpTestingController,
+  TestRequest,
 } from '@angular/common/http/testing'
 import { TestBed, inject } from '@angular/core/testing'
+import { validateOrReject } from 'class-validator'
+import 'reflect-metadata'
 import { firstValueFrom } from 'rxjs'
-import { validStudyDto } from '@stochus/studies/shared'
+import {
+  StudyDto,
+  validStudyCreateDto,
+  validStudyDto,
+} from '@stochus/studies/shared'
 import { StudiesService } from './studies.service'
+
+const verifySingleJsonRequest = ({
+  mockRequest,
+  data,
+  httpMock,
+}: {
+  mockRequest: TestRequest
+  data: object
+  httpMock: HttpTestingController
+}) => {
+  expect(mockRequest.cancelled).toBeFalsy()
+  expect(mockRequest.request.responseType).toEqual('json')
+
+  // Ensures same structure as returned by fetch().json, which e.g. doesn't parse dates
+  const fromJSON = JSON.parse(JSON.stringify(data))
+  mockRequest.flush(fromJSON)
+
+  httpMock.verify()
+}
 
 describe('StudiesService', () => {
   beforeEach(() => {
@@ -21,21 +47,85 @@ describe('StudiesService', () => {
     },
   ))
 
-  it('should correctly fetch and transform the users studies', inject(
+  it("should correctly fetch and transform the user's studies", inject(
     [StudiesService, HttpTestingController],
     async (service: StudiesService, httpMock: HttpTestingController) => {
       const responsePromise = firstValueFrom(service.getAllOwnedByUser())
 
-      const mockRequest = httpMock.expectOne(`${service.baseUrl}`)
-      expect(mockRequest.cancelled).toBeFalsy()
-      expect(mockRequest.request.responseType).toEqual('json')
-      mockRequest.flush(JSON.parse(JSON.stringify([validStudyDto])))
-
-      httpMock.verify()
+      verifySingleJsonRequest({
+        httpMock,
+        mockRequest: httpMock.expectOne(`${service.baseUrl}`),
+        data: [validStudyDto],
+      })
 
       const response = await responsePromise
       expect(response).toHaveLength(1)
-      expect(response[0]).toHaveProperty('startDate', expect.any(Date))
+      expect(response[0]).toBeInstanceOf(StudyDto)
+      await expect(validateOrReject(response[0])).resolves.toBeUndefined()
+    },
+  ))
+
+  it('should correctly map the created study', inject(
+    [StudiesService, HttpTestingController],
+    async (service: StudiesService, httpMock: HttpTestingController) => {
+      const createdStudyPromise = firstValueFrom(
+        service.create(validStudyCreateDto),
+      )
+
+      verifySingleJsonRequest({
+        httpMock,
+        mockRequest: httpMock.expectOne(`${service.baseUrl}`),
+        data: validStudyDto,
+      })
+
+      const created = await createdStudyPromise
+
+      expect(created).toBeInstanceOf(StudyDto)
+      await expect(validateOrReject(created)).resolves.toBeUndefined()
+    },
+  ))
+
+  it('should correctly map the study gotten by ID', inject(
+    [StudiesService, HttpTestingController],
+    async (service: StudiesService, httpMock: HttpTestingController) => {
+      const createdStudyPromise = firstValueFrom(
+        service.getById(validStudyDto.id),
+      )
+
+      verifySingleJsonRequest({
+        httpMock,
+        mockRequest: httpMock.expectOne(
+          `${service.baseUrl}/${validStudyDto.id}`,
+        ),
+        data: validStudyDto,
+      })
+
+      const created = await createdStudyPromise
+
+      expect(created).toBeInstanceOf(StudyDto)
+      await expect(validateOrReject(created)).resolves.toBeUndefined()
+    },
+  ))
+
+  it('should correctly map the updated study', inject(
+    [StudiesService, HttpTestingController],
+    async (service: StudiesService, httpMock: HttpTestingController) => {
+      const createdStudyPromise = firstValueFrom(
+        service.update(validStudyDto.id, validStudyDto),
+      )
+
+      verifySingleJsonRequest({
+        httpMock,
+        mockRequest: httpMock.expectOne(
+          `${service.baseUrl}/${validStudyDto.id}`,
+        ),
+        data: validStudyDto,
+      })
+
+      const created = await createdStudyPromise
+
+      expect(created).toBeInstanceOf(StudyDto)
+      await expect(validateOrReject(created)).resolves.toBeUndefined()
     },
   ))
 })
