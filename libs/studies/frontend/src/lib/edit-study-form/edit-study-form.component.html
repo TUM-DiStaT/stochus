@@ -34,12 +34,17 @@
   </label>
 </div>
 <div class="divider"></div>
-<div class="flex flex-col gap-10">
+<div
+  class="flex flex-col gap-10 task-list"
+  cdkDropList
+  (cdkDropListDropped)="dropTask($event)"
+>
   <div
     *ngFor="let task of taskControls; let i = index"
     [formGroup]="task"
-    class="indicator w-full"
+    class="indicator w-full task"
     data-testid="task-wrapper"
+    cdkDrag
   >
     <div class="indicator-item indicator-top">
       <button
@@ -51,43 +56,49 @@
       </button>
     </div>
 
-    <div
-      class="border p-4 rounded-lg w-full flex flex-col gap-4"
-      [ngClass]="{
-        'border-error': task.invalid && task.touched
-      }"
-    >
-      <label class="form-control">
-        <span class="label">Aufgabentyp</span>
-        <select
-          class="select select-bordered ng-invalid:select-error"
-          [formControl]="task.controls.assignmentId"
-        >
-          <option [value]="null" disabled selected>
-            Aufgabentyp auswählen
-          </option>
-          <option
-            *ngFor="let assignment of assignments"
-            [value]="assignment.id"
+    <div class="flex border p-4 rounded-lg w-full gap-4">
+      <div class="cursor-move flex items-center" cdkDragHandle>
+        <ng-icon name="heroBars2" aria-label="Aufgabe verschieben" />
+      </div>
+
+      <div
+        class="flex flex-col gap-4 w-full"
+        [ngClass]="{
+          'border-error': task.invalid && task.touched
+        }"
+      >
+        <label class="form-control">
+          <span class="label">Aufgabentyp</span>
+          <select
+            class="select select-bordered ng-invalid:select-error"
+            [formControl]="task.controls.assignmentId"
           >
-            {{ assignment.name }}
-          </option>
-        </select>
-        <span
-          class="text-error"
-          *ngIf="
-            task.controls.assignmentId.touched &&
-            task.controls.assignmentId.invalid
-          "
-        >
-          {{ task.controls.assignmentId.errors?.['required'] && "Bitte Aufgabentypen auswählen" }}
-        </span>
-      </label>
-      <stochus-assignment-config-form-host
-        *ngIf="task.controls.assignmentId.value !== null"
-        [assignmentId]="task.controls.assignmentId.value!"
-        [configFormControl]="task.controls.config!"
-      />
+            <option [value]="null" disabled selected>
+              Aufgabentyp auswählen
+            </option>
+            <option
+              *ngFor="let assignment of assignments"
+              [value]="assignment.id"
+            >
+              {{ assignment.name }}
+            </option>
+          </select>
+          <span
+            class="text-error"
+            *ngIf="
+              task.controls.assignmentId.touched &&
+              task.controls.assignmentId.invalid
+            "
+          >
+            {{ task.controls.assignmentId.errors?.['required'] && "Bitte Aufgabentypen auswählen" }}
+          </span>
+        </label>
+        <stochus-assignment-config-form-host
+          *ngIf="task.controls.assignmentId.value !== null"
+          [assignmentId]="task.controls.assignmentId.value!"
+          [configFormControl]="task.controls.config!"
+        />
+      </div>
     </div>
   </div>
   <button

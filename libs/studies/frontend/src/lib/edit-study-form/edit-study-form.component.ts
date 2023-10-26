@@ -1,3 +1,10 @@
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop'
 import { CommonModule } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
 import {
@@ -8,7 +15,7 @@ import {
   Validators,
 } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import { heroTrash } from '@ng-icons/heroicons/outline'
+import { heroBars2, heroTrash } from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
 import { FormModel } from 'ngx-mf'
 import { Subscription, map, pairwise } from 'rxjs'
@@ -33,9 +40,13 @@ type TaskFormControl = FormGroup<{
     AssignmentConfigFormHostComponent,
     ReactiveFormsModule,
     NgIconComponent,
+    CdkDrag,
+    CdkDropList,
+    CdkDragHandle,
   ],
-  providers: [provideIcons({ heroTrash })],
+  providers: [provideIcons({ heroTrash, heroBars2 })],
   templateUrl: './edit-study-form.component.html',
+  styleUrls: ['./edit-study-form.component.css'],
 })
 export class EditStudyFormComponent implements OnDestroy {
   formGroup = this.generateFormGroup()
@@ -137,6 +148,10 @@ export class EditStudyFormComponent implements OnDestroy {
       })
 
     return result
+  }
+
+  dropTask(event: CdkDragDrop<EditStudyFormComponent['taskControls']>) {
+    moveItemInArray(this.taskControls, event.previousIndex, event.currentIndex)
   }
 
   addTask() {
