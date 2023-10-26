@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { KeycloakTokenParsed } from 'keycloak-js'
-import { extractRequest } from 'nest-keycloak-connect/util'
+import { extractRequest } from 'nest-keycloak-connect/util.js'
 import { User, userToKeycloakTokenParsed } from '@stochus/auth/shared'
 
 let counter = 0

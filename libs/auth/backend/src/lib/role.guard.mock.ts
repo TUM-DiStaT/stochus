@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core'
 import { KeycloakTokenParsed } from 'keycloak-js'
 import { META_ROLES, RoleMatchingMode } from 'nest-keycloak-connect'
 import { RoleDecoratorOptionsInterface } from 'nest-keycloak-connect/interface/role-decorator-options.interface'
-import { extractRequest } from 'nest-keycloak-connect/util'
+import { extractRequest } from 'nest-keycloak-connect/util.js'
 
 @Injectable()
 export class MockRoleGuard implements CanActivate {

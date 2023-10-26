@@ -1,6 +1,6 @@
 import { ExecutionContext, createParamDecorator } from '@nestjs/common'
 import { KeycloakTokenParsed } from 'keycloak-js'
-import { extractRequest } from 'nest-keycloak-connect/util'
+import { extractRequest } from 'nest-keycloak-connect/util.js'
 import { parseUser } from '@stochus/auth/shared'
 
 export const ParsedUser = createParamDecorator(

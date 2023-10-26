@@ -25,7 +25,7 @@ export const IsBefore =
           const relatedPropertyName: KeysWithValuesOfType<T, Date> =
             args.constraints[0]
           const obj = args.object as T
-          const relatedValue = obj[relatedPropertyName]
+          const relatedValue: unknown = obj[relatedPropertyName]
           return (
             value instanceof Date &&
             relatedValue instanceof Date &&
