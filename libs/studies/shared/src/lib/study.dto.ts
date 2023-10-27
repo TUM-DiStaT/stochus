@@ -1,10 +1,12 @@
 import { Expose, Type } from 'class-transformer'
 import {
+  IsBoolean,
   IsDate,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsString,
+  IsUUID,
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
@@ -43,6 +45,16 @@ export class StudyCreateDto {
   @IsString()
   @IsNotEmpty()
   description!: string
+
+  @Expose()
+  @IsBoolean()
+  @IsNotEmpty()
+  randomizeTaskOrder!: boolean
+
+  @Expose()
+  @IsUUID()
+  @IsNotEmpty()
+  participantsGroupId!: string
 
   @Expose()
   @Type(() => StudyTaskDto)

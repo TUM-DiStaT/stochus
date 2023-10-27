@@ -25,6 +25,7 @@ import {
   AssignmentConfigFormHostComponent,
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
+import { KeycloakAdminService } from '@stochus/auth/frontend'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
@@ -52,6 +53,7 @@ export class EditStudyFormComponent implements OnDestroy {
   formGroup = this.generateFormGroup()
   assignments = this.assignmentsService.getAllAssignments()
   private tasksChangeSubscription?: Subscription
+  groups$ = this.keycloakAdminService.getGroups()
 
   @Input()
   set initialStudy(study: StudyDto | null) {
@@ -61,6 +63,7 @@ export class EditStudyFormComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private assignmentsService: AssignmentsService,
+    private keycloakAdminService: KeycloakAdminService,
   ) {}
 
   private toYyyyMmDd(date?: Date) {
@@ -77,6 +80,11 @@ export class EditStudyFormComponent implements OnDestroy {
           [Validators.required],
         ],
         endDate: [this.toYyyyMmDd(study?.endDate) ?? null],
+        participantsGroupId: [
+          study?.participantsGroupId ?? null,
+          [Validators.required],
+        ],
+        randomizeTaskOrder: [study?.randomizeTaskOrder ?? false],
         tasks: this.fb.array(
           study?.tasks.map((task): TaskFormControl => {
             const assignment = AssignmentsService.getByIdOrError(

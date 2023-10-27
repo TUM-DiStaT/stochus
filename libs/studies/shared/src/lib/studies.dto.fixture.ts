@@ -13,6 +13,8 @@ export const validStudyDto: StudyDto = {
   ownerId: researcherUserReggie.id,
   startDate: new Date(2022, 8, 1),
   endDate: new Date(2022, 8, 29),
+  participantsGroupId: '922b8216-6527-46be-a577-5c4fa86ad78e',
+  randomizeTaskOrder: false,
   tasks: [
     {
       assignmentId: GuessRandomNumberAssignment.id,

@@ -1,5 +1,5 @@
 <label class="form-control">
-  <span class="label">Name</span>
+  <span class="label cursor-pointer">Name</span>
   <input
     type="text"
     class="input input-bordered"
@@ -7,7 +7,7 @@
   />
 </label>
 <label class="form-control">
-  <span class="label">Beschreibung</span>
+  <span class="label cursor-pointer">Beschreibung</span>
   <textarea
     class="textarea textarea-bordered"
     [formControl]="formGroup.controls.description"
@@ -15,7 +15,7 @@
 </label>
 <div class="flex flex-row gap-4 w-full">
   <label class="form-control flex-1">
-    <span class="label">Startdatum</span>
+    <span class="label cursor-pointer">Startdatum</span>
     <input
       type="date"
       [formControl]="formGroup.controls.startDate"
@@ -24,12 +24,38 @@
     />
   </label>
   <label class="form-control flex-1">
-    <span class="label">Enddatum</span>
+    <span class="label cursor-pointer">Enddatum</span>
     <input
       type="date"
       [formControl]="formGroup.controls.endDate"
       class="input input-bordered"
       data-testid="end-date-input"
+    />
+  </label>
+</div>
+<div class="flex gap-4 w-full">
+  <label class="form-control flex-1">
+    <span class="label cursor-pointer">Teilnehmendengruppe</span>
+    <select
+      class="select select-bordered w-full"
+      [formControl]="formGroup.controls.participantsGroupId"
+    >
+      <option disabled selected [value]="null">Wer soll teilnehmen?</option>
+      <option *ngFor="let group of groups$ | async" [value]="group.id">
+        {{ group.name }}
+      </option>
+    </select>
+  </label>
+</div>
+<div class="flex gap-4 w-full">
+  <label
+    class="form-control flex-row items-end justify-between flex-1 cursor-pointer"
+  >
+    <span class="label"> Reihenfolge der Fragen randomisieren </span>
+    <input
+      type="checkbox"
+      class="toggle toggle-primary"
+      [formControl]="formGroup.controls.randomizeTaskOrder"
     />
   </label>
 </div>
@@ -68,7 +94,7 @@
         }"
       >
         <label class="form-control">
-          <span class="label">Aufgabentyp</span>
+          <span class="label cursor-pointer">Aufgabentyp</span>
           <select
             class="select select-bordered ng-invalid:select-error"
             [formControl]="task.controls.assignmentId"

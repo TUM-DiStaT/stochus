@@ -29,6 +29,12 @@ export class Study {
   @Prop({ required: true, type: Date })
   endDate!: string
 
+  @Prop({ required: true, default: (v?: boolean) => v ?? false })
+  randomizeTaskOrder!: boolean
+
+  @Prop({ required: true })
+  participantsGroupId!: string
+
   @Prop({ required: true })
   tasks!: StudyTask[]
 }
