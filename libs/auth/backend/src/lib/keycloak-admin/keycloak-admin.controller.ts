@@ -8,6 +8,7 @@ export class KeycloakAdminController {
   constructor(private keycloakAdminService: KeycloakAdminService) {}
 
   @Get('groups')
+  // TODO: write test to ensure auth check!
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async getGroups() {
     return await this.keycloakAdminService.getGroups()

@@ -8,8 +8,6 @@ import {
 } from '@stochus/core/backend'
 import { InteractionLogsModule } from '@stochus/interaction-logs/backend'
 import { StudiesBackendModule } from '@stochus/studies/backend'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 
 @Module({
   imports: [
@@ -35,7 +33,7 @@ import { AppService } from './app.service'
     AssignmentsCoreBackendModule,
     StudiesBackendModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
