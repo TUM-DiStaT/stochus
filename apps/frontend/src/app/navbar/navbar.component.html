@@ -17,19 +17,19 @@
     <daisy-dropdown showOnHover alignEnd>
       <ng-icon name="heroBars3" button></ng-icon>
       <ul body daisyMenu class="w-max bg-base-100 rounded-box shadow">
-        <li daisyMenuItem *ngIf="userHasRole(UserRoles.STUDENT)">
+        <li daisyMenuItem *ngIf="canChooseTasksFreely$ | async">
           <a [routerLink]="['assignments']">
             <ng-icon name="heroRectangleStack" />
             Aufgaben
           </a>
         </li>
-        <li daisyMenuItem *ngIf="userHasRole(UserRoles.STUDENT)">
+        <li daisyMenuItem *ngIf="hasActiveStudies$ | async">
           <a [routerLink]="['studies']">
             <ng-icon name="heroAcademicCap" />
             Studien
           </a>
         </li>
-        <li daisyMenuItem *ngIf="userHasRole(UserRoles.RESEARCHER)">
+        <li daisyMenuItem *ngIf="isResearcher$ | async">
           <a [routerLink]="['studiesManagement']">
             <ng-icon name="heroBeaker" />
             Studien verwalten

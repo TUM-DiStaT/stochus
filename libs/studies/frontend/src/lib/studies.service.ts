@@ -52,4 +52,18 @@ export class StudiesService {
         map((studies) => plainToInstance(StudyForParticipationDto, studies)),
       )
   }
+
+  hasActiveStudies() {
+    const now = new Date().valueOf()
+    return this.getAllForStudent().pipe(
+      map(
+        (studies) =>
+          studies.filter(
+            (study) =>
+              study.startDate.valueOf() <= now &&
+              now <= study.endDate.valueOf(),
+          ).length > 0,
+      ),
+    )
+  }
 }
