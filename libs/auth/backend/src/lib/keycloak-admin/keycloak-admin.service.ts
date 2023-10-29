@@ -7,6 +7,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common'
 import { Issuer, TokenSet } from 'openid-client'
+import { User } from '@stochus/auth/shared'
 import { keycloakUrl, realm } from '../keycloak-config'
 
 @Injectable()
@@ -21,6 +22,13 @@ export class KeycloakAdminService implements OnModuleInit, OnModuleDestroy {
   async getGroups() {
     this.logger.verbose('fetching groups!')
     return await this.keycloakAdminClient.groups.find()
+  }
+
+  async getGroupsForUser(user: User) {
+    const allGroups = await this.getGroups()
+    return allGroups.filter(
+      (g) => g.path !== undefined && user.groups.includes(g.path),
+    )
   }
 
   async countMembersOfGroup(groupId: string) {

@@ -12,6 +12,7 @@ import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
 import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
+import { KeycloakAdminService } from '@stochus/auth/backend'
 import { Study, StudyTask } from './study.schema'
 
 @Injectable()
@@ -21,6 +22,7 @@ export class StudiesBackendService {
   constructor(
     @InjectModel(Study.name)
     private readonly studyModel: Model<Study>,
+    private readonly keycloakAdminService: KeycloakAdminService,
   ) {
     this.logger.debug('Instance created successfully')
   }
@@ -102,5 +104,16 @@ export class StudiesBackendService {
       throw new ForbiddenException()
     }
     await this.studyModel.findByIdAndDelete(studyId).exec()
+  }
+
+  async getAllForCurrentStudent(user: User) {
+    const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
+    return await this.studyModel
+      .find({
+        participantsGroupId: {
+          $in: userGroups.map((g) => g.id),
+        },
+      })
+      .exec()
   }
 }

@@ -15,6 +15,7 @@ import { plainToInstance } from '@stochus/core/shared'
 import {
   StudyCreateDto,
   StudyDto,
+  StudyForParticipationDto,
   StudyUpdateDto,
 } from '@stochus/studies/shared'
 import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
@@ -102,5 +103,14 @@ export class StudiesBackendController {
       throw new BadRequestException(`${id} is not a valid Mongo ID`)
     }
     await this.studiesService.delete(id, user)
+  }
+
+  @Get('participate')
+  @RealmRoles({ roles: [UserRoles.STUDENT] })
+  async getAllForStudent(@ParsedUser() user: User) {
+    return plainToInstance(
+      StudyForParticipationDto,
+      this.studiesService.getAllForCurrentStudent(user),
+    )
   }
 }

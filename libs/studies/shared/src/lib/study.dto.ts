@@ -24,7 +24,7 @@ export class StudyTaskDto {
   config: unknown
 }
 
-export class StudyCreateDto {
+class StudyForParticipationWithoutId {
   @Expose()
   @IsString()
   @IsNotEmpty()
@@ -32,7 +32,7 @@ export class StudyCreateDto {
 
   @Type(() => Date)
   @IsDate()
-  @IsBefore<StudyCreateDto>('endDate')
+  @IsBefore<StudyForParticipationWithoutId>('endDate')
   @Expose()
   startDate!: Date
 
@@ -45,7 +45,9 @@ export class StudyCreateDto {
   @IsString()
   @IsNotEmpty()
   description!: string
+}
 
+export class StudyCreateDto extends StudyForParticipationWithoutId {
   @Expose()
   @IsBoolean()
   @IsNotEmpty()
@@ -72,4 +74,10 @@ export class StudyDto extends StudyCreateDto {
   @Expose()
   @IsString()
   ownerId!: string
+}
+
+export class StudyForParticipationDto extends StudyForParticipationWithoutId {
+  @IsMongoId()
+  @Expose()
+  id!: string
 }
