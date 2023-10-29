@@ -8,6 +8,7 @@ export type User = {
   lastName?: string
   email?: string
   roles: UserRoles[]
+  groups: string[]
 }
 
 const undefinedIfEmpty = (str?: string): string | undefined =>
@@ -15,6 +16,7 @@ const undefinedIfEmpty = (str?: string): string | undefined =>
 
 export const parseUser = (unparsedUser: KeycloakTokenParsed): User => {
   const roles = unparsedUser.realm_access?.roles
+  const groups: string[] = unparsedUser['groups'] ?? []
 
   if (!unparsedUser.sub || !roles || !isValidRoles(roles)) {
     throw new Error('Invalid JWT data')
@@ -27,6 +29,7 @@ export const parseUser = (unparsedUser: KeycloakTokenParsed): User => {
     email: undefinedIfEmpty(unparsedUser['email']),
     firstName: undefinedIfEmpty(unparsedUser['given_name']),
     lastName: undefinedIfEmpty(unparsedUser['family_name']),
+    groups,
   }
 }
 
@@ -40,5 +43,6 @@ export const userToKeycloakTokenParsed = (user: User): KeycloakTokenParsed => {
     realm_access: {
       roles: user.roles,
     },
+    groups: user.groups,
   }
 }
