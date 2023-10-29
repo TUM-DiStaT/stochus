@@ -26,7 +26,7 @@ import { StudiesBackendService } from './studies-backend.service'
 //   id!: string
 // }
 
-@Controller('studies/manage')
+@Controller('studies')
 export class StudiesBackendController {
   private readonly logger = new Logger(StudiesBackendController.name)
 
@@ -34,7 +34,7 @@ export class StudiesBackendController {
     this.logger.debug('Created instance')
   }
 
-  @Get()
+  @Get('manage')
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async getAllByOwner(
     @ParsedUser()
@@ -43,7 +43,7 @@ export class StudiesBackendController {
     return plainToInstance(StudyDto, this.studiesService.getAllByOwner(user))
   }
 
-  @Get(':id')
+  @Get('manage/:id')
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async getById(
     @ParsedUser()
@@ -61,7 +61,7 @@ export class StudiesBackendController {
     )
   }
 
-  @Post()
+  @Post('manage')
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async create(
     @ParsedUser()
@@ -72,7 +72,7 @@ export class StudiesBackendController {
     return plainToInstance(StudyDto, this.studiesService.create(dto, user))
   }
 
-  @Put(':id')
+  @Put('manage/:id')
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async update(
     @ParsedUser()
@@ -89,7 +89,7 @@ export class StudiesBackendController {
     return plainToInstance(StudyDto, this.studiesService.update(id, dto, user))
   }
 
-  @Delete(':id')
+  @Delete('manage/:id')
   @RealmRoles({ roles: [UserRoles.RESEARCHER] })
   async delete(
     @ParsedUser()

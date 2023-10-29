@@ -12,35 +12,35 @@ import {
   providedIn: 'root',
 })
 export class StudiesService {
-  readonly baseUrl = '/api/studies/manage'
+  readonly baseUrl = '/api/studies'
 
   constructor(private readonly http: HttpClient) {}
 
   getAllOwnedByUser() {
     return this.http
-      .get<unknown[]>(`${this.baseUrl}`)
+      .get<unknown[]>(`${this.baseUrl}/manage`)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
 
   create(dto: StudyCreateDto) {
     return this.http
-      .post(`${this.baseUrl}`, dto)
+      .post(`${this.baseUrl}/manage`, dto)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
 
   delete(study: StudyDto) {
-    return this.http.delete<void>(`${this.baseUrl}/${study.id}`)
+    return this.http.delete<void>(`${this.baseUrl}/manage/${study.id}`)
   }
 
   getById(studyId: string) {
     return this.http
-      .get(`${this.baseUrl}/${studyId}`)
+      .get(`${this.baseUrl}/manage/${studyId}`)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
 
   update(id: string, dto: StudyUpdateDto) {
     return this.http
-      .put(`${this.baseUrl}/${id}`, dto)
+      .put(`${this.baseUrl}/manage/${id}`, dto)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
   }
 }
