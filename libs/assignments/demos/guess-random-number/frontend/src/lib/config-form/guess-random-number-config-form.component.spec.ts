@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { FormControl, FormGroup } from '@angular/forms'
 import { GuessRandomNumberConfigFormComponent } from './guess-random-number-config-form.component'
 
 describe('GuessRandomNumberConfigFormComponent', () => {
@@ -12,6 +13,9 @@ describe('GuessRandomNumberConfigFormComponent', () => {
 
     fixture = TestBed.createComponent(GuessRandomNumberConfigFormComponent)
     component = fixture.componentInstance
+    component.formControl = new FormGroup({
+      result: new FormControl(42),
+    })
     fixture.detectChanges()
   })
 

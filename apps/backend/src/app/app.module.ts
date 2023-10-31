@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
 import { AssignmentsCoreBackendModule } from '@stochus/assignments/core/backend'
-import { BackendAuthModule } from '@stochus/auth/backend'
+import { BackendAuthModule, KeycloakAdminModule } from '@stochus/auth/backend'
 import {
   AppConfigurationModule,
   AppConfigurationService,
@@ -29,6 +29,7 @@ import { StudiesBackendModule } from '@stochus/studies/backend'
       },
     }),
     BackendAuthModule,
+    KeycloakAdminModule,
     InteractionLogsModule,
     AssignmentsCoreBackendModule,
     StudiesBackendModule,

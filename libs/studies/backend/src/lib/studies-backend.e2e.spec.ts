@@ -9,8 +9,15 @@ import { Connection, Types, connect } from 'mongoose'
 import * as request from 'supertest'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { StudyDto, validStudyCreateDto } from '@stochus/studies/shared'
-import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
-import { StudiesBackendModule } from './studies-backend.module'
+import {
+  KeycloakAdminModule,
+  KeycloakAdminService,
+  MockAuthGuard,
+  MockRoleGuard,
+} from '@stochus/auth/backend'
+import { StudiesBackendController } from './studies-backend.controller'
+import { StudiesBackendService } from './studies-backend.service'
+import { Study, StudySchema } from './study.schema'
 
 describe('Studies', () => {
   let app: INestApplication
@@ -25,8 +32,22 @@ describe('Studies', () => {
     mongoConnection = (await connect(mongod.getUri())).connection
 
     const moduleRef = await Test.createTestingModule({
-      imports: [MongooseModule.forRoot(mongod.getUri()), StudiesBackendModule],
-    }).compile()
+      imports: [
+        MongooseModule.forRoot(mongod.getUri()),
+        MongooseModule.forFeature([
+          {
+            name: Study.name,
+            schema: StudySchema,
+          },
+        ]),
+        KeycloakAdminModule,
+      ],
+      providers: [StudiesBackendService],
+      controllers: [StudiesBackendController],
+    })
+      .overrideProvider(KeycloakAdminService)
+      .useValue({})
+      .compile()
 
     app = moduleRef.createNestApplication()
     app.useGlobalPipes(

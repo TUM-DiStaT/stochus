@@ -15,6 +15,7 @@ import {
   StudyDto,
   validStudyCreateDto,
 } from '@stochus/studies/shared'
+import { KeycloakAdminService } from '@stochus/auth/backend'
 import { StudiesBackendService } from './studies-backend.service'
 import { Study, StudySchema } from './study.schema'
 
@@ -42,6 +43,7 @@ describe('StudiesBackendService', () => {
     const module = await Test.createTestingModule({
       providers: [
         StudiesBackendService,
+        KeycloakAdminService,
         {
           provide: getModelToken(Study.name),
           useValue: studiesModel,

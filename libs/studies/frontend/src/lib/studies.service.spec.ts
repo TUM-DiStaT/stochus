@@ -54,7 +54,7 @@ describe('StudiesService', () => {
 
       verifySingleJsonRequest({
         httpMock,
-        mockRequest: httpMock.expectOne(`${service.baseUrl}`),
+        mockRequest: httpMock.expectOne(`${service.baseUrl}/manage`),
         data: [validStudyDto],
       })
 
@@ -74,7 +74,7 @@ describe('StudiesService', () => {
 
       verifySingleJsonRequest({
         httpMock,
-        mockRequest: httpMock.expectOne(`${service.baseUrl}`),
+        mockRequest: httpMock.expectOne(`${service.baseUrl}/manage`),
         data: validStudyDto,
       })
 
@@ -95,7 +95,7 @@ describe('StudiesService', () => {
       verifySingleJsonRequest({
         httpMock,
         mockRequest: httpMock.expectOne(
-          `${service.baseUrl}/${validStudyDto.id}`,
+          `${service.baseUrl}/manage/${validStudyDto.id}`,
         ),
         data: validStudyDto,
       })
@@ -117,7 +117,7 @@ describe('StudiesService', () => {
       verifySingleJsonRequest({
         httpMock,
         mockRequest: httpMock.expectOne(
-          `${service.baseUrl}/${validStudyDto.id}`,
+          `${service.baseUrl}/manage/${validStudyDto.id}`,
         ),
         data: validStudyDto,
       })

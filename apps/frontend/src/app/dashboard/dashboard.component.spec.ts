@@ -1,5 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import 'reflect-metadata'
+import { NEVER } from 'rxjs'
+import { StudiesService } from '@stochus/studies/frontend'
 import { DashboardComponent } from './dashboard.component'
 
 describe('DashboardComponent', () => {
@@ -9,7 +12,15 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
-      providers: [HttpClientTestingModule],
+      providers: [
+        HttpClientTestingModule,
+        {
+          provide: StudiesService,
+          useValue: {
+            getAllForStudent: () => NEVER,
+          },
+        },
+      ],
     }).compileComponents()
 
     fixture = TestBed.createComponent(DashboardComponent)
