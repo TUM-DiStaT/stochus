@@ -53,6 +53,7 @@
             *ngIf="study.participation"
             daisyButton
             [color]="ButtonColor.PRIMARY"
+            (click)="openStudy(study.id)"
           >
             Fortsetzen
           </button>

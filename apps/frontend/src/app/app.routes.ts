@@ -64,6 +64,17 @@ export const appRoutes: StochusRoute[] = [
       ),
   },
   {
+    path: 'studies',
+    canActivate: [AuthGuard],
+    data: {
+      roles: [UserRoles.STUDENT],
+    },
+    loadChildren: () =>
+      import('@stochus/studies/frontend').then(
+        (mod) => mod.studiesParticipationRoutes,
+      ),
+  },
+  {
     path: '*',
     redirectTo: '',
   },

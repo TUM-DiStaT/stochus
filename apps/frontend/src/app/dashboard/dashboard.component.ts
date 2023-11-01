@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common'
 import { Component, HostBinding } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { Router } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroAcademicCap, heroCalendar } from '@ng-icons/heroicons/outline'
 import * as moment from 'moment'
+import { firstValueFrom } from 'rxjs'
 import {
   StudiesParticipationService,
   StudiesService,
@@ -27,10 +29,16 @@ export class DashboardComponent {
   constructor(
     private readonly studiesService: StudiesService,
     private readonly studiesParticipationService: StudiesParticipationService,
+    private readonly router: Router,
   ) {}
 
   async createNewParticipation(studyId: string) {
-    this.studiesParticipationService.create(studyId).subscribe(console.log)
+    await firstValueFrom(this.studiesParticipationService.create(studyId))
+    await this.openStudy(studyId)
+  }
+
+  async openStudy(studyId: string) {
+    await this.router.navigate(['studies', 'participate', studyId])
   }
 
   humanReadableDuration(target: Date) {
