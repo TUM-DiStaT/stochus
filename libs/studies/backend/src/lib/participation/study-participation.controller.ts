@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Param, Post } from '@nestjs/common'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyParticipationDto } from '@stochus/studies/shared'
+import { StudyParticipationWithAssignmentCompletionsDto } from '@stochus/studies/shared'
 import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
 import { StudyParticipationBackendService } from './study-participation-backend.service'
 
@@ -20,7 +20,10 @@ export class StudyParticipationController {
       user,
       studyId,
     )
-    return plainToInstance(StudyParticipationDto, result)
+    return plainToInstance(
+      StudyParticipationWithAssignmentCompletionsDto,
+      result,
+    )
   }
 
   @Post(':studyId')
@@ -31,6 +34,9 @@ export class StudyParticipationController {
       user,
       studyId,
     )
-    return plainToInstance(StudyParticipationDto, result)
+    return plainToInstance(
+      StudyParticipationWithAssignmentCompletionsDto,
+      result,
+    )
   }
 }

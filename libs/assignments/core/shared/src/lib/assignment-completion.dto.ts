@@ -3,7 +3,8 @@ import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
 
 export class AssignmentCompletionDto {
   @IsMongoId()
-  @Expose()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   id!: string
 
   @IsNotEmpty()

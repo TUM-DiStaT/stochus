@@ -16,7 +16,9 @@ export class StudyTaskComponent {
     switchMap((map) => {
       const studyId = map.get('studyId')
       if (studyId) {
-        return this.studiesParticipationService.getByStudyId(studyId)
+        return this.studiesParticipationService.getWithAssignmentCompletions(
+          studyId,
+        )
       } else {
         this.toastService.error('Konnte Studie nicht finden')
         this.router.navigate([''])

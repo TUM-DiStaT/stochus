@@ -126,6 +126,14 @@ export class StudiesBackendService {
                 userId: user.id,
               },
             },
+            {
+              $lookup: {
+                from: 'assignmentcompletions',
+                localField: 'assignmentCompletionIds',
+                foreignField: '_id',
+                as: 'assignmentCompletions',
+              },
+            },
           ],
         },
       },

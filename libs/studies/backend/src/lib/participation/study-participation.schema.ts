@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
+import { AssignmentCompletion } from '@stochus/assignments/core/backend'
 import { Study } from '../study.schema'
 
 @Schema()
@@ -10,7 +11,11 @@ export class StudyParticipation {
   @Prop({ required: true, index: true })
   userId!: string
 
-  @Prop({ required: true, index: true, type: [Types.ObjectId] })
+  @Prop({
+    required: true,
+    index: true,
+    type: [{ type: Types.ObjectId, ref: AssignmentCompletion.name }],
+  })
   assignmentCompletionIds!: string[]
 }
 

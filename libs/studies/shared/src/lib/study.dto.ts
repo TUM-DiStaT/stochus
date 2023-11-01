@@ -11,7 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
-import { StudyParticipationDto } from './participation/study-participation.dto'
+import { StudyParticipationWithAssignmentCompletionsDto } from './participation/study-participation.dto'
 
 export class StudyTaskDto {
   @Expose()
@@ -87,6 +87,6 @@ export class StudyForParticipationDto extends StudyForParticipationWithoutId {
   @Expose()
   @IsOptional()
   @ValidateNested()
-  @Type(() => StudyParticipationDto)
-  participation?: StudyParticipationDto
+  @Type(() => StudyParticipationWithAssignmentCompletionsDto)
+  participation?: StudyParticipationWithAssignmentCompletionsDto
 }

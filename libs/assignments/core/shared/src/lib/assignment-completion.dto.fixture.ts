@@ -1,9 +1,11 @@
 import { studentUser } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
 import { AssignmentCompletionDto } from './assignment-completion.dto'
 
-export const guessRandomNumberJustStartedCompletionDto: AssignmentCompletionDto =
+export const guessRandomNumberJustStartedCompletionDto = plainToInstance(
+  AssignmentCompletionDto,
   {
-    id: '64abf10802cc7e877a4238f7',
+    _id: '64abf10802cc7e877a4238f7',
     userId: studentUser.id,
     assignmentId: 'GuessRandomNumberAssignment',
     createdAt: new Date('2023-07-10T11:52:40.575Z'),
@@ -15,4 +17,5 @@ export const guessRandomNumberJustStartedCompletionDto: AssignmentCompletionDto 
       progress: 0,
       guesses: [],
     },
-  }
+  },
+)

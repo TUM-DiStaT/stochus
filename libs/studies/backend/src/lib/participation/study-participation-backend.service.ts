@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { shuffle } from 'lodash'
-import { Connection, Model, Types } from 'mongoose'
+import { Connection, Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyDto } from '@stochus/studies/shared'
@@ -50,6 +50,14 @@ export class StudyParticipationBackendService {
           as: 'studyArr',
         },
       },
+      {
+        $lookup: {
+          from: 'assignmentcompletions',
+          localField: 'assignmentCompletionIds',
+          foreignField: '_id',
+          as: 'assignmentCompletions',
+        },
+      },
     ])
 
     if (participations.length !== 1) {
@@ -90,7 +98,7 @@ export class StudyParticipationBackendService {
       ? shuffle(study.tasks)
       : study.tasks
 
-    const assignmentCompletionIds: string[] = []
+    const assignmentCompletions: Document[] = []
 
     for (const { assignmentId, config } of tasksRandomized) {
       const completion =
@@ -99,19 +107,19 @@ export class StudyParticipationBackendService {
           user,
           config,
         )
-      assignmentCompletionIds.push(completion.id)
+      assignmentCompletions.push(completion)
     }
 
     const participation = await this.studyParticipationModel.create({
       userId: user.id,
       studyId: new Types.ObjectId(studyId),
-      assignmentCompletionIds,
+      assignmentCompletionIds: assignmentCompletions.map((c) => c._id),
     })
 
     await transactionSession.commitTransaction()
     await transactionSession.endSession()
 
-    return participation
+    return { ...participation, assignmentCompletions }
   }
 
   async assertUserMayParticipateInStudy(user: User, studyDto: StudyDto) {
