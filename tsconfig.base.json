@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -52,7 +52,10 @@
       ],
       "@stochus/interaction-logs/dtos": [
         "libs/interaction-logs/dtos/src/index.ts"
-      ]
+      ],
+      "@stochus/studies/backend": ["libs/studies/backend/src/index.ts"],
+      "@stochus/studies/frontend": ["libs/studies/frontend/src/index.ts"],
+      "@stochus/studies/shared": ["libs/studies/shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

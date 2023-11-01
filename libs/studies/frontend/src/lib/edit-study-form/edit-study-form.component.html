@@ -1,0 +1,137 @@
+<label class="form-control">
+  <span class="label cursor-pointer">Name</span>
+  <input
+    type="text"
+    class="input input-bordered"
+    [formControl]="formGroup.controls.name"
+  />
+</label>
+<label class="form-control">
+  <span class="label cursor-pointer">Beschreibung</span>
+  <textarea
+    class="textarea textarea-bordered"
+    [formControl]="formGroup.controls.description"
+  ></textarea>
+</label>
+<div class="flex flex-row gap-4 w-full">
+  <label class="form-control flex-1">
+    <span class="label cursor-pointer">Startdatum</span>
+    <input
+      type="date"
+      [formControl]="formGroup.controls.startDate"
+      class="input input-bordered"
+      data-testid="start-date-input"
+    />
+  </label>
+  <label class="form-control flex-1">
+    <span class="label cursor-pointer">Enddatum</span>
+    <input
+      type="date"
+      [formControl]="formGroup.controls.endDate"
+      class="input input-bordered"
+      data-testid="end-date-input"
+    />
+  </label>
+</div>
+<div class="flex gap-4 w-full">
+  <label class="form-control flex-1">
+    <span class="label cursor-pointer">Teilnehmendengruppe</span>
+    <select
+      class="select select-bordered w-full"
+      [formControl]="formGroup.controls.participantsGroupId"
+    >
+      <option disabled selected [value]="null">Wer soll teilnehmen?</option>
+      <option *ngFor="let group of groups$ | async" [value]="group.id">
+        {{ group.name }}
+      </option>
+    </select>
+  </label>
+</div>
+<div class="flex gap-4 w-full">
+  <label
+    class="form-control flex-row items-end justify-between flex-1 cursor-pointer"
+  >
+    <span class="label"> Reihenfolge der Fragen randomisieren </span>
+    <input
+      type="checkbox"
+      class="toggle toggle-primary"
+      [formControl]="formGroup.controls.randomizeTaskOrder"
+    />
+  </label>
+</div>
+<div class="divider"></div>
+<div
+  class="flex flex-col gap-10 task-list"
+  cdkDropList
+  (cdkDropListDropped)="dropTask($event)"
+>
+  <div
+    *ngFor="let task of taskControls; let i = index"
+    [formGroup]="task"
+    class="indicator w-full task"
+    data-testid="task-wrapper"
+    cdkDrag
+  >
+    <div class="indicator-item indicator-top">
+      <button
+        class="btn btn-error btn-circle btn-sm"
+        (click)="$event.preventDefault(); deleteTask(i)"
+        data-testid="delete-task-button"
+      >
+        <ng-icon name="heroTrash" aria-label="Aufgabe löschen" />
+      </button>
+    </div>
+
+    <div class="flex border p-4 rounded-lg w-full gap-4">
+      <div class="cursor-move flex items-center" cdkDragHandle>
+        <ng-icon name="heroBars2" aria-label="Aufgabe verschieben" />
+      </div>
+
+      <div
+        class="flex flex-col gap-4 w-full"
+        [ngClass]="{
+          'border-error': task.invalid && task.touched
+        }"
+      >
+        <label class="form-control">
+          <span class="label cursor-pointer">Aufgabentyp</span>
+          <select
+            class="select select-bordered ng-invalid:select-error"
+            [formControl]="task.controls.assignmentId"
+          >
+            <option [value]="null" disabled selected>
+              Aufgabentyp auswählen
+            </option>
+            <option
+              *ngFor="let assignment of assignments"
+              [value]="assignment.id"
+            >
+              {{ assignment.name }}
+            </option>
+          </select>
+          <span
+            class="text-error"
+            *ngIf="
+              task.controls.assignmentId.touched &&
+              task.controls.assignmentId.invalid
+            "
+          >
+            {{ task.controls.assignmentId.errors?.['required'] && "Bitte Aufgabentypen auswählen" }}
+          </span>
+        </label>
+        <stochus-assignment-config-form-host
+          *ngIf="task.controls.assignmentId.value !== null"
+          [assignmentId]="task.controls.assignmentId.value!"
+          [configFormControl]="task.controls.config!"
+        />
+      </div>
+    </div>
+  </div>
+  <button
+    class="btn btn-outline btn-info"
+    (click)="$event.preventDefault(); addTask()"
+    data-testid="add-task-button"
+  >
+    + Neue Aufgabe hinzufügen
+  </button>
+</div>

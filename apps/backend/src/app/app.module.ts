@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
 import { AssignmentsCoreBackendModule } from '@stochus/assignments/core/backend'
-import { BackendAuthModule } from '@stochus/auth/backend'
+import { BackendAuthModule, KeycloakAdminModule } from '@stochus/auth/backend'
 import {
   AppConfigurationModule,
   AppConfigurationService,
 } from '@stochus/core/backend'
 import { InteractionLogsModule } from '@stochus/interaction-logs/backend'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
+import { StudiesBackendModule } from '@stochus/studies/backend'
 
 @Module({
   imports: [
@@ -30,10 +29,12 @@ import { AppService } from './app.service'
       },
     }),
     BackendAuthModule,
+    KeycloakAdminModule,
     InteractionLogsModule,
     AssignmentsCoreBackendModule,
+    StudiesBackendModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

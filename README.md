@@ -6,11 +6,13 @@
 
 ### Pre-configured users
 
-| Username     | Password   | Roles                              |
-| ------------ | ---------- | ---------------------------------- |
-| `admin`      | `admin`    | Keycloak admin, not a stochus user |
-| `student`    | `password` | student                            |
-| `researcher` | `password` | researcher                         |
+| Username               | Password   | Roles                              | Groups                        |
+| ---------------------- | ---------- | ---------------------------------- | ----------------------------- |
+| `admin`                | `admin`    | Keycloak admin, not a stochus user |                               |
+| `student`              | `password` | student                            |                               |
+| `mathmagician-student` | `password` | student                            | `mathmagicians`               |
+| `multi-group-student`  | `password` | student                            | `mathmagicians`, `studie-abc` |
+| `researcher`           | `password` | researcher                         |                               |
 
 ## Making changes to Keycloak (e.g. adding new users)
 

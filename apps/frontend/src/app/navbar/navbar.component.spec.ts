@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { KeycloakTestingModule } from '@stochus/auth/frontend'
+import 'reflect-metadata'
+import { NEVER } from 'rxjs'
+import { KeycloakTestingModule, UserService } from '@stochus/auth/frontend'
+import { StudiesService } from '@stochus/studies/frontend'
 import { NavbarComponent } from './navbar.component'
 
 describe('NavbarComponent', () => {
@@ -9,6 +12,20 @@ describe('NavbarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NavbarComponent, KeycloakTestingModule],
+      providers: [
+        {
+          provide: UserService,
+          useValue: {
+            userHasRole: () => NEVER,
+          },
+        },
+        {
+          provide: StudiesService,
+          useValue: {
+            userHasRole: () => NEVER,
+          },
+        },
+      ],
     }).compileComponents()
 
     fixture = TestBed.createComponent(NavbarComponent)

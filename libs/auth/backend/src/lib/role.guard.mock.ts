@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core'
 import { KeycloakTokenParsed } from 'keycloak-js'
 import { META_ROLES, RoleMatchingMode } from 'nest-keycloak-connect'
 import { RoleDecoratorOptionsInterface } from 'nest-keycloak-connect/interface/role-decorator-options.interface'
-import { extractRequest } from 'nest-keycloak-connect/util'
+import { extractRequest } from 'nest-keycloak-connect/util.js'
 
 @Injectable()
 export class MockRoleGuard implements CanActivate {
@@ -67,10 +67,14 @@ export class MockRoleGuard implements CanActivate {
     const granted =
       roleMatchingMode === RoleMatchingMode.ANY
         ? combinedRoles.some(
-            (r) => user.realm_access?.roles.includes(r) ?? false,
+            (r) =>
+              user.realm_access?.roles.includes(r.replace('realm:', '')) ??
+              false,
           )
         : combinedRoles.every(
-            (r) => user.realm_access?.roles.includes(r) ?? false,
+            (r) =>
+              user.realm_access?.roles.includes(r.replace('realm:', '')) ??
+              false,
           )
 
     if (granted) {

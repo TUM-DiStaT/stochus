@@ -8,12 +8,17 @@ import {
 } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import {
+  heroAcademicCap,
   heroArrowRightOnRectangle,
   heroBars3,
+  heroBeaker,
   heroRectangleStack,
 } from '@ng-icons/heroicons/outline'
 import { KeycloakService } from 'keycloak-angular'
-import { filter, map } from 'rxjs'
+import { filter, map, of, switchMap } from 'rxjs'
+import { UserRoles } from '@stochus/auth/shared'
+import { UserService } from '@stochus/auth/frontend'
+import { StudiesService } from '@stochus/studies/frontend'
 import {
   ButtonComponent,
   ButtonStyle,
@@ -45,12 +50,19 @@ import { StochusRouteData } from '../app.routes'
     MenuItemComponent,
   ],
   providers: [
-    provideIcons({ heroBars3, heroArrowRightOnRectangle, heroRectangleStack }),
+    provideIcons({
+      heroBars3,
+      heroArrowRightOnRectangle,
+      heroRectangleStack,
+      heroAcademicCap,
+      heroBeaker,
+    }),
   ],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
   protected readonly ButtonStyle = ButtonStyle
+  protected readonly UserRoles = UserRoles
 
   showAppUi$ = this.router.events.pipe(
     filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -71,10 +83,21 @@ export class NavbarComponent {
     }),
   )
 
+  isStudent$ = this.userService.userHasRole(UserRoles.STUDENT)
+  isResearcher$ = this.userService.userHasRole(UserRoles.RESEARCHER)
+  hasActiveStudies$ = this.isStudent$.pipe(
+    switchMap((isStudent) =>
+      isStudent ? this.studyService.hasActiveStudies() : of(false),
+    ),
+  )
+  canChooseTasksFreely$ = this.hasActiveStudies$.pipe(map((x) => !x))
+
   constructor(
     private readonly router: Router,
     private readonly keycloakService: KeycloakService,
     private readonly toastService: ToastService,
+    private readonly userService: UserService,
+    private readonly studyService: StudiesService,
   ) {}
 
   logout() {

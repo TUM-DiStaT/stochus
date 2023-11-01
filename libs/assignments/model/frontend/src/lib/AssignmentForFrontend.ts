@@ -1,11 +1,13 @@
 import { EventEmitter, Type } from '@angular/core'
+import { FormBuilder } from '@angular/forms'
+import { FormModel } from 'ngx-mf'
 import {
   BaseAssignment,
   BaseCompletionData,
 } from '@stochus/assignments/model/shared'
 
 export type AssignmentConfigFormProps<ConfigurationType> = {
-  submitConfig: EventEmitter<ConfigurationType>
+  formControl: FormModel<ConfigurationType>
 }
 
 export type AssignmentProcessProps<
@@ -38,4 +40,8 @@ export type AssignmentForFrontend<
   feedbackComponent: Type<
     AssignmentFeedbackProps<ConfigurationType, CompletionDataType>
   >
+  generateConfigFormControl: (
+    fb: FormBuilder,
+    prefillValues: ConfigurationType,
+  ) => FormModel<ConfigurationType>
 }

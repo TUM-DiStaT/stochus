@@ -33,6 +33,9 @@ export const appRoutes: StochusRoute[] = [
   {
     path: 'assignments',
     canActivate: [AuthGuard],
+    data: {
+      roles: [UserRoles.STUDENT],
+    },
     loadChildren: () =>
       import('@stochus/assignment/core/frontend').then(
         (mod) => mod.assignmentsCoreFrontendRoutes,
@@ -41,9 +44,23 @@ export const appRoutes: StochusRoute[] = [
   {
     path: 'completions',
     canActivate: [AuthGuard],
+    data: {
+      roles: [UserRoles.STUDENT],
+    },
     loadChildren: () =>
       import('@stochus/assignment/core/frontend').then(
         (mod) => mod.completionsCoreForFrontendRoutes,
+      ),
+  },
+  {
+    path: 'studiesManagement',
+    canActivate: [AuthGuard],
+    data: {
+      roles: [UserRoles.RESEARCHER],
+    },
+    loadChildren: () =>
+      import('@stochus/studies/frontend').then(
+        (mod) => mod.studiesManagementRoutes,
       ),
   },
   {

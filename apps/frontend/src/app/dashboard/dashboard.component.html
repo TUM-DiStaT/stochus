@@ -1,11 +1,11 @@
 <div class="flex">
   <div class="grid grid-cols-2 gap-4 items-stretch">
-    <div class="card shadow-xl">
+    <div *ngFor="let study of studies$ | async" class="card shadow-xl">
       <div class="card-body">
         <div class="card-title">
           <h2 class="flex items-center gap-1">
             <ng-icon name="heroAcademicCap"></ng-icon>
-            Studie XYZ
+            {{ study.name }}
           </h2>
         </div>
         <div class="stats shadow text-xs">
@@ -34,61 +34,10 @@
           </div>
         </div>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-          amet aut culpa dolorem ducimus fugit in labore laboriosam nesciunt
-          nihil obcaecati optio placeat, porro repellat saepe tempora vel.
-          Quisquam, quos.
+          {{ study.description }}
         </p>
         <div class="card-actions justify-end">
           <button daisyButton [color]="ButtonColor.PRIMARY">Fortsetzen</button>
-        </div>
-      </div>
-    </div>
-    <div class="card shadow-xl">
-      <div class="card-body">
-        <div class="card-title">
-          <h2>Dies Das</h2>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-          amet aut culpa dolorem ducimus fugit in labore laboriosam nesciunt
-          nihil obcaecati optio placeat, porro repellat saepe tempora vel.
-          Quisquam, quos.
-        </p>
-        <div class="card-actions justify-end">
-          <button daisyButton [color]="ButtonColor.PRIMARY">Öffnen</button>
-        </div>
-      </div>
-    </div>
-    <div class="card shadow-xl">
-      <div class="card-body">
-        <div class="card-title">
-          <h2>Dies Das</h2>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-          amet aut culpa dolorem ducimus fugit in labore laboriosam nesciunt
-          nihil obcaecati optio placeat, porro repellat saepe tempora vel.
-          Quisquam, quos.
-        </p>
-        <div class="card-actions justify-end">
-          <button daisyButton [color]="ButtonColor.PRIMARY">Öffnen</button>
-        </div>
-      </div>
-    </div>
-    <div class="card shadow-xl">
-      <div class="card-body">
-        <div class="card-title">
-          <h2>Dies Das</h2>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-          amet aut culpa dolorem ducimus fugit in labore laboriosam nesciunt
-          nihil obcaecati optio placeat, porro repellat saepe tempora vel.
-          Quisquam, quos.
-        </p>
-        <div class="card-actions justify-end">
-          <button daisyButton [color]="ButtonColor.PRIMARY">Öffnen</button>
         </div>
       </div>
     </div>

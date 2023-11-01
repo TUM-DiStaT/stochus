@@ -1,4 +1,4 @@
-const { createGlobPatternsForDependencies } = require('@nrwl/angular/tailwind')
+const { createGlobPatternsForDependencies } = require('@nx/angular/tailwind')
 const { join } = require('path')
 
 /** @type {import("tailwindcss").Config} */
@@ -10,7 +10,12 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require('daisyui')],
+  plugins: [
+    require('daisyui'),
+    ({ addVariant }) => {
+      addVariant('ng-invalid', '&.ng-touched.ng-invalid')
+    },
+  ],
   daisyui: {
     darkTheme: false,
     // list copied from https://daisyui.com/docs/themes/ on 2023-04-10

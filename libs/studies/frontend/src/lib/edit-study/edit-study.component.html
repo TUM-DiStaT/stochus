@@ -1,0 +1,20 @@
+<div class="p-12">
+  <div class="mx-auto flex flex-col max-w-7xl gap-4">
+    <h1 class="text-4xl font-semibold mb-8">Studie bearbeiten</h1>
+    <form
+      *ngIf="study$ | async"
+      class="flex flex-col gap-4"
+      [formGroup]="studyEditForm.formGroup"
+      (submit)="submit()"
+    >
+      <stochus-edit-study-form #studyEditForm [initialStudy]="study$ | async" />
+      <input
+        type="submit"
+        data-testid="submit-button"
+        value="Speichern"
+        class="btn btn-primary"
+        [disabled]="studyEditForm.formGroup.invalid"
+      />
+    </form>
+  </div>
+</div>

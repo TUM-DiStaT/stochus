@@ -81,6 +81,7 @@ describe('UserService', () => {
         {
           "email": "john.doe@example.com",
           "firstName": undefined,
+          "groups": [],
           "id": "07b3fa7d-7301-4cf9-bc5a-8e190f0960ba",
           "lastName": undefined,
           "roles": [

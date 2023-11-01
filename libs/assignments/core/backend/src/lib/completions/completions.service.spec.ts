@@ -11,7 +11,7 @@ import {
   GuessRandomNumberAssignmentConfiguration,
 } from '@stochus/assignments/demos/guess-random-number/shared'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
-import { researcherUser, studentUser } from '@stochus/auth/shared'
+import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import {
   AssignmentCompletion,
@@ -182,7 +182,7 @@ describe('CompletionsService', () => {
       await service.createForAssignment(GuessRandomNumberAssignment.id, user)
       await service.createForAssignment(
         GuessRandomNumberAssignment.id,
-        researcherUser,
+        researcherUserReggie,
       )
 
       const allActive = await service.getAllActive(user)
@@ -199,7 +199,7 @@ describe('CompletionsService', () => {
       )
 
       await expect(() =>
-        service.updateCompletionData(completion.id, researcherUser, {}),
+        service.updateCompletionData(completion.id, researcherUserReggie, {}),
       ).rejects.toThrowError()
     })
 
