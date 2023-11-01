@@ -12,6 +12,12 @@ export class StudiesParticipationService {
 
   constructor(private readonly http: HttpClient) {}
 
+  getByStudyId(studyId: string) {
+    return this.http
+      .get(`${StudiesParticipationService.baseUrl}/${studyId}`)
+      .pipe(map((res) => plainToInstance(StudyParticipationDto, res)))
+  }
+
   create(studyId: string) {
     return this.http
       .post(`${StudiesParticipationService.baseUrl}/${studyId}`, {})

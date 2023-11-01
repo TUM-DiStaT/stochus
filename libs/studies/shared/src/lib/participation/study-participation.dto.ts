@@ -3,6 +3,7 @@ import { IsArray, IsMongoId, IsUUID } from 'class-validator'
 
 export class StudyParticipationCreateDto {
   @Expose()
+  @Type(() => String)
   @IsMongoId()
   studyId!: string
 
@@ -12,6 +13,7 @@ export class StudyParticipationCreateDto {
 
   @Expose()
   @IsArray()
+  @Type(() => String)
   @IsMongoId({ each: true })
   assignmentCompletionIds!: string[]
 }

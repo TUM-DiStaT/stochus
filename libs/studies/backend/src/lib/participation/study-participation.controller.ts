@@ -1,4 +1,4 @@
-import { Controller, Logger, Param, Post } from '@nestjs/common'
+import { Controller, Get, Logger, Param, Post } from '@nestjs/common'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyParticipationDto } from '@stochus/studies/shared'
@@ -12,6 +12,16 @@ export class StudyParticipationController {
   constructor(
     private readonly studyParticipationService: StudyParticipationBackendService,
   ) {}
+
+  @Get(':studyId')
+  @RealmRoles({ roles: [UserRoles.STUDENT] })
+  async get(@ParsedUser() user: User, @Param('studyId') studyId: string) {
+    const result = this.studyParticipationService.getActiveParticipation(
+      user,
+      studyId,
+    )
+    return plainToInstance(StudyParticipationDto, result)
+  }
 
   @Post(':studyId')
   @RealmRoles({ roles: [UserRoles.STUDENT] })
