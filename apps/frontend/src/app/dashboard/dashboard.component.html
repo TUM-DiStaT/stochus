@@ -13,14 +13,13 @@
             <div class="stat-figure text-primary">
               <div
                 class="radial-progress"
-                style="--value: 70; --size: 2em"
+                [ngStyle]="getProgressStyle(getProgress(study))"
               ></div>
             </div>
             <div class="stat-title">Fortschritt</div>
-            <div class="stat-value text-primary">70%</div>
-            <div class="stat-desc break-words">
-              Noch 3 Aufgaben <br />
-              zu bearbeiten
+            <div class="stat-value text-primary">{{ getProgress(study) }}%</div>
+            <div class="stat-desc break-words [text-wrap:wrap]">
+              {{ getCompletedAssignments(study) }}
             </div>
           </div>
 

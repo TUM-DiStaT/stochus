@@ -6,6 +6,8 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroAcademicCap, heroCalendar } from '@ng-icons/heroicons/outline'
 import * as moment from 'moment'
 import { firstValueFrom } from 'rxjs'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
+import { StudyForParticipationDto } from '@stochus/studies/shared'
 import {
   StudiesParticipationService,
   StudiesService,
@@ -48,5 +50,36 @@ export class DashboardComponent {
 
   humanReadableDate(target: Date) {
     return moment(target).format('DD.MM.YYYY')
+  }
+
+  getProgress(study: StudyForParticipationDto) {
+    const { sum, count } = (
+      study.participation?.assignmentCompletions ?? []
+    ).reduce(
+      ({ sum, count }, completion) => ({
+        sum: sum + (completion.completionData as BaseCompletionData).progress,
+        count: count + 1,
+      }),
+      { sum: 0, count: 0 },
+    )
+    return count === 0 ? 0 : Math.floor((sum / count) * 100)
+  }
+
+  getProgressStyle(progress: number) {
+    return {
+      '--value': progress,
+      '--size': '2em',
+    }
+  }
+
+  getCompletedAssignments(study: StudyForParticipationDto) {
+    return study.participation
+      ? `Noch ${
+          study.participation.assignmentCompletions.filter(
+            (completion) =>
+              (completion.completionData as BaseCompletionData).progress < 1,
+          ).length
+        } Aufgaben zu bearbeiten`
+      : 'Noch nicht angefangen'
   }
 }
