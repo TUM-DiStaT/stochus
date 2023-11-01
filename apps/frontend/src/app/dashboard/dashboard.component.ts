@@ -3,6 +3,7 @@ import { Component, HostBinding } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroAcademicCap, heroCalendar } from '@ng-icons/heroicons/outline'
+import * as moment from 'moment'
 import {
   StudiesParticipationService,
   StudiesService,
@@ -30,5 +31,14 @@ export class DashboardComponent {
 
   async createNewParticipation(studyId: string) {
     this.studiesParticipationService.create(studyId).subscribe(console.log)
+  }
+
+  humanReadableDuration(target: Date) {
+    const milliseconds = target.valueOf() - new Date().valueOf()
+    return moment.duration(milliseconds).locale('de').humanize()
+  }
+
+  humanReadableDate(target: Date) {
+    return moment(target).format('DD.MM.YYYY')
   }
 }

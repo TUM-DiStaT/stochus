@@ -29,8 +29,12 @@
               <ng-icon name="heroCalendar" size="2em"></ng-icon>
             </div>
             <div class="stat-title">Abgabefrist</div>
-            <div class="stat-value text-secondary">2 Wochen</div>
-            <div class="stat-desc">am 02.03.2023</div>
+            <div class="stat-value text-secondary">
+              {{ humanReadableDuration(study.endDate) }}
+            </div>
+            <div class="stat-desc">
+              am {{ humanReadableDate(study.endDate) }}
+            </div>
           </div>
         </div>
         <p>
@@ -38,13 +42,20 @@
         </p>
         <div class="card-actions justify-end">
           <button
+            *ngIf="!study.participation"
             daisyButton
             [color]="ButtonColor.PRIMARY"
             (click)="createNewParticipation(study.id)"
           >
             Starten
           </button>
-          <button daisyButton [color]="ButtonColor.PRIMARY">Fortsetzen</button>
+          <button
+            *ngIf="study.participation"
+            daisyButton
+            [color]="ButtonColor.PRIMARY"
+          >
+            Fortsetzen
+          </button>
         </div>
       </div>
     </div>
