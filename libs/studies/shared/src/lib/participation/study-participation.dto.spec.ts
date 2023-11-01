@@ -27,7 +27,7 @@ it('should reject a missing ID', async () => {
     validateOrReject(
       plainToInstance(StudyParticipationDto, {
         ...plainValidStudyParticipationDto,
-        id: undefined,
+        _id: undefined,
       }),
     ),
   ).rejects.toBeDefined()
@@ -38,7 +38,7 @@ it('should reject an empty ID', async () => {
     validateOrReject(
       plainToInstance(StudyParticipationDto, {
         ...plainValidStudyParticipationDto,
-        id: '',
+        _id: '',
       }),
     ),
   ).rejects.toBeDefined()

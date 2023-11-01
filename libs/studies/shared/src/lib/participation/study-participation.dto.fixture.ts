@@ -19,9 +19,9 @@ export const validStudyParticipationCreateDto = plainToInstance(
   plainValidStudyParticipationCreateDto,
 )
 
-export const plainValidStudyParticipationDto: StudyParticipationDto = {
+export const plainValidStudyParticipationDto = {
   ...plainValidStudyParticipationCreateDto,
-  id: '65425996737f65f1ea0647ee',
+  _id: '65425996737f65f1ea0647ee',
 }
 
 export const validStudyParticipationDto = plainToInstance(
