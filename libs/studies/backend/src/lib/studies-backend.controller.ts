@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Logger,
   Param,
@@ -20,12 +21,6 @@ import {
 } from '@stochus/studies/shared'
 import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
 import { StudiesBackendService } from './studies-backend.service'
-
-// class DeleteParams {
-//   @IsMongoId()
-//   @IsNotEmpty()
-//   id!: string
-// }
 
 @Controller('studies')
 export class StudiesBackendController {
@@ -49,17 +44,19 @@ export class StudiesBackendController {
   async getById(
     @ParsedUser()
     user: User,
-    // TODO: WTF
-    // @Param() params: DeleteParams,
     @Param('id') id: string,
   ) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException(`${id} is not a valid Mongo ID`)
     }
-    return plainToInstance(
-      StudyDto,
-      await this.studiesService.getById(id, user),
-    )
+
+    const study = await this.studiesService.getById(id)
+
+    if (study.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+
+    return plainToInstance(StudyDto, study)
   }
 
   @Post('manage')

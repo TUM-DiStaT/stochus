@@ -70,13 +70,10 @@ export class StudiesBackendService {
     })
   }
 
-  async getById(id: string, user: User) {
+  async getById(id: string) {
     const result = await this.studyModel.findById(id).exec()
     if (!result) {
       throw new NotFoundException()
-    }
-    if (result.ownerId !== user.id) {
-      throw new ForbiddenException()
     }
     return result
   }

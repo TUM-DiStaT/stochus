@@ -20,6 +20,6 @@ import { CompletionsService } from './completions/completions.service'
   ],
   controllers: [AssignmentsCoreBackendController, CompletionsController],
   providers: [AssignmentsCoreBackendService, CompletionsService],
-  exports: [AssignmentsCoreBackendService],
+  exports: [AssignmentsCoreBackendService, CompletionsService],
 })
 export class AssignmentsCoreBackendModule {}

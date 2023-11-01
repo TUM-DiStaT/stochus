@@ -2,7 +2,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import 'reflect-metadata'
 import { NEVER } from 'rxjs'
-import { StudiesService } from '@stochus/studies/frontend'
+import {
+  StudiesParticipationService,
+  StudiesService,
+} from '@stochus/studies/frontend'
 import { DashboardComponent } from './dashboard.component'
 
 describe('DashboardComponent', () => {
@@ -14,6 +17,10 @@ describe('DashboardComponent', () => {
       imports: [DashboardComponent],
       providers: [
         HttpClientTestingModule,
+        {
+          provide: StudiesParticipationService,
+          useValue: {},
+        },
         {
           provide: StudiesService,
           useValue: {

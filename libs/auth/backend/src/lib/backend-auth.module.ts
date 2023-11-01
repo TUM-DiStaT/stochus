@@ -9,6 +9,7 @@ import {
   TokenValidation,
 } from 'nest-keycloak-connect'
 import { KeycloakAdminController } from './keycloak-admin/keycloak-admin.controller'
+import { KeycloakAdminService } from './keycloak-admin/keycloak-admin.service'
 
 const keycloakUrl = 'http://localhost:8080'
 const realm = 'stochus'
@@ -41,7 +42,8 @@ const keycloakModule = KeycloakConnectModule.register({
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    KeycloakAdminService,
   ],
-  exports: [keycloakModule],
+  exports: [keycloakModule, KeycloakAdminService],
 })
 export class BackendAuthModule {}

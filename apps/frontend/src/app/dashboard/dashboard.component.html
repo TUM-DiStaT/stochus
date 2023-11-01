@@ -37,6 +37,13 @@
           {{ study.description }}
         </p>
         <div class="card-actions justify-end">
+          <button
+            daisyButton
+            [color]="ButtonColor.PRIMARY"
+            (click)="createNewParticipation(study.id)"
+          >
+            Starten
+          </button>
           <button daisyButton [color]="ButtonColor.PRIMARY">Fortsetzen</button>
         </div>
       </div>
