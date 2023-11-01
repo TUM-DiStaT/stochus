@@ -105,9 +105,8 @@ export class StudiesBackendController {
   @Get('participate')
   @RealmRoles({ roles: [UserRoles.STUDENT] })
   async getAllForStudent(@ParsedUser() user: User) {
-    return plainToInstance(
-      StudyForParticipationDto,
-      this.studiesService.getAllForCurrentStudent(user),
-    )
+    const allForCurrentStudent =
+      await this.studiesService.getAllForCurrentStudent(user)
+    return plainToInstance(StudyForParticipationDto, allForCurrentStudent)
   }
 }

@@ -5,11 +5,13 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
+import { StudyParticipationDto } from './participation/study-participation.dto'
 
 export class StudyTaskDto {
   @Expose()
@@ -78,6 +80,13 @@ export class StudyDto extends StudyCreateDto {
 
 export class StudyForParticipationDto extends StudyForParticipationWithoutId {
   @IsMongoId()
-  @Expose()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   id!: string
+
+  @Expose()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => StudyParticipationDto)
+  participation?: StudyParticipationDto
 }

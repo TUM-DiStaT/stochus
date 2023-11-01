@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common'
 import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { shuffle } from 'lodash'
-import { Connection, Model } from 'mongoose'
+import { Connection, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyDto } from '@stochus/studies/shared'
@@ -78,7 +78,7 @@ export class StudyParticipationBackendService {
 
     const participation = await this.studyParticipationModel.create({
       userId: user.id,
-      studyId: studyId,
+      studyId: new Types.ObjectId(studyId),
       assignmentCompletionIds,
     })
 

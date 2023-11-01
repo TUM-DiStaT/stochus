@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer'
+import { Expose, Type } from 'class-transformer'
 import { IsArray, IsMongoId, IsUUID } from 'class-validator'
 
 export class StudyParticipationCreateDto {
@@ -17,7 +17,8 @@ export class StudyParticipationCreateDto {
 }
 
 export class StudyParticipationDto extends StudyParticipationCreateDto {
-  @Expose()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   @IsMongoId()
   id!: string
 }

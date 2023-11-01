@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Model } from 'mongoose'
+import { Document, Model } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
 import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import { StudyParticipation } from './participation/study-participation.schema'
 import { Study, StudyTask } from './study.schema'
 
 @Injectable()
@@ -105,12 +106,40 @@ export class StudiesBackendService {
 
   async getAllForCurrentStudent(user: User) {
     const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
-    return await this.studyModel
-      .find({
-        participantsGroupId: {
-          $in: userGroups.map((g) => g.id),
+    return this.studyModel.aggregate([
+      {
+        $match: {
+          participantsGroupId: {
+            $in: userGroups.map((g) => g.id),
+          },
         },
-      })
-      .exec()
+      },
+      {
+        $lookup: {
+          from: 'studyparticipations',
+          localField: '_id' satisfies keyof Document,
+          foreignField: 'studyId' satisfies keyof StudyParticipation,
+          as: 'participation',
+          pipeline: [
+            {
+              $match: {
+                userId: user.id,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          name: true,
+          startDate: true,
+          endDate: true,
+          description: true,
+          participation: {
+            $arrayElemAt: ['$participation', 0],
+          },
+        },
+      },
+    ])
   }
 }
