@@ -15,6 +15,11 @@ import { CompletionsService } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
 import { StudiesBackendService } from '../studies-backend.service'
 import { Study } from '../study.schema'
+import {
+  StudyParticipationWithAssignmentCompletions,
+  joinStudyParticipationOnAssignmentCompletions,
+  sortParticipationAssignmentCompletions,
+} from './study-participation-query-utils'
 import { StudyParticipation } from './study-participation.schema'
 
 @Injectable()
@@ -34,7 +39,7 @@ export class StudyParticipationBackendService {
 
   async getActiveParticipation(user: User, studyId: string) {
     const participations = await this.studyParticipationModel.aggregate<
-      StudyParticipation & { studyArr: Study[] }
+      StudyParticipationWithAssignmentCompletions & { studyArr: Study[] }
     >([
       {
         $match: {
@@ -50,14 +55,7 @@ export class StudyParticipationBackendService {
           as: 'studyArr',
         },
       },
-      {
-        $lookup: {
-          from: 'assignmentcompletions',
-          localField: 'assignmentCompletionIds',
-          foreignField: '_id',
-          as: 'assignmentCompletions',
-        },
-      },
+      joinStudyParticipationOnAssignmentCompletions,
     ])
 
     if (participations.length !== 1) {
@@ -80,7 +78,7 @@ export class StudyParticipationBackendService {
 
     await this.assertUserMayParticipateInStudy(user, study)
 
-    return participation
+    return sortParticipationAssignmentCompletions(participation)
   }
 
   async createParticipation(user: User, studyId: string) {

@@ -13,6 +13,10 @@ import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
 import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import {
+  joinStudyParticipationOnAssignmentCompletions,
+  sortParticipationAssignmentCompletions,
+} from './participation/study-participation-query-utils'
 import { StudyParticipation } from './participation/study-participation.schema'
 import { Study, StudyTask } from './study.schema'
 
@@ -106,48 +110,51 @@ export class StudiesBackendService {
 
   async getAllForCurrentStudent(user: User) {
     const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
-    return this.studyModel.aggregate([
-      {
-        $match: {
-          participantsGroupId: {
-            $in: userGroups.map((g) => g.id),
+    const studies = await this.studyModel
+      .aggregate([
+        {
+          $match: {
+            participantsGroupId: {
+              $in: userGroups.map((g) => g.id),
+            },
           },
         },
-      },
-      {
-        $lookup: {
-          from: 'studyparticipations',
-          localField: '_id' satisfies keyof Document,
-          foreignField: 'studyId' satisfies keyof StudyParticipation,
-          as: 'participation',
-          pipeline: [
-            {
-              $match: {
-                userId: user.id,
+        {
+          $lookup: {
+            from: 'studyparticipations',
+            localField: '_id' satisfies keyof Document,
+            foreignField: 'studyId' satisfies keyof StudyParticipation,
+            as: 'participation',
+            pipeline: [
+              {
+                $match: {
+                  userId: user.id,
+                },
               },
-            },
-            {
-              $lookup: {
-                from: 'assignmentcompletions',
-                localField: 'assignmentCompletionIds',
-                foreignField: '_id',
-                as: 'assignmentCompletions',
-              },
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          name: true,
-          startDate: true,
-          endDate: true,
-          description: true,
-          participation: {
-            $arrayElemAt: ['$participation', 0],
+              joinStudyParticipationOnAssignmentCompletions,
+            ],
           },
         },
-      },
-    ])
+        {
+          $project: {
+            name: true,
+            startDate: true,
+            endDate: true,
+            description: true,
+            participation: {
+              $arrayElemAt: ['$participation', 0],
+            },
+          },
+        },
+      ])
+      .exec()
+    return studies.map((study) => {
+      return {
+        ...study,
+        participation: sortParticipationAssignmentCompletions(
+          study.participation,
+        ),
+      }
+    })
   }
 }
