@@ -1,11 +1,22 @@
 import { AsyncPipe } from '@angular/common'
 import { Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { EMPTY, catchError, filter, map, switchMap } from 'rxjs'
+import {
+  BehaviorSubject,
+  EMPTY,
+  catchError,
+  combineLatest,
+  filter,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
-import { AssignmentsService } from '@stochus/assignment/core/frontend'
+import {
+  AssignmentCompletionProcessHostComponent,
+  AssignmentsService,
+} from '@stochus/assignment/core/frontend'
 import { ToastService } from '@stochus/daisy-ui'
-import { AssignmentCompletionProcessHostComponent } from '../../../../../assignments/core/frontend/src/lib/assignment-completion-process-host/assignment-completion-process-host.component'
 import { StudiesParticipationService } from '../studies-participation.service'
 
 @Component({
@@ -15,6 +26,7 @@ import { StudiesParticipationService } from '../studies-participation.service'
   imports: [AsyncPipe, AssignmentCompletionProcessHostComponent],
 })
 export class StudyTaskComponent {
+  activeCompletionIndex$ = new BehaviorSubject<number | undefined>(undefined)
   participation$ = this.activatedRoute.paramMap.pipe(
     switchMap((map) => {
       const studyId = map.get('studyId')
@@ -28,6 +40,15 @@ export class StudyTaskComponent {
         return EMPTY
       }
     }),
+    tap((participation) => {
+      const firstNotCompletedIndex =
+        participation.assignmentCompletions.findIndex(
+          (completion) =>
+            (completion.completionData as BaseCompletionData).progress < 1,
+        )
+
+      this.activeCompletionIndex$.next(firstNotCompletedIndex)
+    }),
     catchError((e) => {
       console.error(e)
       this.toastService.error(
@@ -38,14 +59,24 @@ export class StudyTaskComponent {
     }),
   )
 
-  currCompletion$ = this.participation$.pipe(
-    map((participation) =>
-      participation.assignmentCompletions.find(
-        (completion) =>
-          (completion.completionData as BaseCompletionData).progress < 1,
-      ),
+  currCompletion$ = combineLatest([
+    this.participation$,
+    this.activeCompletionIndex$.pipe(
+      filter((index): index is number => index !== undefined),
     ),
-    filter(Boolean),
+  ]).pipe(
+    tap(([participation, activeCompletionIndex]) => {
+      if (
+        activeCompletionIndex < 0 ||
+        activeCompletionIndex >= participation.assignmentCompletions.length
+      ) {
+        // TODO everything completed, show feedback
+      }
+    }),
+    map(
+      ([participation, activeCompletionIndex]) =>
+        participation.assignmentCompletions[activeCompletionIndex],
+    ),
   )
   currAssignment$ = this.currCompletion$.pipe(
     map((completion) =>
@@ -59,4 +90,10 @@ export class StudyTaskComponent {
     private readonly toastService: ToastService,
     private readonly router: Router,
   ) {}
+
+  onCompleteAssignment() {
+    this.activeCompletionIndex$.next(
+      (this.activeCompletionIndex$.value ?? -1) + 1,
+    )
+  }
 }

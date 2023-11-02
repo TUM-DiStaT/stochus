@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input, OnInit, ViewChild } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import {
   EMPTY,
@@ -10,6 +17,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs'
+import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
 import { AssignmentsService } from '../assignments.service'
@@ -43,6 +51,9 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
       return EMPTY
     }),
   )
+
+  @Output()
+  completeAssignment = new EventEmitter<AssignmentCompletionDto>()
 
   @ViewChild(DynamicContentDirective, { static: true })
   host!: DynamicContentDirective
@@ -78,7 +89,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
               if (
                 (completion.completionData as BaseCompletionData).progress === 1
               ) {
-                this.onCompleteAssignment(completion.id)
+                this.onCompleteAssignment(completion.id, completion)
               }
             }),
           )
@@ -94,7 +105,14 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     )
   }
 
-  onCompleteAssignment(completionId: string) {
-    this.router.navigate(['completions', completionId, 'feedback'])
+  onCompleteAssignment(
+    completionId: string,
+    completion: AssignmentCompletionDto,
+  ) {
+    if (this.completeAssignment.observed) {
+      this.completeAssignment.next(completion)
+    } else {
+      this.router.navigate(['completions', completionId, 'feedback'])
+    }
   }
 }
