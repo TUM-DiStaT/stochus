@@ -1,15 +1,18 @@
 import { AsyncPipe } from '@angular/common'
 import { Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { EMPTY, catchError, switchMap } from 'rxjs'
+import { EMPTY, catchError, filter, map, switchMap } from 'rxjs'
+import { BaseCompletionData } from '@stochus/assignments/model/shared'
+import { AssignmentsService } from '@stochus/assignment/core/frontend'
 import { ToastService } from '@stochus/daisy-ui'
+import { AssignmentCompletionProcessHostComponent } from '../../../../../assignments/core/frontend/src/lib/assignment-completion-process-host/assignment-completion-process-host.component'
 import { StudiesParticipationService } from '../studies-participation.service'
 
 @Component({
   standalone: true,
   selector: 'stochus-study-task',
   templateUrl: './study-task.component.html',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, AssignmentCompletionProcessHostComponent],
 })
 export class StudyTaskComponent {
   participation$ = this.activatedRoute.paramMap.pipe(
@@ -33,6 +36,21 @@ export class StudyTaskComponent {
       this.router.navigate([''])
       return EMPTY
     }),
+  )
+
+  currCompletion$ = this.participation$.pipe(
+    map((participation) =>
+      participation.assignmentCompletions.find(
+        (completion) =>
+          (completion.completionData as BaseCompletionData).progress < 1,
+      ),
+    ),
+    filter(Boolean),
+  )
+  currAssignment$ = this.currCompletion$.pipe(
+    map((completion) =>
+      AssignmentsService.getByIdOrError(completion.assignmentId),
+    ),
   )
 
   constructor(

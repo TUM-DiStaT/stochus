@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, Input, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import {
   EMPTY,
@@ -22,6 +22,7 @@ import { CompletionsService } from '../completions.service'
   templateUrl: './assignment-completion-process-host.component.html',
 })
 export class AssignmentCompletionProcessHostComponent implements OnInit {
+  @Input()
   assignment$ = this.activatedRoute.paramMap.pipe(
     map((v) =>
       AssignmentsService.getByIdOrError(
@@ -31,6 +32,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     ),
   )
 
+  @Input()
   completion$ = this.assignment$.pipe(
     switchMap((assignment) => {
       return this.completionsService.getActive(assignment.id)
