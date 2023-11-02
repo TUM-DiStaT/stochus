@@ -3,9 +3,14 @@ import { Component, HostBinding } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import { heroAcademicCap, heroCalendar } from '@ng-icons/heroicons/outline'
+import {
+  heroAcademicCap,
+  heroCalendar,
+  heroCheck,
+  heroMinusSmall,
+} from '@ng-icons/heroicons/outline'
 import * as moment from 'moment'
-import { firstValueFrom } from 'rxjs'
+import { firstValueFrom, map } from 'rxjs'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { StudyForParticipationDto } from '@stochus/studies/shared'
 import {
@@ -18,7 +23,9 @@ import { ButtonColor, ButtonComponent } from '@stochus/daisy-ui'
   selector: 'stochus-dashboard',
   standalone: true,
   imports: [CommonModule, ButtonComponent, FormsModule, NgIconComponent],
-  providers: [provideIcons({ heroCalendar, heroAcademicCap })],
+  providers: [
+    provideIcons({ heroCalendar, heroAcademicCap, heroCheck, heroMinusSmall }),
+  ],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
@@ -26,7 +33,16 @@ export class DashboardComponent {
   readonly class = 'p-10 flex items-center justify-center'
 
   readonly ButtonColor = ButtonColor
-  readonly studies$ = this.studiesService.getAllForStudent()
+  readonly studies$ = this.studiesService.getAllForStudent().pipe(
+    map((studies) =>
+      studies.map((study) => ({
+        ...study,
+        progress: this.getProgress(study),
+        remainingAssignments: this.getCompletedAssignments(study),
+        ...this.getHumanReadableDateInfo(study),
+      })),
+    ),
+  )
 
   constructor(
     private readonly studiesService: StudiesService,
@@ -43,13 +59,17 @@ export class DashboardComponent {
     await this.router.navigate(['studies', 'participate', studyId])
   }
 
-  humanReadableDuration(target: Date) {
+  getHumanReadableDateInfo(study: StudyForParticipationDto) {
+    const target = study.endDate
     const milliseconds = target.valueOf() - new Date().valueOf()
-    return moment.duration(milliseconds).locale('de').humanize()
-  }
-
-  humanReadableDate(target: Date) {
-    return moment(target).format('DD.MM.YYYY')
+    const dateStr = moment(target).format('DD.MM.YYYY')
+    const duration = moment.duration(milliseconds)
+    const durationStr = duration.locale('de').humanize()
+    return {
+      humanReadableDate: dateStr,
+      remainingDays: duration.asDays(),
+      humanReadableDuration: durationStr,
+    }
   }
 
   getProgress(study: StudyForParticipationDto) {
@@ -73,13 +93,19 @@ export class DashboardComponent {
   }
 
   getCompletedAssignments(study: StudyForParticipationDto) {
-    return study.participation
-      ? `Noch ${
-          study.participation.assignmentCompletions.filter(
-            (completion) =>
-              (completion.completionData as BaseCompletionData).progress < 1,
-          ).length
-        } Aufgaben zu bearbeiten`
-      : 'Noch nicht angefangen'
+    if (!study.participation) {
+      return 'Noch nicht angefangen'
+    }
+
+    const missingAssignments = study.participation.assignmentCompletions.filter(
+      (completion) =>
+        (completion.completionData as BaseCompletionData).progress < 1,
+    ).length
+
+    if (missingAssignments === 0) {
+      return 'Studie abgeschlossen'
+    }
+
+    return `Noch ${missingAssignments} Aufgaben zu bearbeiten`
   }
 }

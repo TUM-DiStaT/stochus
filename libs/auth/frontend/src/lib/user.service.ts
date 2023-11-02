@@ -7,7 +7,6 @@ import {
   map,
   of,
   shareReplay,
-  tap,
 } from 'rxjs'
 import { User, UserRoles, parseUser } from '@stochus/auth/shared'
 
@@ -30,7 +29,6 @@ export class UserService {
       map((keycloak) =>
         keycloak.tokenParsed ? parseUser(keycloak.tokenParsed) : undefined,
       ),
-      tap((x) => console.log(x)),
       shareReplay(),
     )
   }

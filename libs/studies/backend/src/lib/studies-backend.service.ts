@@ -146,6 +146,11 @@ export class StudiesBackendService {
             },
           },
         },
+        {
+          $sort: {
+            endDate: 1,
+          },
+        },
       ])
       .exec()
     return studies.map((study) => {
