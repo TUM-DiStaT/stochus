@@ -17,5 +17,6 @@ export const guessRandomNumberJustStartedCompletionDto = plainToInstance(
       progress: 0,
       guesses: [],
     },
+    isForStudy: false,
   },
 )

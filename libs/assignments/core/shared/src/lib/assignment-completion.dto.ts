@@ -1,5 +1,12 @@
 import { Expose, Type } from 'class-transformer'
-import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
+import {
+  IsBoolean,
+  IsDate,
+  IsMongoId,
+  IsNotEmpty,
+  IsUUID,
+  MaxDate,
+} from 'class-validator'
 
 export class AssignmentCompletionDto {
   @IsMongoId()
@@ -38,4 +45,8 @@ export class AssignmentCompletionDto {
   @Expose()
   @IsNotEmpty()
   completionData: unknown
+
+  @Expose()
+  @IsBoolean()
+  isForStudy!: boolean
 }
