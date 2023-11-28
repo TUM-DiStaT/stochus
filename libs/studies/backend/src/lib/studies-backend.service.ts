@@ -5,15 +5,16 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
+import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Document, Model, Types } from 'mongoose'
+import { Connection, Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
-import { plainToInstance } from '@stochus/core/shared'
+import { isDefined, plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
 import {
   AssignmentCompletion,
   AssignmentsCoreBackendService,
+  CompletionsService,
 } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
 import {
@@ -31,6 +32,10 @@ export class StudiesBackendService {
     @InjectModel(Study.name)
     private readonly studyModel: Model<Study>,
     private readonly keycloakAdminService: KeycloakAdminService,
+    @InjectConnection() private readonly mongooseConnection: Connection,
+    @InjectModel(StudyParticipation.name)
+    private readonly studyParticipationModel: Model<StudyParticipation>,
+    private readonly completionsService: CompletionsService,
   ) {
     this.logger.debug('Instance created successfully')
   }
@@ -162,10 +167,16 @@ export class StudiesBackendService {
     )
   }
 
-  async getForDownload(id: string, user: User): Promise<unknown> {
+  async getForDownload(id: string, user: User) {
     // Technically not correctly typed, but we don't need the extra props here
     // and plainToInstance will take care of it after returning
-    const studies: Study[] = await this.studyModel.aggregate([
+    const studies: (Document<Types.ObjectId> &
+      Study & {
+        participations: (Document<Types.ObjectId> &
+          StudyParticipation & {
+            interactionLogs: Document<Types.ObjectId>[]
+          })[]
+      })[] = await this.studyModel.aggregate([
       {
         $match: {
           _id: new Types.ObjectId(id),
@@ -233,14 +244,37 @@ export class StudiesBackendService {
   }
 
   async delete(studyId: string, user: User) {
-    const study = await this.studyModel.findById(studyId).exec()
-    if (study === null) {
-      throw new NotFoundException()
-    }
-    if (study.ownerId !== user.id) {
-      throw new ForbiddenException()
-    }
-    await this.studyModel.findByIdAndDelete(studyId).exec()
+    const transactionSession = await this.mongooseConnection.startSession()
+    transactionSession.startTransaction()
+
+    const study = await this.getForDownload(studyId, user)
+
+    const completionIds = study.participations
+      .flatMap((participation) => participation.assignmentCompletionIds)
+      .filter(isDefined)
+      .map((id) => new Types.ObjectId(id))
+
+    const interactionLogIds = study.participations
+      .flatMap((participation) =>
+        participation.interactionLogs.map((log) => log._id),
+      )
+      .filter(isDefined)
+
+    // Inline reference to avoid cyclic dependency.
+    // Should eventually be extracted to independent constant
+    await this.mongooseConnection.collection('interactionlogs').deleteMany({
+      _id: {
+        $in: interactionLogIds,
+      },
+    })
+    await this.studyParticipationModel.deleteMany({
+      studyId: new Types.ObjectId(studyId),
+    })
+    await this.completionsService.deleteMany(completionIds)
+    await this.studyModel.findByIdAndDelete(studyId)
+
+    await transactionSession.commitTransaction()
+    await transactionSession.endSession()
   }
 
   async getAllForCurrentStudent(user: User) {

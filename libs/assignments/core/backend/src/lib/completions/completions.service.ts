@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
@@ -156,5 +156,13 @@ export class CompletionsService {
         new: true,
       },
     )
+  }
+
+  async deleteMany(ids: Types.ObjectId[]) {
+    this.assignmentCompletionModel.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    })
   }
 }
