@@ -11,7 +11,10 @@ import { Connection, Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyDto } from '@stochus/studies/shared'
-import { CompletionsService } from '@stochus/assignments/core/backend'
+import {
+  AssignmentCompletion,
+  CompletionsService,
+} from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
 import { StudiesBackendService } from '../studies-backend.service'
 import { Study } from '../study.schema'
@@ -147,6 +150,63 @@ export class StudyParticipationBackendService {
         usersGroups: userGroups.map((g) => g.id),
         studyGroup: studyDto.participantsGroupId,
       })
+      throw new ForbiddenException()
+    }
+  }
+
+  async assertCompletionIsPartOfActiveStudy(
+    user: User,
+    assignmentCompletionId: string,
+  ) {
+    const participation = await this.studyParticipationModel
+      .findOne({
+        assignmentCompletionIds: assignmentCompletionId,
+      })
+      .populate('studyId')
+      .populate('assignmentCompletionIds')
+      .exec()
+
+    if (!participation) {
+      throw new NotFoundException()
+    }
+
+    const completions =
+      participation.assignmentCompletionIds as unknown as Array<
+        Document<Types.ObjectId, unknown, AssignmentCompletion>
+      >
+
+    const study = plainToInstance(StudyDto, participation.studyId)
+    const completion = completions.find((completion) =>
+      completion._id?.equals(assignmentCompletionId),
+    )
+
+    if (!completion) {
+      this.logger.error(
+        "Couldn't find an assignment with the correct ID despite it being the mongo find query!",
+        {
+          queryCompletionId: assignmentCompletionId,
+          actualCompletions: participation.assignmentCompletionIds,
+        },
+      )
+      throw new InternalServerErrorException()
+    }
+
+    const now = new Date().valueOf()
+    const completionUserId = completion.get('userId')
+
+    if (
+      now < study.startDate.valueOf() ||
+      study.endDate.valueOf() < now ||
+      completionUserId !== user.id
+    ) {
+      this.logger.verbose(
+        now < study.startDate.valueOf(),
+        study.endDate.valueOf() < now,
+        completionUserId !== user.id,
+        completionUserId,
+        user.id,
+        participation.assignmentCompletionIds,
+      )
       throw new ForbiddenException()
     }
   }

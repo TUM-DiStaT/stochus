@@ -29,6 +29,6 @@ import { Study, StudySchema } from './study.schema'
   ],
   controllers: [StudiesBackendController, StudyParticipationController],
   providers: [StudiesBackendService, StudyParticipationBackendService],
-  exports: [StudiesBackendService],
+  exports: [StudiesBackendService, StudyParticipationBackendService],
 })
 export class StudiesBackendModule {}
