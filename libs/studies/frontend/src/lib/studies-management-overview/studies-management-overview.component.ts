@@ -59,7 +59,19 @@ export class StudiesManagementOverviewComponent {
     const data = await firstValueFrom(
       this.studiesService.getAllDataForDownload(study),
     )
-    console.log(data)
+    const fileContent = JSON.stringify(data, null, 2)
+    const blob = new Blob([fileContent], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `${study.name.replaceAll(/[^a-z0-9\-_ ]+/gim, '_')}.json`
+    anchor.type = 'application/json'
+
+    anchor.click()
+
+    anchor.remove()
+    URL.revokeObjectURL(url)
   }
 
   getActivityStatus(study: StudyDto) {
