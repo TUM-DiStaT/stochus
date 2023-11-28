@@ -82,7 +82,12 @@
               <div class="stat-desc break-words [text-wrap:wrap]">
                 {{ study.numberOfCompletedParticipations }} abgeschlossen,
                 {{ study.numberOfStartedParticipations }}
-                angefangen, insgesamt {{ study.numberOfParticipants }}
+                angefangen,
+                {{
+                  study.numberOfParticipants -
+                    study.numberOfStartedParticipations
+                }}
+                ausstehend
               </div>
             </div>
           </div>

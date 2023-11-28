@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
+import { AssignmentCompletion } from '@stochus/assignments/core/backend'
 
 @Schema()
 export class InteractionLog {
@@ -9,7 +10,7 @@ export class InteractionLog {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: 'assignmentcompletions',
+    ref: AssignmentCompletion.name,
   })
   assignmentCompletionId!: string
 

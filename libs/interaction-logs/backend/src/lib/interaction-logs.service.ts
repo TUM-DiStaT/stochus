@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
@@ -28,7 +28,7 @@ export class InteractionLogsService {
       datetime: new Date(),
       userId: user.id,
       payload: log.payload,
-      assignmentCompletionId,
+      assignmentCompletionId: new Types.ObjectId(assignmentCompletionId),
     })
   }
 

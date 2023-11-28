@@ -76,6 +76,8 @@ export class StudiesBackendService {
     const studies: (Study & {
       participations: (StudyParticipation & {
         assignmentCompletions: AssignmentCompletion[]
+        // Result of the $count in the pipeline below
+        interactionLogCount: [] | [{ value: number }]
       })[]
     })[] = await this.studyModel.aggregate([
       {
@@ -89,16 +91,34 @@ export class StudiesBackendService {
           localField: '_id' satisfies keyof Document,
           foreignField: 'studyId' satisfies keyof StudyParticipation,
           as: 'participations',
-          pipeline: [joinStudyParticipationOnAssignmentCompletions],
+          pipeline: [
+            joinStudyParticipationOnAssignmentCompletions,
+            {
+              $lookup: {
+                from: 'interactionlogs',
+                localField:
+                  'assignmentCompletionIds' satisfies keyof StudyParticipation,
+                foreignField: 'assignmentCompletionId',
+                as: 'interactionLogCount',
+                pipeline: [
+                  {
+                    $count: 'value',
+                  },
+                ],
+              },
+            },
+          ],
         },
       },
     ])
+
     return Promise.all(
       studies.map(async (study) => {
         const {
           numberOfStartedParticipations,
           numberOfCompletedParticipations,
           overallProgressSum,
+          interactionLogCount,
         } = study.participations.reduce(
           (acc, participation) => {
             const progress =
@@ -112,12 +132,16 @@ export class StudiesBackendService {
                 acc.numberOfStartedParticipations + (progress === 0 ? 0 : 1),
               numberOfCompletedParticipations:
                 acc.numberOfCompletedParticipations + (progress === 1 ? 1 : 0),
+              interactionLogCount:
+                acc.interactionLogCount +
+                (participation.interactionLogCount[0]?.value ?? 0),
             }
           },
           {
             overallProgressSum: 0,
             numberOfStartedParticipations: 0,
             numberOfCompletedParticipations: 0,
+            interactionLogCount: 0,
           },
         )
 
@@ -132,6 +156,7 @@ export class StudiesBackendService {
           numberOfParticipants,
           numberOfStartedParticipations,
           numberOfCompletedParticipations,
+          hasInteractionLogs: interactionLogCount > 0,
         }
       }),
     )
