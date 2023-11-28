@@ -1,12 +1,15 @@
-import { Expose, Type } from 'class-transformer'
+import { Exclude, Expose, Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsMongoId,
   IsNotEmpty,
   IsUUID,
   MaxDate,
+  ValidateNested,
 } from 'class-validator'
+import { InteractionLogForDownloadDto } from '@stochus/interaction-logs/dtos'
 
 export class AssignmentCompletionDto {
   @IsMongoId()
@@ -49,4 +52,15 @@ export class AssignmentCompletionDto {
   @Expose()
   @IsBoolean()
   isForStudy!: boolean
+}
+
+export class AssignmentCompletionWithInteractionLogsDto extends AssignmentCompletionDto {
+  @Expose()
+  @Type(() => InteractionLogForDownloadDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  interactionLogs!: InteractionLogForDownloadDto[]
+
+  @Exclude()
+  override isForStudy!: boolean
 }

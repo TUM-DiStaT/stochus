@@ -92,6 +92,14 @@
             </div>
           </div>
           <div class="card-actions justify-end">
+            <button
+              *ngIf="study.hasInteractionLogs"
+              class="btn btn-outline"
+              (click)="getParticipationDataForDownload(study)"
+            >
+              <ng-icon name="heroArrowDownTray" class="mr-2" />
+              Logs herunterladen
+            </button>
             <a [routerLink]="['edit', study.id]" class="btn btn-outline">
               <ng-icon name="heroPencil" class="mr-2" />
               Bearbeiten

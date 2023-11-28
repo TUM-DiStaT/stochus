@@ -3,6 +3,7 @@ import { Component } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import {
+  heroArrowDownTray,
   heroCalendar,
   heroCheck,
   heroMinusSmall,
@@ -10,6 +11,7 @@ import {
   heroPlus,
   heroTrash,
 } from '@ng-icons/heroicons/outline'
+import { firstValueFrom } from 'rxjs'
 import { StudyDto } from '@stochus/studies/shared'
 import { ToastService } from '@stochus/daisy-ui'
 import { StudiesService } from '../studies.service'
@@ -26,6 +28,7 @@ import { StudiesService } from '../studies.service'
       heroCalendar,
       heroCheck,
       heroMinusSmall,
+      heroArrowDownTray,
     }),
   ],
   templateUrl: './studies-management-overview.component.html',
@@ -34,8 +37,8 @@ export class StudiesManagementOverviewComponent {
   studies$ = this.studiesService.getAllOwnedByUser()
 
   constructor(
-    private studiesService: StudiesService,
-    private toastService: ToastService,
+    private readonly studiesService: StudiesService,
+    private readonly toastService: ToastService,
   ) {}
 
   deleteStudy(study: StudyDto) {
@@ -50,6 +53,13 @@ export class StudiesManagementOverviewComponent {
         )
       },
     })
+  }
+
+  async getParticipationDataForDownload(study: StudyDto) {
+    const data = await firstValueFrom(
+      this.studiesService.getAllDataForDownload(study),
+    )
+    console.log(data)
   }
 
   getActivityStatus(study: StudyDto) {

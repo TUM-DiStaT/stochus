@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsMongoId,
@@ -13,7 +14,10 @@ import {
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
-import { StudyParticipationWithAssignmentCompletionsDto } from './participation/study-participation.dto'
+import {
+  StudyParticipationWithAssignmentCompletionsAndLogsDto,
+  StudyParticipationWithAssignmentCompletionsDto,
+} from './participation/study-participation.dto'
 
 export class StudyTaskDto {
   @Expose()
@@ -51,6 +55,19 @@ class StudyForParticipationWithoutId {
   description!: string
 }
 
+export class StudyForParticipationDto extends StudyForParticipationWithoutId {
+  @IsMongoId()
+  @Expose({ name: '_id' })
+  @Type(() => String)
+  id!: string
+
+  @Expose()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => StudyParticipationWithAssignmentCompletionsDto)
+  participation?: StudyParticipationWithAssignmentCompletionsDto
+}
+
 export class StudyCreateDto extends StudyForParticipationWithoutId {
   @Expose()
   @IsBoolean()
@@ -70,7 +87,7 @@ export class StudyCreateDto extends StudyForParticipationWithoutId {
 
 export class StudyUpdateDto extends StudyCreateDto {}
 
-export class StudyDto extends StudyCreateDto {
+export class BaseStudyDto extends StudyCreateDto {
   @IsMongoId()
   @Expose({ name: '_id' })
   @Type(() => String)
@@ -79,7 +96,9 @@ export class StudyDto extends StudyCreateDto {
   @Expose()
   @IsString()
   ownerId!: string
+}
 
+export class StudyDto extends BaseStudyDto {
   @Expose()
   @IsNumber()
   @Min(0)
@@ -106,15 +125,10 @@ export class StudyDto extends StudyCreateDto {
   hasInteractionLogs = false
 }
 
-export class StudyForParticipationDto extends StudyForParticipationWithoutId {
-  @IsMongoId()
-  @Expose({ name: '_id' })
-  @Type(() => String)
-  id!: string
-
+export class StudyForDownloadDto extends BaseStudyDto {
   @Expose()
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => StudyParticipationWithAssignmentCompletionsDto)
-  participation?: StudyParticipationWithAssignmentCompletionsDto
+  @Type(() => StudyParticipationWithAssignmentCompletionsAndLogsDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  participations!: StudyParticipationWithAssignmentCompletionsAndLogsDto[]
 }

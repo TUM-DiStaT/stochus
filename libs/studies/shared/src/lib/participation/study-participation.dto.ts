@@ -1,6 +1,9 @@
 import { Exclude, Expose, Type } from 'class-transformer'
 import { IsArray, IsMongoId, IsUUID, ValidateNested } from 'class-validator'
-import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
+import {
+  AssignmentCompletionDto,
+  AssignmentCompletionWithInteractionLogsDto,
+} from '@stochus/assignment/core/shared'
 
 export class StudyParticipationCreateDto {
   @Expose()
@@ -35,4 +38,21 @@ export class StudyParticipationWithAssignmentCompletionsDto extends StudyPartici
   @ValidateNested({ each: true })
   @IsArray()
   assignmentCompletions!: AssignmentCompletionDto[]
+}
+
+export class StudyParticipationWithAssignmentCompletionsAndLogsDto extends StudyParticipationDto {
+  @Exclude()
+  override assignmentCompletionIds!: string[]
+
+  @Exclude()
+  override studyId!: string
+
+  @Exclude()
+  override userId!: string
+
+  @Expose()
+  @Type(() => AssignmentCompletionWithInteractionLogsDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  assignmentCompletions!: AssignmentCompletionWithInteractionLogsDto[]
 }

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Document, Model } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
@@ -160,6 +160,54 @@ export class StudiesBackendService {
         }
       }),
     )
+  }
+
+  async getForDownload(id: string, user: User): Promise<unknown> {
+    // Technically not correctly typed, but we don't need the extra props here
+    // and plainToInstance will take care of it after returning
+    const studies: Study[] = await this.studyModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'studyparticipations',
+          localField: '_id' satisfies keyof Document,
+          foreignField: 'studyId' satisfies keyof StudyParticipation,
+          as: 'participations',
+          pipeline: [
+            {
+              $lookup: {
+                ...joinStudyParticipationOnAssignmentCompletions.$lookup,
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: 'interactionlogs',
+                      localField: '_id' satisfies keyof Document,
+                      foreignField: 'assignmentCompletionId',
+                      as: 'interactionLogs',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ])
+
+    if (studies.length !== 1) {
+      throw new NotFoundException()
+    }
+
+    const study = studies[0]
+    if (study.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+
+    return study
   }
 
   async getById(id: string) {
