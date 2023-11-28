@@ -8,6 +8,8 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
@@ -70,12 +72,38 @@ export class StudyUpdateDto extends StudyCreateDto {}
 
 export class StudyDto extends StudyCreateDto {
   @IsMongoId()
-  @Expose()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   id!: string
 
   @Expose()
   @IsString()
   ownerId!: string
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  numberOfParticipants = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  numberOfStartedParticipations = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  numberOfCompletedParticipations = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  overallProgress = 0
+
+  @Expose()
+  @IsBoolean()
+  hasInteractionLogs = false
 }
 
 export class StudyForParticipationDto extends StudyForParticipationWithoutId {

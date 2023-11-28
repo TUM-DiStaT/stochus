@@ -11,7 +11,10 @@ import { Document, Model } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
-import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
+import {
+  AssignmentCompletion,
+  AssignmentsCoreBackendService,
+} from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
 import {
   joinStudyParticipationOnAssignmentCompletions,
@@ -69,10 +72,69 @@ export class StudiesBackendService {
     return mappedTasks
   }
 
-  async getAllByOwner(owner: User): Promise<Study[]> {
-    return this.studyModel.find({
-      ownerId: owner.id,
-    })
+  async getAllByOwner(owner: User) {
+    const studies: (Study & {
+      participations: (StudyParticipation & {
+        assignmentCompletions: AssignmentCompletion[]
+      })[]
+    })[] = await this.studyModel.aggregate([
+      {
+        $match: {
+          ownerId: owner.id,
+        },
+      },
+      {
+        $lookup: {
+          from: 'studyparticipations',
+          localField: '_id' satisfies keyof Document,
+          foreignField: 'studyId' satisfies keyof StudyParticipation,
+          as: 'participations',
+          pipeline: [joinStudyParticipationOnAssignmentCompletions],
+        },
+      },
+    ])
+    return Promise.all(
+      studies.map(async (study) => {
+        const {
+          numberOfStartedParticipations,
+          numberOfCompletedParticipations,
+          overallProgressSum,
+        } = study.participations.reduce(
+          (acc, participation) => {
+            const progress =
+              participation.assignmentCompletions.reduce(
+                (sum, { completionData: { progress } }) => sum + progress,
+                0,
+              ) / Math.max(1, participation.assignmentCompletions.length)
+            return {
+              overallProgressSum: acc.overallProgressSum + progress,
+              numberOfStartedParticipations:
+                acc.numberOfStartedParticipations + (progress === 0 ? 0 : 1),
+              numberOfCompletedParticipations:
+                acc.numberOfCompletedParticipations + (progress === 1 ? 1 : 0),
+            }
+          },
+          {
+            overallProgressSum: 0,
+            numberOfStartedParticipations: 0,
+            numberOfCompletedParticipations: 0,
+          },
+        )
+
+        const numberOfParticipants =
+          await this.keycloakAdminService.countMembersOfGroup(
+            study.participantsGroupId,
+          )
+        return {
+          ...study,
+          overallProgress:
+            overallProgressSum / Math.max(1, numberOfParticipants),
+          numberOfParticipants,
+          numberOfStartedParticipations,
+          numberOfCompletedParticipations,
+        }
+      }),
+    )
   }
 
   async getById(id: string) {

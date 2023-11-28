@@ -24,6 +24,11 @@ export const validStudyDto: StudyDto = {
       } satisfies GuessRandomNumberAssignmentConfiguration,
     },
   ],
+  overallProgress: 0,
+  numberOfParticipants: 0,
+  numberOfCompletedParticipations: 0,
+  numberOfStartedParticipations: 0,
+  hasInteractionLogs: false,
 }
 
 export const validStudyCreateDto = plainToInstance(
