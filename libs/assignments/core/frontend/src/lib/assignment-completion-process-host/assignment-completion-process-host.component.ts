@@ -20,6 +20,7 @@ import {
 import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
+import { InteractionLogsService } from '@stochus/interaction-logs/frontend'
 import { AssignmentsService } from '../assignments.service'
 import { CompletionsService } from '../completions.service'
 
@@ -62,6 +63,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly completionsService: CompletionsService,
     private readonly router: Router,
+    private readonly interactionLogsService: InteractionLogsService,
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +103,29 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
               )
             },
           })
+
+        // Send logs from component via logging service if student
+        // is participating in study
+        if (completion.isForStudy) {
+          componentRef.instance.createInteractionLog
+            .pipe(
+              switchMap((log) =>
+                this.interactionLogsService
+                  .log({
+                    assignmentCompletionId: completion.id,
+                    payload: log,
+                  })
+                  .pipe(
+                    catchError((e) => {
+                      console.error(e)
+                      return EMPTY
+                    }),
+                  ),
+              ),
+              tap((x) => console.log(x)),
+            )
+            .subscribe()
+        }
       },
     )
   }
