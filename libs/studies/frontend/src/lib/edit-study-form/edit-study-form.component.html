@@ -13,6 +13,14 @@
     [formControl]="formGroup.controls.description"
   ></textarea>
 </label>
+<label class="form-control">
+  <span class="label cursor-pointer">Abschlussnachricht</span>
+  <ngx-monaco-editor
+    [options]="monacoOptions"
+    class="border rounded-lg"
+    [formControl]="formGroup.controls.messageAfterFeedback"
+  />
+</label>
 <div class="flex flex-row gap-4 w-full">
   <label class="form-control flex-1">
     <span class="label cursor-pointer">Startdatum</span>

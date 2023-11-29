@@ -53,6 +53,11 @@ class StudyForParticipationWithoutId {
   @IsString()
   @IsNotEmpty()
   description!: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  messageAfterFeedback!: string
 }
 
 export class StudyForParticipationDto extends StudyForParticipationWithoutId {

@@ -18,6 +18,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroBars2, heroTrash } from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
 import { FormModel } from 'ngx-mf'
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
 import { Subscription, map, pairwise } from 'rxjs'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
@@ -47,6 +48,7 @@ type TaskFormControl = FormGroup<{
     CdkDrag,
     CdkDropList,
     CdkDragHandle,
+    MonacoEditorModule,
   ],
   providers: [provideIcons({ heroTrash, heroBars2 })],
   templateUrl: './edit-study-form.component.html',
@@ -57,6 +59,12 @@ export class EditStudyFormComponent implements OnDestroy {
   assignments = this.assignmentsService.getAllAssignments()
   private tasksChangeSubscription?: Subscription
   groups$ = this.keycloakAdminService.getGroups()
+
+  readonly monacoOptions = {
+    theme: 'vs-light',
+    language: 'markdown',
+    minimap: { enabled: false },
+  }
 
   @Input()
   set initialStudy(study: StudyDto | null) {
@@ -78,6 +86,10 @@ export class EditStudyFormComponent implements OnDestroy {
       {
         name: [study?.name ?? null, [Validators.required]],
         description: [study?.description ?? null, [Validators.required]],
+        messageAfterFeedback: [
+          study?.messageAfterFeedback ?? null,
+          [Validators.required],
+        ],
         startDate: [
           this.toYyyyMmDd(study?.startDate) ?? null,
           [Validators.required],

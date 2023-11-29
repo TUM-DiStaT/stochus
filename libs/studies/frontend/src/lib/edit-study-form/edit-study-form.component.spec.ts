@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
 import 'reflect-metadata'
 import { NEVER } from 'rxjs'
 import { KeycloakAdminService } from '@stochus/auth/frontend'
@@ -10,7 +11,11 @@ describe('EditStudyFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditStudyFormComponent],
+      imports: [
+        EditStudyFormComponent,
+        MonacoEditorModule.forRoot(),
+        MonacoEditorModule,
+      ],
       providers: [
         {
           provide: KeycloakAdminService,
@@ -25,6 +30,8 @@ describe('EditStudyFormComponent', () => {
     component = fixture.componentInstance
     fixture.detectChanges()
   })
+
+  // TODO
 
   it('should create', () => {
     expect(component).toBeTruthy()
