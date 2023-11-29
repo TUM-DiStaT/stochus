@@ -174,7 +174,10 @@ export class StudiesBackendService {
       Study & {
         participations: (Document<Types.ObjectId> &
           StudyParticipation & {
-            interactionLogs: Document<Types.ObjectId>[]
+            assignmentCompletions: (Document<Types.ObjectId> &
+              AssignmentCompletion & {
+                interactionLogs: Document<Types.ObjectId>[]
+              })[]
           })[]
       })[] = await this.studyModel.aggregate([
       {
@@ -250,14 +253,14 @@ export class StudiesBackendService {
     const study = await this.getForDownload(studyId, user)
 
     const completionIds = study.participations
-      .flatMap((participation) => participation.assignmentCompletionIds)
+      .flatMap((participation) => participation.assignmentCompletions)
+      .map((completion) => completion._id)
       .filter(isDefined)
-      .map((id) => new Types.ObjectId(id))
 
     const interactionLogIds = study.participations
-      .flatMap((participation) =>
-        participation.interactionLogs.map((log) => log._id),
-      )
+      .flatMap((participation) => participation.assignmentCompletions)
+      .flatMap((completion) => completion.interactionLogs)
+      .map((log) => log._id)
       .filter(isDefined)
 
     // Inline reference to avoid cyclic dependency.
@@ -268,7 +271,9 @@ export class StudiesBackendService {
       },
     })
     await this.studyParticipationModel.deleteMany({
-      studyId: new Types.ObjectId(studyId),
+      studyId: {
+        $eq: new Types.ObjectId(studyId),
+      },
     })
     await this.completionsService.deleteMany(completionIds)
     await this.studyModel.findByIdAndDelete(studyId)

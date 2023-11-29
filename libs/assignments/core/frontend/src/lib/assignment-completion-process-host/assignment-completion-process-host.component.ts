@@ -122,7 +122,6 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
                     }),
                   ),
               ),
-              tap((x) => console.log(x)),
             )
             .subscribe()
         }

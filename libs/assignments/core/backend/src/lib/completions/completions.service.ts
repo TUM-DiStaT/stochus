@@ -159,7 +159,7 @@ export class CompletionsService {
   }
 
   async deleteMany(ids: Types.ObjectId[]) {
-    this.assignmentCompletionModel.deleteMany({
+    await this.assignmentCompletionModel.deleteMany({
       _id: {
         $in: ids,
       },
