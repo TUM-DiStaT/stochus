@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { INestApplication } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
@@ -11,6 +11,7 @@ import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-ra
 import { studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
+import { registerGlobalUtilitiesToApp } from '@stochus/core/backend'
 import { AssignmentsCoreBackendModule } from './assignments-core-backend.module'
 
 describe('Assignments', () => {
@@ -36,14 +37,7 @@ describe('Assignments', () => {
       .compile()
 
     app = moduleRef.createNestApplication()
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transformOptions: {
-          excludeExtraneousValues: true,
-        },
-        transform: true,
-      }),
-    )
+    registerGlobalUtilitiesToApp(app)
 
     mockAuthGuard = await app.resolve(AuthGuard)
 
@@ -125,6 +119,7 @@ describe('Assignments', () => {
           },
           "createdAt": Any<Date>,
           "id": Any<String>,
+          "isForStudy": false,
           "lastUpdated": Any<Date>,
         }
       `,
