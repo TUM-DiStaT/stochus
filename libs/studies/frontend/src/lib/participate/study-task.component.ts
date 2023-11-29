@@ -8,6 +8,7 @@ import {
   combineLatest,
   filter,
   map,
+  of,
   switchMap,
   tap,
 } from 'rxjs'
@@ -65,18 +66,17 @@ export class StudyTaskComponent {
       filter((index): index is number => index !== undefined),
     ),
   ]).pipe(
-    tap(([participation, activeCompletionIndex]) => {
+    switchMap(([participation, activeCompletionIndex]) => {
       if (
         activeCompletionIndex < 0 ||
         activeCompletionIndex >= participation.assignmentCompletions.length
       ) {
-        // TODO everything completed, show feedback
+        this.router.navigate(['studies', 'completed', participation.studyId])
+        return EMPTY
       }
+
+      return of(participation.assignmentCompletions[activeCompletionIndex])
     }),
-    map(
-      ([participation, activeCompletionIndex]) =>
-        participation.assignmentCompletions[activeCompletionIndex],
-    ),
   )
   currAssignment$ = this.currCompletion$.pipe(
     map((completion) =>
