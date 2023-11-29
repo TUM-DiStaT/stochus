@@ -14,12 +14,35 @@
   ></textarea>
 </label>
 <label class="form-control">
-  <span class="label cursor-pointer">Abschlussnachricht</span>
-  <ngx-monaco-editor
-    [options]="monacoOptions"
-    class="border rounded-lg"
-    [formControl]="formGroup.controls.messageAfterFeedback"
-  />
+  <div class="grid grid-cols-2 gap-4 items-stretch">
+    <div class="flex flex-col h-96">
+      <span class="label cursor-pointer flex items-center justify-start gap-2">
+        Abschlussnachricht
+        <a
+          href="https://www.markdownguide.org/cheat-sheet/"
+          target="_blank"
+          class="tooltip tooltip-secondary"
+          data-tip="Hier kann Markdown eingegeben werden. Für mehr Details, einfach klicken."
+        >
+          <ng-icon name="heroInformationCircle" size="1.5em" />
+        </a>
+      </span>
+      <ngx-monaco-editor
+        [options]="monacoOptions"
+        class="border rounded-lg"
+        style="height: 100%"
+        [formControl]="formGroup.controls.messageAfterFeedback"
+      />
+    </div>
+    <div class="flex flex-col h-96">
+      <span class="label cursor-pointer">Vorschau</span>
+      <markdown
+        [data]="formGroup.value.messageAfterFeedback"
+        class="prose border rounded-lg p-4 max-h-full overflow-auto"
+        stochusPreventH1
+      />
+    </div>
+  </div>
 </label>
 <div class="flex flex-row gap-4 w-full">
   <label class="form-control flex-1">

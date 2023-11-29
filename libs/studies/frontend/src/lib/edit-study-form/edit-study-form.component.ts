@@ -15,8 +15,13 @@ import {
   Validators,
 } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import { heroBars2, heroTrash } from '@ng-icons/heroicons/outline'
+import {
+  heroBars2,
+  heroInformationCircle,
+  heroTrash,
+} from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
+import { MarkdownComponent, provideMarkdown } from 'ngx-markdown'
 import { FormModel } from 'ngx-mf'
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
 import { Subscription, map, pairwise } from 'rxjs'
@@ -27,6 +32,7 @@ import {
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
 import { KeycloakAdminService } from '@stochus/auth/frontend'
+import { PreventH1Directive } from '@stochus/core/frontend'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
@@ -49,8 +55,13 @@ type TaskFormControl = FormGroup<{
     CdkDropList,
     CdkDragHandle,
     MonacoEditorModule,
+    MarkdownComponent,
+    PreventH1Directive,
   ],
-  providers: [provideIcons({ heroTrash, heroBars2 })],
+  providers: [
+    provideIcons({ heroTrash, heroBars2, heroInformationCircle }),
+    provideMarkdown(),
+  ],
   templateUrl: './edit-study-form.component.html',
   styleUrls: ['./edit-study-form.component.css'],
 })
@@ -72,9 +83,9 @@ export class EditStudyFormComponent implements OnDestroy {
   }
 
   constructor(
-    private fb: FormBuilder,
-    private assignmentsService: AssignmentsService,
-    private keycloakAdminService: KeycloakAdminService,
+    private readonly fb: FormBuilder,
+    private readonly assignmentsService: AssignmentsService,
+    private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
 
   private toYyyyMmDd(date?: Date) {
