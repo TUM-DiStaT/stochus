@@ -10,34 +10,88 @@
         </div>
         <div class="stats shadow text-xs">
           <div class="stat">
-            <div class="stat-figure text-primary">
+            <div
+              class="stat-figure"
+              [ngClass]="{
+                'text-error': study.progress < 30,
+                'text-primary': 30 <= study.progress && study.progress < 90,
+                'text-success': 90 <= study.progress,
+              }"
+            >
+              <ng-icon
+                name="heroCheck"
+                size="2em"
+                *ngIf="study.progress === 100"
+              />
+              <ng-icon
+                name="heroMinusSmall"
+                size="2em"
+                *ngIf="study.progress === 0"
+              />
               <div
+                *ngIf="0 < study.progress && study.progress < 100"
                 class="radial-progress"
-                style="--value: 70; --size: 2em"
+                [ngStyle]="getProgressStyle(getProgress(study))"
               ></div>
             </div>
             <div class="stat-title">Fortschritt</div>
-            <div class="stat-value text-primary">70%</div>
-            <div class="stat-desc break-words">
-              Noch 3 Aufgaben <br />
-              zu bearbeiten
+            <div
+              class="stat-value"
+              [ngClass]="{
+                'text-error': study.progress < 30,
+                'text-primary': 30 <= study.progress && study.progress < 90,
+                'text-success': 90 <= study.progress,
+              }"
+            >
+              {{ getProgress(study) }}%
+            </div>
+            <div class="stat-desc break-words [text-wrap:wrap]">
+              {{ study.remainingAssignments }}
             </div>
           </div>
 
-          <div class="stat">
-            <div class="stat-figure text-secondary">
+          <div
+            class="stat"
+            [ngClass]="{
+              'text-secondary': study.remainingDays > 7,
+              'text-warning':
+                0 < study.remainingDays && study.remainingDays < 7,
+              'text-error': study.remainingDays < 0
+            }"
+          >
+            <div class="stat-figure">
               <ng-icon name="heroCalendar" size="2em"></ng-icon>
             </div>
             <div class="stat-title">Abgabefrist</div>
-            <div class="stat-value text-secondary">2 Wochen</div>
-            <div class="stat-desc">am 02.03.2023</div>
+            <div class="stat-value">
+              <span *ngIf="study.remainingDays < 0">abgelaufen</span>
+              <span *ngIf="study.remainingDays >= 0">{{
+                study.humanReadableDuration
+              }}</span>
+            </div>
+            <div class="stat-desc">am {{ study.humanReadableDate }}</div>
           </div>
         </div>
         <p>
           {{ study.description }}
         </p>
-        <div class="card-actions justify-end">
-          <button daisyButton [color]="ButtonColor.PRIMARY">Fortsetzen</button>
+        <div *ngIf="study.remainingDays >= 0" class="card-actions justify-end">
+          <button
+            *ngIf="!study.participation"
+            daisyButton
+            [color]="ButtonColor.PRIMARY"
+            (click)="createNewParticipation(study.id)"
+          >
+            Starten
+          </button>
+          <button
+            *ngIf="study.participation"
+            daisyButton
+            [color]="ButtonColor.PRIMARY"
+            (click)="openStudy(study.id)"
+          >
+            Fortsetzen
+          </button>
         </div>
       </div>
     </div>

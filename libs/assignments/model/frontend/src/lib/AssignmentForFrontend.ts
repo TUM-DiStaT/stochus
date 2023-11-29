@@ -17,6 +17,7 @@ export type AssignmentProcessProps<
   config?: ConfigurationType
   completionData?: CompletionDataType
   updateCompletionData: EventEmitter<Partial<CompletionDataType>>
+  createInteractionLog: EventEmitter<unknown>
 }
 
 export type AssignmentFeedbackProps<

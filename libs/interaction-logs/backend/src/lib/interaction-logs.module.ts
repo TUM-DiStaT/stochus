@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
+import { StudiesBackendModule } from '@stochus/studies/backend'
 import { InteractionLogsController } from './interaction-logs.controller'
 import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
 import { InteractionLogsService } from './interaction-logs.service'
@@ -12,6 +13,7 @@ import { InteractionLogsService } from './interaction-logs.service'
         schema: InteractionLogSchema,
       },
     ]),
+    StudiesBackendModule,
   ],
   controllers: [InteractionLogsController],
   providers: [InteractionLogsService],

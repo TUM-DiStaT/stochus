@@ -63,12 +63,12 @@ describe('CompletionsService', () => {
   describe('create completion for assignment id', () => {
     it('should throw an error if the assignment ID is not known', async () => {
       await expect(() =>
-        service.createForAssignment('SOME UNKNOWN ID, yo', studentUser),
+        service.create('SOME UNKNOWN ID, yo', studentUser),
       ).rejects.toThrow(NotFoundException)
     })
 
     it('should create a new config if none is provided', async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -76,7 +76,7 @@ describe('CompletionsService', () => {
     })
 
     it('should create a new progress object', async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -84,7 +84,7 @@ describe('CompletionsService', () => {
     })
 
     it("should assign the current user's ID", async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -96,7 +96,7 @@ describe('CompletionsService', () => {
         result: 42,
       }
 
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
         config,
@@ -106,7 +106,7 @@ describe('CompletionsService', () => {
     })
 
     it('should persist the config', async () => {
-      const fromCreate = await service.createForAssignment(
+      const fromCreate = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -117,20 +117,14 @@ describe('CompletionsService', () => {
     })
 
     it('should throw an error if the user already has a running completion', async () => {
-      await service.createForAssignment(
-        GuessRandomNumberAssignment.id,
-        studentUser,
-      )
+      await service.create(GuessRandomNumberAssignment.id, studentUser)
       await expect(() =>
-        service.createForAssignment(
-          GuessRandomNumberAssignment.id,
-          studentUser,
-        ),
+        service.create(GuessRandomNumberAssignment.id, studentUser),
       ).rejects.toThrow()
     })
 
     it('should pass if the user already has a finished completion', async () => {
-      const originalCompletion = await service.createForAssignment(
+      const originalCompletion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -145,7 +139,7 @@ describe('CompletionsService', () => {
         )
         .exec()
 
-      const newCompletion = await service.createForAssignment(
+      const newCompletion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -157,7 +151,7 @@ describe('CompletionsService', () => {
   describe('get active completions for user', () => {
     it('should return an empty list if user has no active completions', async () => {
       const user = studentUser
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         user,
       )
@@ -179,11 +173,8 @@ describe('CompletionsService', () => {
 
     it("should return only the given user's active completions", async () => {
       const user = studentUser
-      await service.createForAssignment(GuessRandomNumberAssignment.id, user)
-      await service.createForAssignment(
-        GuessRandomNumberAssignment.id,
-        researcherUserReggie,
-      )
+      await service.create(GuessRandomNumberAssignment.id, user)
+      await service.create(GuessRandomNumberAssignment.id, researcherUserReggie)
 
       const allActive = await service.getAllActive(user)
 
@@ -193,7 +184,7 @@ describe('CompletionsService', () => {
 
   describe('update completion', () => {
     it("should throw an error if the ID doesn't belong to the user", async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -204,7 +195,7 @@ describe('CompletionsService', () => {
     })
 
     it("should throw an error if the new data isn't valid", async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )
@@ -232,7 +223,7 @@ describe('CompletionsService', () => {
     })
 
     it('should correctly update the data', async () => {
-      const completion = await service.createForAssignment(
+      const completion = await service.create(
         GuessRandomNumberAssignment.id,
         studentUser,
       )

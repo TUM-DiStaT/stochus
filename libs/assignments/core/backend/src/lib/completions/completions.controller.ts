@@ -66,10 +66,7 @@ export class CompletionsController {
     @Param() { assignmentId }: { assignmentId: string },
     @ParsedUser() user: User,
   ) {
-    const created = await this.completionsService.createForAssignment(
-      assignmentId,
-      user,
-    )
+    const created = await this.completionsService.create(assignmentId, user)
     return plainToInstance(AssignmentCompletionDto, created)
   }
 

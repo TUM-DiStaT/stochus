@@ -5,14 +5,23 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
+import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Model } from 'mongoose'
+import { Connection, Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
-import { plainToInstance } from '@stochus/core/shared'
+import { isDefined, plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
-import { AssignmentsCoreBackendService } from '@stochus/assignments/core/backend'
+import {
+  AssignmentCompletion,
+  AssignmentsCoreBackendService,
+  CompletionsService,
+} from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import {
+  joinStudyParticipationOnAssignmentCompletions,
+  sortParticipationAssignmentCompletions,
+} from './participation/study-participation-query-utils'
+import { StudyParticipation } from './participation/study-participation.schema'
 import { Study, StudyTask } from './study.schema'
 
 @Injectable()
@@ -23,6 +32,10 @@ export class StudiesBackendService {
     @InjectModel(Study.name)
     private readonly studyModel: Model<Study>,
     private readonly keycloakAdminService: KeycloakAdminService,
+    @InjectConnection() private readonly mongooseConnection: Connection,
+    @InjectModel(StudyParticipation.name)
+    private readonly studyParticipationModel: Model<StudyParticipation>,
+    private readonly completionsService: CompletionsService,
   ) {
     this.logger.debug('Instance created successfully')
   }
@@ -64,19 +77,157 @@ export class StudiesBackendService {
     return mappedTasks
   }
 
-  async getAllByOwner(owner: User): Promise<Study[]> {
-    return this.studyModel.find({
-      ownerId: owner.id,
-    })
+  async getAllByOwner(owner: User) {
+    const studies: (Study & {
+      participations: (StudyParticipation & {
+        assignmentCompletions: AssignmentCompletion[]
+        // Result of the $count in the pipeline below
+        interactionLogCount: [] | [{ value: number }]
+      })[]
+    })[] = await this.studyModel.aggregate([
+      {
+        $match: {
+          ownerId: owner.id,
+        },
+      },
+      {
+        $lookup: {
+          from: 'studyparticipations',
+          localField: '_id' satisfies keyof Document,
+          foreignField: 'studyId' satisfies keyof StudyParticipation,
+          as: 'participations',
+          pipeline: [
+            joinStudyParticipationOnAssignmentCompletions,
+            {
+              $lookup: {
+                from: 'interactionlogs',
+                localField:
+                  'assignmentCompletionIds' satisfies keyof StudyParticipation,
+                foreignField: 'assignmentCompletionId',
+                as: 'interactionLogCount',
+                pipeline: [
+                  {
+                    $count: 'value',
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ])
+
+    return Promise.all(
+      studies.map(async (study) => {
+        const {
+          numberOfStartedParticipations,
+          numberOfCompletedParticipations,
+          overallProgressSum,
+          interactionLogCount,
+        } = study.participations.reduce(
+          (acc, participation) => {
+            const progress =
+              participation.assignmentCompletions.reduce(
+                (sum, { completionData: { progress } }) => sum + progress,
+                0,
+              ) / Math.max(1, participation.assignmentCompletions.length)
+            return {
+              overallProgressSum: acc.overallProgressSum + progress,
+              numberOfStartedParticipations:
+                acc.numberOfStartedParticipations + (progress === 0 ? 0 : 1),
+              numberOfCompletedParticipations:
+                acc.numberOfCompletedParticipations + (progress === 1 ? 1 : 0),
+              interactionLogCount:
+                acc.interactionLogCount +
+                (participation.interactionLogCount[0]?.value ?? 0),
+            }
+          },
+          {
+            overallProgressSum: 0,
+            numberOfStartedParticipations: 0,
+            numberOfCompletedParticipations: 0,
+            interactionLogCount: 0,
+          },
+        )
+
+        const numberOfParticipants =
+          await this.keycloakAdminService.countMembersOfGroup(
+            study.participantsGroupId,
+          )
+        return {
+          ...study,
+          overallProgress:
+            overallProgressSum / Math.max(1, numberOfParticipants),
+          numberOfParticipants,
+          numberOfStartedParticipations,
+          numberOfCompletedParticipations,
+          hasInteractionLogs: interactionLogCount > 0,
+        }
+      }),
+    )
   }
 
-  async getById(id: string, user: User) {
+  async getForDownload(id: string, user: User) {
+    // Technically not correctly typed, but we don't need the extra props here
+    // and plainToInstance will take care of it after returning
+    const studies: (Document<Types.ObjectId> &
+      Study & {
+        participations: (Document<Types.ObjectId> &
+          StudyParticipation & {
+            assignmentCompletions: (Document<Types.ObjectId> &
+              AssignmentCompletion & {
+                interactionLogs: Document<Types.ObjectId>[]
+              })[]
+          })[]
+      })[] = await this.studyModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'studyparticipations',
+          localField: '_id' satisfies keyof Document,
+          foreignField: 'studyId' satisfies keyof StudyParticipation,
+          as: 'participations',
+          pipeline: [
+            {
+              $lookup: {
+                ...joinStudyParticipationOnAssignmentCompletions.$lookup,
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: 'interactionlogs',
+                      localField: '_id' satisfies keyof Document,
+                      foreignField: 'assignmentCompletionId',
+                      as: 'interactionLogs',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ])
+
+    if (studies.length !== 1) {
+      throw new NotFoundException()
+    }
+
+    const study = studies[0]
+    if (study.ownerId !== user.id) {
+      throw new ForbiddenException()
+    }
+
+    return study
+  }
+
+  async getById(id: string) {
     const result = await this.studyModel.findById(id).exec()
     if (!result) {
       throw new NotFoundException()
-    }
-    if (result.ownerId !== user.id) {
-      throw new ForbiddenException()
     }
     return result
   }
@@ -96,24 +247,93 @@ export class StudiesBackendService {
   }
 
   async delete(studyId: string, user: User) {
-    const study = await this.studyModel.findById(studyId).exec()
-    if (study === null) {
-      throw new NotFoundException()
-    }
-    if (study.ownerId !== user.id) {
-      throw new ForbiddenException()
-    }
-    await this.studyModel.findByIdAndDelete(studyId).exec()
+    const transactionSession = await this.mongooseConnection.startSession()
+    transactionSession.startTransaction()
+
+    const study = await this.getForDownload(studyId, user)
+
+    const completionIds = study.participations
+      .flatMap((participation) => participation.assignmentCompletions)
+      .map((completion) => completion._id)
+      .filter(isDefined)
+
+    const interactionLogIds = study.participations
+      .flatMap((participation) => participation.assignmentCompletions)
+      .flatMap((completion) => completion.interactionLogs)
+      .map((log) => log._id)
+      .filter(isDefined)
+
+    // Inline reference to avoid cyclic dependency.
+    // Should eventually be extracted to independent constant
+    await this.mongooseConnection.collection('interactionlogs').deleteMany({
+      _id: {
+        $in: interactionLogIds,
+      },
+    })
+    await this.studyParticipationModel.deleteMany({
+      studyId: {
+        $eq: new Types.ObjectId(studyId),
+      },
+    })
+    await this.completionsService.deleteMany(completionIds)
+    await this.studyModel.findByIdAndDelete(studyId)
+
+    await transactionSession.commitTransaction()
+    await transactionSession.endSession()
   }
 
   async getAllForCurrentStudent(user: User) {
     const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
-    return await this.studyModel
-      .find({
-        participantsGroupId: {
-          $in: userGroups.map((g) => g.id),
+    const studies = await this.studyModel
+      .aggregate([
+        {
+          $match: {
+            participantsGroupId: {
+              $in: userGroups.map((g) => g.id),
+            },
+          },
         },
-      })
+        {
+          $lookup: {
+            from: 'studyparticipations',
+            localField: '_id' satisfies keyof Document,
+            foreignField: 'studyId' satisfies keyof StudyParticipation,
+            as: 'participation',
+            pipeline: [
+              {
+                $match: {
+                  userId: user.id,
+                },
+              },
+              joinStudyParticipationOnAssignmentCompletions,
+            ],
+          },
+        },
+        {
+          $project: {
+            name: true,
+            startDate: true,
+            endDate: true,
+            description: true,
+            participation: {
+              $arrayElemAt: ['$participation', 0],
+            },
+          },
+        },
+        {
+          $sort: {
+            endDate: 1,
+          },
+        },
+      ])
       .exec()
+    return studies.map((study) => {
+      return {
+        ...study,
+        participation: sortParticipationAssignmentCompletions(
+          study.participation,
+        ),
+      }
+    })
   }
 }

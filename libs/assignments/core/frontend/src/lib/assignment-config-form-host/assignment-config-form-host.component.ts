@@ -16,6 +16,9 @@ export class AssignmentConfigFormHostComponent implements OnInit {
   assignmentId!: string
 
   @Input()
+  // Correct typing is guaranteed by input validation later on.
+  // It would be too complicated to deal with all the generics now
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   configFormControl!: FormModel<any>
 
   @ViewChild(DynamicContentDirective, { static: true })

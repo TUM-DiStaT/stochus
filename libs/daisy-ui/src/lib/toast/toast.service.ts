@@ -28,7 +28,8 @@ export class ToastService {
   private _toasts = new BehaviorSubject<Toast[]>([])
   readonly toasts$ = this._toasts.asObservable()
 
-  private _hostIsReady = false
+  // Protected so it can be mocked for tests
+  protected _hostIsReady = false
 
   onHostReady() {
     this._hostIsReady = true

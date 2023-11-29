@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common'
-import { getModelToken } from '@nestjs/mongoose'
+import { getConnectionToken, getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { instanceToPlain } from 'class-transformer'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -15,7 +15,12 @@ import {
   StudyDto,
   validStudyCreateDto,
 } from '@stochus/studies/shared'
+import { CompletionsService } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import {
+  StudyParticipation,
+  StudyParticipationSchema,
+} from './participation/study-participation.schema'
 import { StudiesBackendService } from './studies-backend.service'
 import { Study, StudySchema } from './study.schema'
 
@@ -24,11 +29,17 @@ describe('StudiesBackendService', () => {
   let mongod: MongoMemoryServer
   let mongoConnection: Connection
   let studiesModel: Model<Study>
+  let studyParticipationsModel: Model<StudyParticipation>
+  let mockKeycloakAdminService: Partial<KeycloakAdminService>
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create()
     mongoConnection = (await connect(mongod.getUri())).connection
     studiesModel = mongoConnection.model(Study.name, StudySchema)
+    studyParticipationsModel = mongoConnection.model(
+      StudyParticipation.name,
+      StudyParticipationSchema,
+    )
   })
 
   afterAll(async () => {
@@ -39,14 +50,37 @@ describe('StudiesBackendService', () => {
 
   beforeEach(async () => {
     await studiesModel.deleteMany().exec()
+    await studyParticipationsModel.deleteMany().exec()
+
+    mockKeycloakAdminService = {
+      countMembersOfGroup: jest.fn().mockResolvedValue(0),
+      getGroupsForUser: jest.fn().mockResolvedValue([]),
+    }
 
     const module = await Test.createTestingModule({
       providers: [
         StudiesBackendService,
-        KeycloakAdminService,
+        {
+          provide: KeycloakAdminService,
+          useValue: mockKeycloakAdminService,
+        },
+        {
+          provide: CompletionsService,
+          useValue: {
+            deleteMany: () => Promise.resolve(),
+          },
+        },
         {
           provide: getModelToken(Study.name),
           useValue: studiesModel,
+        },
+        {
+          provide: getModelToken(StudyParticipation.name),
+          useValue: studyParticipationsModel,
+        },
+        {
+          provide: getConnectionToken(),
+          useValue: mongoConnection,
         },
       ],
     }).compile()
@@ -173,4 +207,6 @@ describe('StudiesBackendService', () => {
       await expect(studiesModel.findById(study.id).exec()).resolves.toBeNull()
     })
   })
+
+  // TODO
 })

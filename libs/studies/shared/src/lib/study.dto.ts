@@ -1,15 +1,23 @@
 import { Expose, Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator'
 import { IsBefore } from '@stochus/core/shared'
+import {
+  StudyParticipationWithAssignmentCompletionsAndLogsDto,
+  StudyParticipationWithAssignmentCompletionsDto,
+} from './participation/study-participation.dto'
 
 export class StudyTaskDto {
   @Expose()
@@ -47,6 +55,19 @@ class StudyForParticipationWithoutId {
   description!: string
 }
 
+export class StudyForParticipationDto extends StudyForParticipationWithoutId {
+  @IsMongoId()
+  @Expose({ name: '_id' })
+  @Type(() => String)
+  id!: string
+
+  @Expose()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => StudyParticipationWithAssignmentCompletionsDto)
+  participation?: StudyParticipationWithAssignmentCompletionsDto
+}
+
 export class StudyCreateDto extends StudyForParticipationWithoutId {
   @Expose()
   @IsBoolean()
@@ -66,9 +87,10 @@ export class StudyCreateDto extends StudyForParticipationWithoutId {
 
 export class StudyUpdateDto extends StudyCreateDto {}
 
-export class StudyDto extends StudyCreateDto {
+export class BaseStudyDto extends StudyCreateDto {
   @IsMongoId()
-  @Expose()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   id!: string
 
   @Expose()
@@ -76,8 +98,37 @@ export class StudyDto extends StudyCreateDto {
   ownerId!: string
 }
 
-export class StudyForParticipationDto extends StudyForParticipationWithoutId {
-  @IsMongoId()
+export class StudyDto extends BaseStudyDto {
   @Expose()
-  id!: string
+  @IsNumber()
+  @Min(0)
+  numberOfParticipants = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  numberOfStartedParticipations = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  numberOfCompletedParticipations = 0
+
+  @Expose()
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  overallProgress = 0
+
+  @Expose()
+  @IsBoolean()
+  hasInteractionLogs = false
+}
+
+export class StudyForDownloadDto extends BaseStudyDto {
+  @Expose()
+  @Type(() => StudyParticipationWithAssignmentCompletionsAndLogsDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  participations!: StudyParticipationWithAssignmentCompletionsAndLogsDto[]
 }

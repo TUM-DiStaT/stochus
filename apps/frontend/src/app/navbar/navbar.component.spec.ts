@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing'
 import 'reflect-metadata'
 import { NEVER } from 'rxjs'
 import { KeycloakTestingModule, UserService } from '@stochus/auth/frontend'
-import { StudiesService } from '@stochus/studies/frontend'
+import { StudiesService } from '@stochus/studies/frontend-static'
 import { NavbarComponent } from './navbar.component'
 
 describe('NavbarComponent', () => {

@@ -20,6 +20,9 @@ export class AssignmentCompletion {
 
   @Prop({ type: Object })
   completionData!: BaseCompletionData
+
+  @Prop({ default: false })
+  isForStudy!: boolean
 }
 
 export const AssignmentCompletionSchema =

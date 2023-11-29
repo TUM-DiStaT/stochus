@@ -23,12 +23,6 @@
             Aufgaben
           </a>
         </li>
-        <li daisyMenuItem *ngIf="hasActiveStudies$ | async">
-          <a [routerLink]="['studies']">
-            <ng-icon name="heroAcademicCap" />
-            Studien
-          </a>
-        </li>
         <li daisyMenuItem *ngIf="isResearcher$ | async">
           <a [routerLink]="['studiesManagement']">
             <ng-icon name="heroBeaker" />

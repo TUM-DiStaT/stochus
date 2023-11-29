@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
@@ -17,6 +17,7 @@ import { AssignmentCompletion } from './completion.schema'
 @Injectable()
 export class CompletionsService {
   private readonly logger = new Logger(CompletionsService.name)
+
   constructor(
     @InjectModel(AssignmentCompletion.name)
     private readonly assignmentCompletionModel: Model<AssignmentCompletion>,
@@ -36,6 +37,7 @@ export class CompletionsService {
       .find({
         userId: user.id,
         assignmentId,
+        isForStudy: false,
         'completionData.progress': {
           $lt: 1,
         },
@@ -52,11 +54,7 @@ export class CompletionsService {
     )[0]
   }
 
-  async createForAssignment(
-    assignmentId: string,
-    user: User,
-    config?: unknown,
-  ) {
+  async create(assignmentId: string, user: User, config?: unknown) {
     const assignment = AssignmentsCoreBackendService.getById(assignmentId)
 
     if (!assignment) {
@@ -78,6 +76,31 @@ export class CompletionsService {
       userId: user.id,
       config: config ?? assignment.getRandomConfig(),
       completionData: progress,
+      isForStudy: false,
+    } satisfies AssignmentCompletion)
+  }
+
+  async createForStudyParticipation(
+    assignmentId: string,
+    user: User,
+    config: unknown,
+  ) {
+    const assignment = AssignmentsCoreBackendService.getById(assignmentId)
+
+    if (!assignment) {
+      throw new NotFoundException()
+    }
+
+    const progress = assignment.getInitialCompletionData()
+
+    return await this.assignmentCompletionModel.create({
+      assignmentId: assignmentId,
+      createdAt: new Date(),
+      lastUpdated: new Date(),
+      userId: user.id,
+      config: config ?? assignment.getRandomConfig(),
+      completionData: progress,
+      isForStudy: true,
     } satisfies AssignmentCompletion)
   }
 
@@ -133,5 +156,13 @@ export class CompletionsService {
         new: true,
       },
     )
+  }
+
+  async deleteMany(ids: Types.ObjectId[]) {
+    await this.assignmentCompletionModel.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    })
   }
 }

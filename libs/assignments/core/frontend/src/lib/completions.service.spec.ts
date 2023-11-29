@@ -4,7 +4,7 @@ import {
 } from '@angular/common/http/testing'
 import { TestBed, inject } from '@angular/core/testing'
 import 'reflect-metadata'
-import { guessRandomNumberJustStarted } from '@stochus/assignment/core/shared'
+import { guessRandomNumberJustStartedCompletionDto } from '@stochus/assignment/core/shared'
 import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
 import { CompletionsService } from './completions.service'
 
@@ -40,7 +40,7 @@ describe('CompletionsService', () => {
       expect(mockRequest.cancelled).toBeFalsy()
       expect(mockRequest.request.responseType).toEqual('json')
       mockRequest.flush(
-        JSON.parse(JSON.stringify(guessRandomNumberJustStarted)),
+        JSON.parse(JSON.stringify(guessRandomNumberJustStartedCompletionDto)),
       )
 
       httpMock.verify()
@@ -65,7 +65,7 @@ describe('CompletionsService', () => {
       expect(mockRequest.cancelled).toBeFalsy()
       expect(mockRequest.request.responseType).toEqual('json')
       mockRequest.flush(
-        JSON.parse(JSON.stringify(guessRandomNumberJustStarted)),
+        JSON.parse(JSON.stringify(guessRandomNumberJustStartedCompletionDto)),
       )
 
       httpMock.verify()

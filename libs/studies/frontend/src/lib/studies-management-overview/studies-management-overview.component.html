@@ -31,7 +31,75 @@
           <p>
             {{ study.description }}
           </p>
+          <div class="stats shadow text-xs">
+            <div class="stat">
+              <div
+                class="stat-figure relative"
+                [ngClass]="{
+                'text-error': study.overallProgress < 0.3,
+                'text-primary': 0.3 <= study.overallProgress && study.overallProgress < 0.9,
+                'text-success': 0.9 <= study.overallProgress,
+              }"
+              >
+                <ng-icon
+                  name="heroCheck"
+                  size="2em"
+                  *ngIf="study.overallProgress === 1"
+                />
+                <ng-icon
+                  name="heroMinusSmall"
+                  size="2em"
+                  *ngIf="study.overallProgress === 0"
+                />
+                <div
+                  *ngIf="0 < study.overallProgress && study.overallProgress < 1"
+                  class="radial-progress text-warning"
+                  [ngStyle]="getProgressStyle(study.overallProgress * 100)"
+                ></div>
+                <div
+                  *ngIf="0 < study.numberOfCompletedParticipations"
+                  class="radial-progress text-success absolute inset-0"
+                  [ngStyle]="
+                    getProgressStyle(
+                      (study.numberOfCompletedParticipations /
+                        study.numberOfParticipants) *
+                        100
+                    )
+                  "
+                ></div>
+              </div>
+              <div class="stat-title">Fortschritt</div>
+              <div
+                class="stat-value"
+                [ngClass]="{
+                'text-error': study.overallProgress < 0.3,
+                'text-primary': 0.3 <= study.overallProgress && study.overallProgress < 0.9,
+                'text-success': 0.9 <= study.overallProgress,
+              }"
+              >
+                {{ getReadableProgress(study) }}%
+              </div>
+              <div class="stat-desc break-words [text-wrap:wrap]">
+                {{ study.numberOfCompletedParticipations }} abgeschlossen,
+                {{ study.numberOfStartedParticipations }}
+                angefangen,
+                {{
+                  study.numberOfParticipants -
+                    study.numberOfStartedParticipations
+                }}
+                ausstehend
+              </div>
+            </div>
+          </div>
           <div class="card-actions justify-end">
+            <button
+              *ngIf="study.hasInteractionLogs"
+              class="btn btn-outline"
+              (click)="getParticipationDataForDownload(study)"
+            >
+              <ng-icon name="heroArrowDownTray" class="mr-2" />
+              Logs herunterladen
+            </button>
             <a [routerLink]="['edit', study.id]" class="btn btn-outline">
               <ng-icon name="heroPencil" class="mr-2" />
               Bearbeiten
@@ -46,7 +114,7 @@
           </div>
         </div>
       </li>
-      <li class="card card-bordered border-dashed text-gray-400">
+      <li class="card card-bordered border-dashed text-gray-40">
         <a
           [routerLink]="['new']"
           class="w-full h-full flex place-content-center place-items-center"

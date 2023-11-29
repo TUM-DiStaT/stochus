@@ -29,6 +29,9 @@ import { KeycloakAdminService } from '@stochus/auth/frontend'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
+  // Correct typing is guaranteed by input validation later on.
+  // It would be too complicated to deal with all the generics now
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: FormModel<any>
   assignmentVersion?: FormControl<number | null>
 }>

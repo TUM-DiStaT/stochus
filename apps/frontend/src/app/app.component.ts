@@ -4,12 +4,10 @@ import { Component } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { ToastServiceHostComponent } from '@stochus/daisy-ui'
 import { NavbarComponent } from './navbar/navbar.component'
-import { NxWelcomeComponent } from './nx-welcome.component'
 
 @Component({
   standalone: true,
   imports: [
-    NxWelcomeComponent,
     RouterModule,
     AsyncPipe,
     HttpClientModule,

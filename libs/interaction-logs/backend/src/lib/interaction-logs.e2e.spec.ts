@@ -1,50 +1,66 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common'
-import { MongooseModule } from '@nestjs/mongoose'
+import { INestApplication } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { MongooseModule, getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Connection, connect } from 'mongoose'
-import { AuthGuard, RoleGuard } from 'nest-keycloak-connect'
+import { Connection, Model, connect } from 'mongoose'
 import * as request from 'supertest'
+import { guessRandomNumberJustStartedCompletionDto } from '@stochus/assignment/core/shared'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
+import { registerGlobalUtilitiesToApp } from '@stochus/core/backend'
+import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
-import { InteractionLogsModule } from './interaction-logs.module'
+import { InteractionLogsController } from './interaction-logs.controller'
+import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
+import { InteractionLogsService } from './interaction-logs.service'
 
 describe('Interaction Logs', () => {
   let app: INestApplication
 
   let mongod: MongoMemoryServer
   let mongoConnection: Connection
+  let interactionLogsModel: Model<InteractionLog>
 
   let mockAuthGuard: MockAuthGuard
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create()
     mongoConnection = (await connect(mongod.getUri())).connection
-    // logsModel = mongoConnection.model(InteractionLog.name, InteractionLogSchema)
 
     const moduleRef = await Test.createTestingModule({
-      imports: [MongooseModule.forRoot(mongod.getUri()), InteractionLogsModule],
-    })
-      .overrideGuard(AuthGuard)
-      .useClass(MockAuthGuard)
-      .overrideGuard(RoleGuard)
-      .useClass(MockRoleGuard)
-      .compile()
+      imports: [
+        MongooseModule.forRoot(mongod.getUri()),
+        MongooseModule.forFeature([
+          {
+            name: InteractionLog.name,
+            schema: InteractionLogSchema,
+          },
+        ]),
+      ],
+      providers: [
+        InteractionLogsService,
+        {
+          provide: StudyParticipationBackendService,
+          useValue: {
+            assertCompletionIsPartOfActiveStudy: jest
+              .fn()
+              .mockResolvedValue(undefined),
+          },
+        },
+      ],
+      controllers: [InteractionLogsController],
+    }).compile()
 
     app = moduleRef.createNestApplication()
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transformOptions: {
-          excludeExtraneousValues: true,
-        },
-        transform: true,
-      }),
-    )
+    registerGlobalUtilitiesToApp(app)
 
-    mockAuthGuard = await app.resolve(AuthGuard)
+    mockAuthGuard = new MockAuthGuard()
+    app.useGlobalGuards(mockAuthGuard)
+    app.useGlobalGuards(new MockRoleGuard(await app.resolve(Reflector)))
+    interactionLogsModel = await app.resolve(getModelToken(InteractionLog.name))
 
     await app.init()
   })
@@ -61,7 +77,9 @@ describe('Interaction Logs', () => {
     mockAuthGuard.setCurrentUser(undefined)
 
     await request(app.getHttpServer())
-      .post('/interaction-logs')
+      .post(
+        `/interaction-logs/assignment-completion/${guessRandomNumberJustStartedCompletionDto.id}`,
+      )
       .send({})
       .expect(HttpStatusCode.Unauthorized)
   })
@@ -70,7 +88,9 @@ describe('Interaction Logs', () => {
     mockAuthGuard.setCurrentUser(researcherUserReggie)
 
     await request(app.getHttpServer())
-      .post('/interaction-logs')
+      .post(
+        `/interaction-logs/assignment-completion/${guessRandomNumberJustStartedCompletionDto.id}`,
+      )
       .send({})
       .expect(HttpStatusCode.Forbidden)
   })
@@ -79,7 +99,9 @@ describe('Interaction Logs', () => {
     mockAuthGuard.setCurrentUser(studentUser)
 
     await request(app.getHttpServer())
-      .post('/interaction-logs')
+      .post(
+        `/interaction-logs/assignment-completion/${guessRandomNumberJustStartedCompletionDto.id}`,
+      )
       .send({})
       .expect(HttpStatusCode.BadRequest)
   })
@@ -88,28 +110,25 @@ describe('Interaction Logs', () => {
     mockAuthGuard.setCurrentUser(studentUser)
 
     const dto: InteractionLogCreateDto = {
+      assignmentCompletionId: guessRandomNumberJustStartedCompletionDto.id,
       payload: {
         biz: 123,
         asdf: true,
       },
     }
 
-    await request(app.getHttpServer())
-      .post('/interaction-logs')
+    const response = await request(app.getHttpServer())
+      .post(
+        `/interaction-logs/assignment-completion/${guessRandomNumberJustStartedCompletionDto.id}`,
+      )
       .send(dto)
       .expect(HttpStatusCode.Created)
 
-    mockAuthGuard.setCurrentUser(researcherUserReggie)
-    const response = await request(app.getHttpServer())
-      .get('/interaction-logs')
-      .send()
-      .expect(HttpStatusCode.Ok)
+    expect(response.body).toHaveProperty('_id')
 
-    expect(response.body).toHaveLength(1)
-    expect(
-      plainToInstance(InteractionLogCreateDto, response.body[0], {
-        // excludeExtraneousValues: true,
-      }),
-    ).toEqual(dto)
+    const result = await interactionLogsModel.findById(response.body._id)
+
+    expect(result).toBeDefined()
+    expect(plainToInstance(InteractionLogCreateDto, result)).toEqual(dto)
   })
 })

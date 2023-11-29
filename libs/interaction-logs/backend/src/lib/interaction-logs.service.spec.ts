@@ -2,7 +2,9 @@ import { getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, Model, connect } from 'mongoose'
+import { guessRandomNumberJustStartedCompletionDto } from '@stochus/assignment/core/shared'
 import { studentUser } from '@stochus/auth/shared'
+import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
 import { InteractionLog, InteractionLogSchema } from './interaction-logs.schema'
 import { InteractionLogsService } from './interaction-logs.service'
@@ -33,6 +35,12 @@ describe('InteractionLogsService', () => {
           provide: getModelToken(InteractionLog.name),
           useValue: logsModel,
         },
+        {
+          provide: StudyParticipationBackendService,
+          useValue: {
+            assertCompletionIsPartOfActiveStudy: () => Promise.resolve(),
+          },
+        },
       ],
     }).compile()
 
@@ -46,13 +54,18 @@ describe('InteractionLogsService', () => {
   it('should correctly create an interaction log with appropriate default values', async () => {
     // given
     const dto: InteractionLogCreateDto = {
+      assignmentCompletionId: guessRandomNumberJustStartedCompletionDto.id,
       payload: {
         foo: 'bar',
       },
     }
 
     // when
-    await service.createNewLogEntry(dto, studentUser)
+    await service.createNewLogEntry(
+      dto,
+      studentUser,
+      guessRandomNumberJustStartedCompletionDto.id,
+    )
 
     // then
     const allLogs = await logsModel.find().exec()

@@ -5,6 +5,7 @@ import { plainToInstance } from '@stochus/core/shared'
 import {
   StudyCreateDto,
   StudyDto,
+  StudyForDownloadDto,
   StudyForParticipationDto,
   StudyUpdateDto,
 } from '@stochus/studies/shared'
@@ -65,5 +66,11 @@ export class StudiesService {
           ).length > 0,
       ),
     )
+  }
+
+  getAllDataForDownload(study: StudyDto) {
+    return this.http
+      .get(`${this.baseUrl}/download/${study.id}`)
+      .pipe(map((data) => plainToInstance(StudyForDownloadDto, data)))
   }
 }

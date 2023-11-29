@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit, ViewChild } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import {
   EMPTY,
@@ -10,8 +17,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs'
+import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
+import { InteractionLogsService } from '@stochus/interaction-logs/frontend'
 import { AssignmentsService } from '../assignments.service'
 import { CompletionsService } from '../completions.service'
 
@@ -22,6 +31,7 @@ import { CompletionsService } from '../completions.service'
   templateUrl: './assignment-completion-process-host.component.html',
 })
 export class AssignmentCompletionProcessHostComponent implements OnInit {
+  @Input()
   assignment$ = this.activatedRoute.paramMap.pipe(
     map((v) =>
       AssignmentsService.getByIdOrError(
@@ -31,6 +41,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     ),
   )
 
+  @Input()
   completion$ = this.assignment$.pipe(
     switchMap((assignment) => {
       return this.completionsService.getActive(assignment.id)
@@ -42,6 +53,9 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     }),
   )
 
+  @Output()
+  completeAssignment = new EventEmitter<AssignmentCompletionDto>()
+
   @ViewChild(DynamicContentDirective, { static: true })
   host!: DynamicContentDirective
 
@@ -49,6 +63,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly completionsService: CompletionsService,
     private readonly router: Router,
+    private readonly interactionLogsService: InteractionLogsService,
   ) {}
 
   ngOnInit(): void {
@@ -76,7 +91,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
               if (
                 (completion.completionData as BaseCompletionData).progress === 1
               ) {
-                this.onCompleteAssignment(completion.id)
+                this.onCompleteAssignment(completion.id, completion)
               }
             }),
           )
@@ -88,11 +103,40 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
               )
             },
           })
+
+        // Send logs from component via logging service if student
+        // is participating in study
+        if (completion.isForStudy) {
+          componentRef.instance.createInteractionLog
+            .pipe(
+              switchMap((log) =>
+                this.interactionLogsService
+                  .log({
+                    assignmentCompletionId: completion.id,
+                    payload: log,
+                  })
+                  .pipe(
+                    catchError((e) => {
+                      console.error(e)
+                      return EMPTY
+                    }),
+                  ),
+              ),
+            )
+            .subscribe()
+        }
       },
     )
   }
 
-  onCompleteAssignment(completionId: string) {
-    this.router.navigate(['completions', completionId, 'feedback'])
+  onCompleteAssignment(
+    completionId: string,
+    completion: AssignmentCompletionDto,
+  ) {
+    if (this.completeAssignment.observed) {
+      this.completeAssignment.next(completion)
+    } else {
+      this.router.navigate(['completions', completionId, 'feedback'])
+    }
   }
 }

@@ -33,10 +33,12 @@ export class KeycloakAdminService implements OnModuleInit, OnModuleDestroy {
 
   async countMembersOfGroup(groupId: string) {
     return (
-      await this.keycloakAdminClient.groups.listMembers({
-        id: groupId,
-      })
-    ).length
+      (
+        await this.keycloakAdminClient.groups.listMembers({
+          id: groupId,
+        })
+      )?.length ?? 0
+    )
   }
 
   async onModuleInit() {

@@ -1,10 +1,21 @@
-import { OmitType } from '@nestjs/swagger'
-import { Expose, Type } from 'class-transformer'
+import { Exclude, Expose, Type } from 'class-transformer'
 import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
 
-export class InteractionLogDto {
-  @IsMongoId()
+export class InteractionLogCreateDto {
   @Expose()
+  @IsMongoId()
+  @Type(() => String)
+  assignmentCompletionId!: string
+
+  @Expose()
+  @IsNotEmpty()
+  payload!: unknown
+}
+
+export class InteractionLogDto extends InteractionLogCreateDto {
+  @IsMongoId()
+  @Expose({ name: '_id' })
+  @Type(() => String)
   id!: string
 
   @IsDate()
@@ -13,17 +24,15 @@ export class InteractionLogDto {
   @Expose()
   datetime!: Date
 
-  @Expose()
-  @IsNotEmpty()
-  payload: unknown
-
   @IsNotEmpty()
   @IsUUID()
   userId!: string
 }
 
-export class InteractionLogCreateDto extends OmitType(InteractionLogDto, [
-  'id',
-  'userId',
-  'datetime',
-] as const) {}
+export class InteractionLogForDownloadDto extends InteractionLogDto {
+  @Exclude()
+  override assignmentCompletionId!: string
+
+  @Exclude()
+  override userId!: string
+}
