@@ -10,6 +10,8 @@ export const plainValidStudyDto = {
   _id: '64f1e1cdf024ff6951623324',
   name: 'Valid study for testing',
   description: 'A study only defined for unit tests',
+  messageAfterFeedback: `# Thanks for participating
+This is **amazing** markdown`,
   ownerId: researcherUserReggie.id,
   startDate: new Date(2022, 8, 1),
   endDate: new Date(2022, 8, 29),

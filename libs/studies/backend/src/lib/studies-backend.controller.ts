@@ -16,6 +16,7 @@ import { plainToInstance } from '@stochus/core/shared'
 import {
   StudyCreateDto,
   StudyDto,
+  StudyFeedbackDto,
   StudyForDownloadDto,
   StudyForParticipationDto,
   StudyUpdateDto,
@@ -109,6 +110,13 @@ export class StudiesBackendController {
     const allForCurrentStudent =
       await this.studiesService.getAllForCurrentStudent(user)
     return plainToInstance(StudyForParticipationDto, allForCurrentStudent)
+  }
+
+  @Get('participate/forFeedback/:id')
+  @RealmRoles({ roles: [UserRoles.STUDENT] })
+  async getForFeedback(@ParsedUser() user: User, @Param('id') id: string) {
+    const study = await this.studiesService.getByIdForStudent(id, user)
+    return plainToInstance(StudyFeedbackDto, study)
   }
 
   @Get('download/:id')

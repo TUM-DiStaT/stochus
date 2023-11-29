@@ -15,17 +15,28 @@ import {
   Validators,
 } from '@angular/forms'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
-import { heroBars2, heroTrash } from '@ng-icons/heroicons/outline'
+import {
+  heroBars2,
+  heroInformationCircle,
+  heroTrash,
+} from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
 import { FormModel } from 'ngx-mf'
-import { Subscription, map, pairwise } from 'rxjs'
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
+import { Observable, Subscription, concat, map, of, pairwise } from 'rxjs'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
+import {
+  StudyCreateDto,
+  StudyDto,
+  StudyFeedbackDto,
+} from '@stochus/studies/shared'
 import {
   AssignmentConfigFormHostComponent,
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
 import { KeycloakAdminService } from '@stochus/auth/frontend'
+import { PreventH1Directive } from '@stochus/core/frontend'
+import { StudyFeedbackComponent } from '../study-feedback/study-feedback.component'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
@@ -47,8 +58,11 @@ type TaskFormControl = FormGroup<{
     CdkDrag,
     CdkDropList,
     CdkDragHandle,
+    MonacoEditorModule,
+    PreventH1Directive,
+    StudyFeedbackComponent,
   ],
-  providers: [provideIcons({ heroTrash, heroBars2 })],
+  providers: [provideIcons({ heroTrash, heroBars2, heroInformationCircle })],
   templateUrl: './edit-study-form.component.html',
   styleUrls: ['./edit-study-form.component.css'],
 })
@@ -58,15 +72,24 @@ export class EditStudyFormComponent implements OnDestroy {
   private tasksChangeSubscription?: Subscription
   groups$ = this.keycloakAdminService.getGroups()
 
+  readonly monacoOptions = {
+    theme: 'vs-light',
+    language: 'markdown',
+    minimap: { enabled: false },
+  }
+
+  studyForFeedback$: Observable<StudyFeedbackDto> = this.getStudyForFeedback()
+
   @Input()
   set initialStudy(study: StudyDto | null) {
     this.formGroup = this.generateFormGroup(study)
+    this.studyForFeedback$ = this.getStudyForFeedback()
   }
 
   constructor(
-    private fb: FormBuilder,
-    private assignmentsService: AssignmentsService,
-    private keycloakAdminService: KeycloakAdminService,
+    private readonly fb: FormBuilder,
+    private readonly assignmentsService: AssignmentsService,
+    private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
 
   private toYyyyMmDd(date?: Date) {
@@ -78,6 +101,10 @@ export class EditStudyFormComponent implements OnDestroy {
       {
         name: [study?.name ?? null, [Validators.required]],
         description: [study?.description ?? null, [Validators.required]],
+        messageAfterFeedback: [
+          study?.messageAfterFeedback ?? null,
+          [Validators.required],
+        ],
         startDate: [
           this.toYyyyMmDd(study?.startDate) ?? null,
           [Validators.required],
@@ -183,5 +210,11 @@ export class EditStudyFormComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.tasksChangeSubscription?.unsubscribe()
+  }
+
+  getStudyForFeedback() {
+    return concat(of(this.formGroup.value), this.formGroup.valueChanges).pipe(
+      map(() => plainToInstance(StudyFeedbackDto, this.formGroup.value)),
+    )
   }
 }

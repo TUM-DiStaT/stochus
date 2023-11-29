@@ -57,7 +57,10 @@
                   [ngStyle]="getProgressStyle(study.overallProgress * 100)"
                 ></div>
                 <div
-                  *ngIf="0 < study.numberOfCompletedParticipations"
+                  *ngIf="
+                    0 < study.numberOfCompletedParticipations &&
+                    study.overallProgress < 1
+                  "
                   class="radial-progress text-success absolute inset-0"
                   [ngStyle]="
                     getProgressStyle(
