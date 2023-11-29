@@ -4,14 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing'
 import 'reflect-metadata'
 import { KeycloakTestingModule } from '@stochus/auth/frontend'
 import { AppComponent } from './app.component'
-import { NxWelcomeComponent } from './nx-welcome.component'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
-        NxWelcomeComponent,
         RouterTestingModule,
         HttpClientTestingModule,
         KeycloakTestingModule,
