@@ -13,8 +13,8 @@ import {
 } from '@ng-icons/heroicons/outline'
 import { firstValueFrom } from 'rxjs'
 import { StudyDto } from '@stochus/studies/shared'
+import { StudiesService } from '@stochus/studies/frontend-static'
 import { ToastService } from '@stochus/daisy-ui'
-import { StudiesService } from '../studies.service'
 
 @Component({
   selector: 'stochus-studies-management-overview',

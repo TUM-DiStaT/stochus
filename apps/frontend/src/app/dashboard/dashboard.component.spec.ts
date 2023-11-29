@@ -5,7 +5,7 @@ import { NEVER } from 'rxjs'
 import {
   StudiesParticipationService,
   StudiesService,
-} from '@stochus/studies/frontend'
+} from '@stochus/studies/frontend-static'
 import { DashboardComponent } from './dashboard.component'
 
 describe('DashboardComponent', () => {

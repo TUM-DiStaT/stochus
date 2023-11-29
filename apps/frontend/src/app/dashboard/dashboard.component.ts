@@ -16,7 +16,7 @@ import { StudyForParticipationDto } from '@stochus/studies/shared'
 import {
   StudiesParticipationService,
   StudiesService,
-} from '@stochus/studies/frontend'
+} from '@stochus/studies/frontend-static'
 import { ButtonColor, ButtonComponent } from '@stochus/daisy-ui'
 
 @Component({

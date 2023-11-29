@@ -18,7 +18,7 @@ import { KeycloakService } from 'keycloak-angular'
 import { filter, map, of, switchMap } from 'rxjs'
 import { UserRoles } from '@stochus/auth/shared'
 import { UserService } from '@stochus/auth/frontend'
-import { StudiesService } from '@stochus/studies/frontend'
+import { StudiesService } from '@stochus/studies/frontend-static'
 import {
   ButtonComponent,
   ButtonStyle,

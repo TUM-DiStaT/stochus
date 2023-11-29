@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto } from '@stochus/studies/shared'
+import { StudiesService } from '@stochus/studies/frontend-static'
 import { ToastService } from '@stochus/daisy-ui'
 import { EditStudyFormComponent } from '../edit-study-form/edit-study-form.component'
-import { StudiesService } from '../studies.service'
 
 @Component({
   selector: 'stochus-create-study',

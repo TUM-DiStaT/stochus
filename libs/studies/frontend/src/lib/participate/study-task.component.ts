@@ -17,8 +17,8 @@ import {
   AssignmentCompletionProcessHostComponent,
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
+import { StudiesParticipationService } from '@stochus/studies/frontend-static'
 import { ToastService } from '@stochus/daisy-ui'
-import { StudiesParticipationService } from '../studies-participation.service'
 
 @Component({
   standalone: true,
