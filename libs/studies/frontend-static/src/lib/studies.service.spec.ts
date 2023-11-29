@@ -9,6 +9,7 @@ import 'reflect-metadata'
 import { firstValueFrom } from 'rxjs'
 import {
   StudyDto,
+  plainValidStudyDto,
   validStudyCreateDto,
   validStudyDto,
 } from '@stochus/studies/shared'
@@ -55,7 +56,7 @@ describe('StudiesService', () => {
       verifySingleJsonRequest({
         httpMock,
         mockRequest: httpMock.expectOne(`${service.baseUrl}/manage`),
-        data: [validStudyDto],
+        data: [plainValidStudyDto],
       })
 
       const response = await responsePromise
@@ -75,7 +76,7 @@ describe('StudiesService', () => {
       verifySingleJsonRequest({
         httpMock,
         mockRequest: httpMock.expectOne(`${service.baseUrl}/manage`),
-        data: validStudyDto,
+        data: plainValidStudyDto,
       })
 
       const created = await createdStudyPromise
@@ -97,7 +98,7 @@ describe('StudiesService', () => {
         mockRequest: httpMock.expectOne(
           `${service.baseUrl}/manage/${validStudyDto.id}`,
         ),
-        data: validStudyDto,
+        data: plainValidStudyDto,
       })
 
       const created = await createdStudyPromise
@@ -119,7 +120,7 @@ describe('StudiesService', () => {
         mockRequest: httpMock.expectOne(
           `${service.baseUrl}/manage/${validStudyDto.id}`,
         ),
-        data: validStudyDto,
+        data: plainValidStudyDto,
       })
 
       const created = await createdStudyPromise

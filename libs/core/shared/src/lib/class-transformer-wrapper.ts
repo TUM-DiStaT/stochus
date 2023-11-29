@@ -21,6 +21,7 @@ export function plainToInstance<T, V>(
 ) {
   const optionsWithCustomDefaults: ClassTransformOptions = {
     excludeExtraneousValues: true,
+    exposeDefaultValues: true,
     ...options,
   }
   return originalPlainToInstance(cls, plain, optionsWithCustomDefaults)

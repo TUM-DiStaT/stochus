@@ -1,14 +1,14 @@
 import { validateOrReject } from 'class-validator'
 import 'reflect-metadata'
 import { plainToInstance } from '@stochus/core/shared'
-import { validStudyDto } from './studies.dto.fixture'
+import { plainValidStudyDto, validStudyDto } from './studies.dto.fixture'
 import { StudyDto } from './study.dto'
 
 describe('parsing and validation', () => {
   const fromJson = JSON.parse(JSON.stringify(validStudyDto))
 
   it('should correctly parse and validate the valid fixture', async () => {
-    const parsed = plainToInstance(StudyDto, validStudyDto)
+    const parsed = plainToInstance(StudyDto, plainValidStudyDto)
     await expect(validateOrReject(parsed)).resolves.not.toThrow()
   })
 

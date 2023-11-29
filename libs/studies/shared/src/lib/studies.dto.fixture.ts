@@ -6,8 +6,8 @@ import { researcherUserReggie } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyDto } from './study.dto'
 
-export const validStudyDto: StudyDto = {
-  id: '64f1e1cdf024ff6951623324',
+export const plainValidStudyDto = {
+  _id: '64f1e1cdf024ff6951623324',
   name: 'Valid study for testing',
   description: 'A study only defined for unit tests',
   ownerId: researcherUserReggie.id,
@@ -30,6 +30,10 @@ export const validStudyDto: StudyDto = {
   numberOfStartedParticipations: 0,
   hasInteractionLogs: false,
 }
+export const validStudyDto: StudyDto = plainToInstance(
+  StudyDto,
+  plainValidStudyDto,
+)
 
 export const validStudyCreateDto = plainToInstance(
   StudyCreateDto,

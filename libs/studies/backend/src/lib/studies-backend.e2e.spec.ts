@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { INestApplication } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
@@ -8,13 +8,20 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Connection, Types, connect } from 'mongoose'
 import * as request from 'supertest'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
 import { StudyDto, validStudyCreateDto } from '@stochus/studies/shared'
+import { CompletionsService } from '@stochus/assignments/core/backend'
 import {
   KeycloakAdminModule,
   KeycloakAdminService,
   MockAuthGuard,
   MockRoleGuard,
 } from '@stochus/auth/backend'
+import { registerGlobalUtilitiesToApp } from '@stochus/core/backend'
+import {
+  StudyParticipation,
+  StudyParticipationSchema,
+} from './participation/study-participation.schema'
 import { StudiesBackendController } from './studies-backend.controller'
 import { StudiesBackendService } from './studies-backend.service'
 import { Study, StudySchema } from './study.schema'
@@ -39,10 +46,22 @@ describe('Studies', () => {
             name: Study.name,
             schema: StudySchema,
           },
+          {
+            name: StudyParticipation.name,
+            schema: StudyParticipationSchema,
+          },
         ]),
         KeycloakAdminModule,
       ],
-      providers: [StudiesBackendService],
+      providers: [
+        StudiesBackendService,
+        {
+          provide: CompletionsService,
+          useValue: {
+            deleteMany: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+      ],
       controllers: [StudiesBackendController],
     })
       .overrideProvider(KeycloakAdminService)
@@ -50,14 +69,7 @@ describe('Studies', () => {
       .compile()
 
     app = moduleRef.createNestApplication()
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transformOptions: {
-          excludeExtraneousValues: true,
-        },
-        transform: true,
-      }),
-    )
+    registerGlobalUtilitiesToApp(app)
     mockAuthGuard = new MockAuthGuard()
     app.useGlobalGuards(mockAuthGuard)
     app.useGlobalGuards(new MockRoleGuard(await app.resolve(Reflector)))
@@ -124,11 +136,10 @@ describe('Studies', () => {
       })
       .expect(HttpStatusCode.Created)
 
-    expect(response.body).toHaveProperty('id')
-    const id = response.body.id
-    const collections = await mongoConnection.db.listCollections().toArray()
-    expect(collections).toHaveLength(1)
-    const studiesCollection = mongoConnection.collection(collections[0].name)
+    expect(response.body).toHaveProperty('_id')
+    const id = response.body._id
+    const studiesCollection = mongoConnection.collection('studies')
+    expect(studiesCollection).toBeDefined()
     const studyFromDb = await studiesCollection.findOne({
       _id: new Types.ObjectId(id),
     })
@@ -149,7 +160,7 @@ describe('Studies', () => {
       .post('/studies/manage/')
       .send(validStudyCreateDto)
       .expect(HttpStatusCode.Created)
-    const study = response.body as StudyDto
+    const study = plainToInstance(StudyDto, response.body)
 
     mockAuthGuard.setCurrentUser(studentUser)
     await request(app.getHttpServer())
@@ -172,4 +183,6 @@ describe('Studies', () => {
       .send()
       .expect(HttpStatusCode.BadRequest)
   })
+
+  // TODO
 })

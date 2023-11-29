@@ -30,7 +30,10 @@ describe('AuthGuard', () => {
       imports: [KeycloakTestingModule, RouterTestingModule],
     })
     keycloakService = TestBed.inject(KeycloakService)
-    isLoggedInSpy = jest.spyOn(keycloakService, 'isLoggedIn')
+    isLoggedInSpy = jest.spyOn(
+      keycloakService,
+      'isLoggedIn',
+    ) as unknown as typeof isLoggedInSpy
     getUserRolesSpy = jest
       .spyOn(keycloakService, 'getUserRoles')
       .mockReturnValue([])

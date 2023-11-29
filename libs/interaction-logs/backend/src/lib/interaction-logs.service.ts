@@ -11,7 +11,7 @@ export class InteractionLogsService {
   constructor(
     @InjectModel(InteractionLog.name)
     private readonly interactionLogsModel: Model<InteractionLog>,
-    private readonly completionsService: StudyParticipationBackendService,
+    private readonly studyParticipationBackendService: StudyParticipationBackendService,
   ) {}
 
   async createNewLogEntry(
@@ -19,7 +19,7 @@ export class InteractionLogsService {
     user: User,
     assignmentCompletionId: string,
   ): Promise<InteractionLog> {
-    await this.completionsService.assertCompletionIsPartOfActiveStudy(
+    await this.studyParticipationBackendService.assertCompletionIsPartOfActiveStudy(
       user,
       assignmentCompletionId,
     )
