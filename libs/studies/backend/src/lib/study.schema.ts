@@ -23,6 +23,9 @@ export class Study {
   @Prop({ required: true })
   description!: string
 
+  @Prop({ required: true })
+  messageAfterFeedback!: string
+
   @Prop({ required: true, type: Date })
   startDate!: string
 
