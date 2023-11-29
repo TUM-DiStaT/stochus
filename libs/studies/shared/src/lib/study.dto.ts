@@ -128,6 +128,11 @@ export class StudyDto extends BaseStudyDto {
   @Expose()
   @IsBoolean()
   hasInteractionLogs = false
+
+  isActive() {
+    const now = new Date().valueOf()
+    return this.startDate.valueOf() <= now && now <= this.endDate.valueOf()
+  }
 }
 
 export class StudyForDownloadDto extends BaseStudyDto {
@@ -136,4 +141,11 @@ export class StudyForDownloadDto extends BaseStudyDto {
   @ValidateNested({ each: true })
   @IsArray()
   participations!: StudyParticipationWithAssignmentCompletionsAndLogsDto[]
+}
+
+export class StudyFeedbackDto {
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  messageAfterFeedback!: string
 }

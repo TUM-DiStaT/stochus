@@ -10,7 +10,11 @@ import { validate } from 'class-validator'
 import { Connection, Document, Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import { isDefined, plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto, StudyUpdateDto } from '@stochus/studies/shared'
+import {
+  StudyCreateDto,
+  StudyDto,
+  StudyUpdateDto,
+} from '@stochus/studies/shared'
 import {
   AssignmentCompletion,
   AssignmentsCoreBackendService,
@@ -335,5 +339,26 @@ export class StudiesBackendService {
         ),
       }
     })
+  }
+
+  async getByIdForStudent(id: string, user: User) {
+    const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
+    const study = await this.studyModel.findById(id)
+
+    if (!study) {
+      throw new NotFoundException()
+    }
+
+    const dto = plainToInstance(StudyDto, study)
+    if (
+      !userGroups
+        .map((group) => group.id)
+        .includes(study.participantsGroupId) ||
+      !dto.isActive()
+    ) {
+      throw new ForbiddenException()
+    }
+
+    return study
   }
 }

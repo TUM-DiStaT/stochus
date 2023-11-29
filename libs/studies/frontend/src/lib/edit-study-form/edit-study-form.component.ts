@@ -21,18 +21,22 @@ import {
   heroTrash,
 } from '@ng-icons/heroicons/outline'
 import { validate } from 'class-validator'
-import { MarkdownComponent, provideMarkdown } from 'ngx-markdown'
 import { FormModel } from 'ngx-mf'
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
-import { Subscription, map, pairwise } from 'rxjs'
+import { Observable, Subscription, concat, map, of, pairwise } from 'rxjs'
 import { plainToInstance } from '@stochus/core/shared'
-import { StudyCreateDto, StudyDto } from '@stochus/studies/shared'
+import {
+  StudyCreateDto,
+  StudyDto,
+  StudyFeedbackDto,
+} from '@stochus/studies/shared'
 import {
   AssignmentConfigFormHostComponent,
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
 import { KeycloakAdminService } from '@stochus/auth/frontend'
 import { PreventH1Directive } from '@stochus/core/frontend'
+import { StudyFeedbackComponent } from '../study-feedback/study-feedback.component'
 
 type TaskFormControl = FormGroup<{
   assignmentId: FormControl<string | null>
@@ -55,13 +59,10 @@ type TaskFormControl = FormGroup<{
     CdkDropList,
     CdkDragHandle,
     MonacoEditorModule,
-    MarkdownComponent,
     PreventH1Directive,
+    StudyFeedbackComponent,
   ],
-  providers: [
-    provideIcons({ heroTrash, heroBars2, heroInformationCircle }),
-    provideMarkdown(),
-  ],
+  providers: [provideIcons({ heroTrash, heroBars2, heroInformationCircle })],
   templateUrl: './edit-study-form.component.html',
   styleUrls: ['./edit-study-form.component.css'],
 })
@@ -77,9 +78,12 @@ export class EditStudyFormComponent implements OnDestroy {
     minimap: { enabled: false },
   }
 
+  studyForFeedback$: Observable<StudyFeedbackDto> = this.getStudyForFeedback()
+
   @Input()
   set initialStudy(study: StudyDto | null) {
     this.formGroup = this.generateFormGroup(study)
+    this.studyForFeedback$ = this.getStudyForFeedback()
   }
 
   constructor(
@@ -206,5 +210,11 @@ export class EditStudyFormComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.tasksChangeSubscription?.unsubscribe()
+  }
+
+  getStudyForFeedback() {
+    return concat(of(this.formGroup.value), this.formGroup.valueChanges).pipe(
+      map(() => plainToInstance(StudyFeedbackDto, this.formGroup.value)),
+    )
   }
 }

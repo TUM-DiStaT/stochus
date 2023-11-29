@@ -5,6 +5,7 @@ import { plainToInstance } from '@stochus/core/shared'
 import {
   StudyCreateDto,
   StudyDto,
+  StudyFeedbackDto,
   StudyForDownloadDto,
   StudyForParticipationDto,
   StudyUpdateDto,
@@ -38,6 +39,12 @@ export class StudiesService {
     return this.http
       .get(`${this.baseUrl}/manage/${studyId}`)
       .pipe(map((studies) => plainToInstance(StudyDto, studies)))
+  }
+
+  getByIdForFeedback(studyId: string) {
+    return this.http
+      .get(`${this.baseUrl}/participate/forFeedback/${studyId}`)
+      .pipe(map((studies) => plainToInstance(StudyFeedbackDto, studies)))
   }
 
   update(id: string, dto: StudyUpdateDto) {

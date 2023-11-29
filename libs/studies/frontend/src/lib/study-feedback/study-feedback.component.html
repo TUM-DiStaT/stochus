@@ -1,10 +1,10 @@
 <div class="card w-96 bg-base-100 shadow-xl">
   <div class="card-body">
-    <h2 class="card-title">Studie abgeschlossen</h2>
-    <p>
-      Danke für deine Teilnahme! Alle deine Daten wurden gespeichert und werden
-      bald ausgewertet werden.
-    </p>
+    <markdown
+      class="prose"
+      [data]="(studyForFeedback$ | async)?.messageAfterFeedback ?? ''"
+      stochusPreventH1
+    />
     <div class="card-actions justify-end">
       <a [routerLink]="['']" class="btn btn-primary">Zurück zur Übersicht</a>
     </div>
