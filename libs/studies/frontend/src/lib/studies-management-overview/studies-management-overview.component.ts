@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, ElementRef, ViewChild } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import {
@@ -35,6 +35,9 @@ import { ToastService } from '@stochus/daisy-ui'
 })
 export class StudiesManagementOverviewComponent {
   studies$ = this.studiesService.getAllOwnedByUser()
+  studyToBeDeleted?: StudyDto
+  @ViewChild('confirmDeleteDialog')
+  confirmDeleteDialogRef!: ElementRef<HTMLDialogElement>
 
   constructor(
     private readonly studiesService: StudiesService,
@@ -93,6 +96,22 @@ export class StudiesManagementOverviewComponent {
     return {
       '--value': progress,
       '--size': '3em',
+    }
+  }
+
+  openConfirmDeleteDialog(study: StudyDto) {
+    this.studyToBeDeleted = study
+    this.confirmDeleteDialogRef.nativeElement.showModal()
+  }
+
+  cancelDeleteStudy() {
+    this.studyToBeDeleted = undefined
+  }
+
+  confirmDeleteStudy() {
+    if (this.studyToBeDeleted) {
+      this.deleteStudy(this.studyToBeDeleted)
+      this.studyToBeDeleted = undefined
     }
   }
 }
