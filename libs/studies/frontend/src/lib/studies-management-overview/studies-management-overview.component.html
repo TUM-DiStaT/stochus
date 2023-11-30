@@ -109,7 +109,7 @@
             </a>
             <button
               class="btn btn-outline btn-error"
-              (click)="deleteStudy(study)"
+              (click)="openConfirmDeleteDialog(study)"
             >
               <ng-icon name="heroTrash" class="mr-2" />
               Löschen
@@ -132,3 +132,28 @@
     </ul>
   </div>
 </div>
+
+<dialog
+  class="modal"
+  id="confirm-delete-study"
+  (close)="cancelDeleteStudy()"
+  #confirmDeleteDialog
+>
+  <div class="modal-box">
+    <h2 class="font-bold text-lg">
+      Studie {{ studyToBeDeleted?.name ?? '' }} wirklich löschen?
+    </h2>
+    <p>
+      Die Studie wird samt allen zugehörigen Daten (inkl. Logs) gelöscht werden.
+      Diese Aktion ist unwiderrufbar!
+    </p>
+    <div class="modal-action">
+      <form method="dialog" class="flex gap-4">
+        <button class="btn">Abbrechen</button>
+        <button class="btn btn-error" (click)="confirmDeleteStudy()">
+          Löschen
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

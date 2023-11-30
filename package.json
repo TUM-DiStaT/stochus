@@ -29,7 +29,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "classnames": "^2.3.2",
-    "daisyui": "^2.51.0",
+    "daisyui": "^4.4.14",
     "keycloak-angular": "^15.0.0",
     "keycloak-connect": "21.1.2",
     "keycloak-js": "^20.0.5",
