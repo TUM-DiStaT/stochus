@@ -23,7 +23,7 @@ module.exports = {
     themes: [
       {
         stochus: {
-          ...require('daisyui/src/colors/themes')['[data-theme=bumblebee]'],
+          ...require('daisyui/src/theming/themes')['bumblebee'],
           primary: '#749EBE',
           secondary: '#9BAFBF',
           accent: '#F7B1AB',
