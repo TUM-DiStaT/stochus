@@ -25,5 +25,7 @@ export class AssignmentCompletion {
   isForStudy!: boolean
 }
 
+export const AssignmentCompletionCollectionName = AssignmentCompletion.name
+
 export const AssignmentCompletionSchema =
   SchemaFactory.createForClass(AssignmentCompletion)

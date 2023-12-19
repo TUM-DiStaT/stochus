@@ -14,7 +14,7 @@ export class InteractionLogsService {
     private readonly studyParticipationBackendService: StudyParticipationBackendService,
   ) {}
 
-  async createNewLogEntry(
+  async createNewAssignmentCompletionLogEntry(
     log: InteractionLogCreateDto,
     user: User,
     assignmentCompletionId: string,
@@ -29,6 +29,29 @@ export class InteractionLogsService {
       userId: user.id,
       payload: log.payload,
       assignmentCompletionId: new Types.ObjectId(assignmentCompletionId),
+    })
+  }
+
+  async createNewStudyParticipationLogEntry(
+    log: InteractionLogCreateDto,
+    user: User,
+    studyParticipationId: string,
+  ): Promise<InteractionLog> {
+    const study =
+      await this.studyParticipationBackendService.getStudyByParticipation(
+        studyParticipationId,
+      )
+
+    await this.studyParticipationBackendService.assertUserMayParticipateInStudy(
+      user,
+      study,
+    )
+
+    return await this.interactionLogsModel.create({
+      datetime: new Date(),
+      userId: user.id,
+      payload: log.payload,
+      studyParticipationId: new Types.ObjectId(studyParticipationId),
     })
   }
 

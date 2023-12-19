@@ -54,14 +54,13 @@ describe('InteractionLogsService', () => {
   it('should correctly create an interaction log with appropriate default values', async () => {
     // given
     const dto: InteractionLogCreateDto = {
-      assignmentCompletionId: guessRandomNumberJustStartedCompletionDto.id,
       payload: {
         foo: 'bar',
       },
     }
 
     // when
-    await service.createNewLogEntry(
+    await service.createNewAssignmentCompletionLogEntry(
       dto,
       studentUser,
       guessRandomNumberJustStartedCompletionDto.id,

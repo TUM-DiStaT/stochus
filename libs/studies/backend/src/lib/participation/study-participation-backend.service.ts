@@ -123,7 +123,18 @@ export class StudyParticipationBackendService {
     return { ...participation, assignmentCompletions }
   }
 
-  async assertUserMayParticipateInStudy(user: User, studyDto: StudyDto) {
+  async assertUserMayParticipateInStudy(
+    user: User,
+    studyIdOrDto: StudyDto | string,
+  ) {
+    const studyDto =
+      typeof studyIdOrDto === 'string'
+        ? plainToInstance(
+            StudyDto,
+            await this.studiesService.getById(studyIdOrDto),
+          )
+        : studyIdOrDto
+
     const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
     const now = new Date().valueOf()
 
@@ -209,5 +220,13 @@ export class StudyParticipationBackendService {
       )
       throw new ForbiddenException()
     }
+  }
+
+  async getStudyByParticipation(studyParticipationId: string) {
+    const study = await this.studyParticipationModel
+      .findById(studyParticipationId)
+      .populate('studyId')
+      .exec()
+    return plainToInstance(StudyDto, study?.studyId)
   }
 }

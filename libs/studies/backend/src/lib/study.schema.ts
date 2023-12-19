@@ -42,4 +42,6 @@ export class Study {
   tasks!: StudyTask[]
 }
 
+export const StudyCollectionName = Study.name
+
 export const StudySchema = SchemaFactory.createForClass(Study)

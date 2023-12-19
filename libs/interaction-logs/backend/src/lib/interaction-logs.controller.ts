@@ -14,16 +14,34 @@ export class InteractionLogsController {
 
   @Post('assignment-completion/:assignmentCompletionId')
   @RealmRoles({ roles: [UserRoles.STUDENT] })
-  async createLog(
+  async createAssignmentCompletionLog(
     @Body() dto: InteractionLogCreateDto,
     @ParsedUser() user: User,
     @Param('assignmentCompletionId') assignmentCompletionId: string,
   ) {
-    const entry = await this.interactionLogsBackendService.createNewLogEntry(
-      dto,
-      user,
-      assignmentCompletionId,
-    )
+    const entry =
+      await this.interactionLogsBackendService.createNewAssignmentCompletionLogEntry(
+        dto,
+        user,
+        assignmentCompletionId,
+      )
+
+    return plainToInstance(InteractionLogDto, entry)
+  }
+
+  @Post('study-participation/:studyParticipationId')
+  @RealmRoles({ roles: [UserRoles.STUDENT] })
+  async createGeneralStudyParticipationLog(
+    @Body() dto: InteractionLogCreateDto,
+    @ParsedUser() user: User,
+    @Param('studyParticipationId') studyParticipationId: string,
+  ) {
+    const entry =
+      await this.interactionLogsBackendService.createNewStudyParticipationLogEntry(
+        dto,
+        user,
+        studyParticipationId,
+      )
 
     return plainToInstance(InteractionLogDto, entry)
   }

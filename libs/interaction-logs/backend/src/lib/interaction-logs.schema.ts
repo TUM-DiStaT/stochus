@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
-import { AssignmentCompletion } from '@stochus/assignments/core/backend'
+import { AssignmentCompletionCollectionName } from '@stochus/assignments/core/backend'
+import { StudyCollectionName } from '@stochus/studies/backend'
 
 @Schema()
 export class InteractionLog {
@@ -8,11 +9,16 @@ export class InteractionLog {
   userId!: string
 
   @Prop({
-    required: true,
     type: Types.ObjectId,
-    ref: AssignmentCompletion.name,
+    ref: StudyCollectionName,
   })
-  assignmentCompletionId!: string
+  studyParticipationId?: string
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: AssignmentCompletionCollectionName,
+  })
+  assignmentCompletionId?: string
 
   @Prop({ type: Date, required: true })
   datetime!: Date

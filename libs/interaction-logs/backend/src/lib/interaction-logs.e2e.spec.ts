@@ -9,6 +9,10 @@ import * as request from 'supertest'
 import { guessRandomNumberJustStartedCompletionDto } from '@stochus/assignment/core/shared'
 import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
+import {
+  validStudyDto,
+  validStudyParticipationDto,
+} from '@stochus/studies/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
 import { registerGlobalUtilitiesToApp } from '@stochus/core/backend'
 import { StudyParticipationBackendService } from '@stochus/studies/backend'
@@ -46,6 +50,10 @@ describe('Interaction Logs', () => {
           provide: StudyParticipationBackendService,
           useValue: {
             assertCompletionIsPartOfActiveStudy: jest
+              .fn()
+              .mockResolvedValue(undefined),
+            getStudyByParticipation: jest.fn().mockResolvedValue(validStudyDto),
+            assertUserMayParticipateInStudy: jest
               .fn()
               .mockResolvedValue(undefined),
           },
@@ -106,7 +114,7 @@ describe('Interaction Logs', () => {
       .expect(HttpStatusCode.BadRequest)
   })
 
-  it('should save a request with payload', async () => {
+  it('should save an assignment request with payload', async () => {
     mockAuthGuard.setCurrentUser(studentUser)
 
     const dto: InteractionLogCreateDto = {
@@ -129,5 +137,35 @@ describe('Interaction Logs', () => {
 
     expect(result).toBeDefined()
     expect(plainToInstance(InteractionLogCreateDto, result)).toEqual(dto)
+  })
+
+  it('should save a general study log with payload', async () => {
+    mockAuthGuard.setCurrentUser(studentUser)
+
+    const dto: InteractionLogCreateDto = {
+      payload: {
+        biz: 456,
+        someGeneralStudyLog: true,
+      },
+    }
+
+    const response = await request(app.getHttpServer())
+      .post(
+        `/interaction-logs/study-participation/${validStudyParticipationDto.id}`,
+      )
+      .send(dto)
+      .expect(HttpStatusCode.Created)
+
+    expect(response.body).toHaveProperty('_id')
+
+    const result = await interactionLogsModel.findById(response.body._id)
+
+    expect(result).toBeDefined()
+    expect(plainToInstance(InteractionLogCreateDto, result)).toEqual(dto)
+    expect(result?.assignmentCompletionId).not.toBeDefined()
+    // Study ID is stored as an ObjectId, so we need to convert it to a string
+    expect(result?.studyParticipationId?.toString()).toEqual(
+      validStudyParticipationDto.id,
+    )
   })
 })
