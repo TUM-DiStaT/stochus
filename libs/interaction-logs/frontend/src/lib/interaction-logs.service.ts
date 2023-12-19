@@ -15,10 +15,22 @@ export class InteractionLogsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  log(assignmentCompletionId: string, dto: InteractionLogCreateDto) {
+  logForAssignmentCompletion(
+    assignmentCompletionId: string,
+    dto: InteractionLogCreateDto,
+  ) {
     return this.http
       .post(
         `${InteractionLogsService.baseUlr}/assignment-completion/${assignmentCompletionId}`,
+        dto,
+      )
+      .pipe(map((x) => plainToInstance(InteractionLogDto, x)))
+  }
+
+  logForStudyParticipation(studyId: string, dto: InteractionLogCreateDto) {
+    return this.http
+      .post(
+        `${InteractionLogsService.baseUlr}/study-participation/${studyId}`,
         dto,
       )
       .pipe(map((x) => plainToInstance(InteractionLogDto, x)))

@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { map } from 'rxjs'
+import { Router } from '@angular/router'
+import { map, switchMap } from 'rxjs'
+import { fromPromise } from 'rxjs/internal/observable/innerFrom'
 import { plainToInstance } from '@stochus/core/shared'
 import {
   StudyParticipationDto,
   StudyParticipationWithAssignmentCompletionsDto,
 } from '@stochus/studies/shared'
+import { InteractionLogsService } from '@stochus/interaction-logs/frontend'
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +16,11 @@ import {
 export class StudiesParticipationService {
   static readonly baseUrl = 'api/studies/participate'
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly interactionLogsService: InteractionLogsService,
+  ) {}
 
   getWithAssignmentCompletions(studyId: string) {
     return this.http
@@ -29,5 +36,23 @@ export class StudiesParticipationService {
     return this.http
       .post(`${StudiesParticipationService.baseUrl}/${studyId}`, {})
       .pipe(map((res) => plainToInstance(StudyParticipationDto, res)))
+  }
+
+  createAndOpen(studyId: string) {
+    return this.create(studyId).pipe(
+      map((participation) => {
+        return participation
+      }),
+      switchMap((participation) =>
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'participation-created',
+          },
+        }),
+      ),
+      switchMap(() =>
+        fromPromise(this.router.navigate(['studies', 'participate', studyId])),
+      ),
+    )
   }
 }
