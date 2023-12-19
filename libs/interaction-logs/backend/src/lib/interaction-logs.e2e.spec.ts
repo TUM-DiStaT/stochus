@@ -168,4 +168,20 @@ describe('Interaction Logs', () => {
       validStudyParticipationDto.id,
     )
   })
+
+  it("should return a 400 Bad Request when the ID isn't a mongo ID", async () => {
+    mockAuthGuard.setCurrentUser(studentUser)
+
+    const dto: InteractionLogCreateDto = {
+      payload: {
+        biz: 456,
+        someGeneralStudyLog: true,
+      },
+    }
+
+    await request(app.getHttpServer())
+      .post(`/interaction-logs/study-participation/not-a-mongo-id`)
+      .send(dto)
+      .expect(HttpStatusCode.BadRequest)
+  })
 })

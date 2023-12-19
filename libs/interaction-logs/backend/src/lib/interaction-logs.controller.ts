@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Expose } from 'class-transformer'
+import { IsMongoId } from 'class-validator'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
@@ -7,6 +9,18 @@ import {
   InteractionLogDto,
 } from '@stochus/interaction-logs/dtos'
 import { InteractionLogsService } from './interaction-logs.service'
+
+class CreateGeneralStudyParticipationLogParams {
+  @Expose()
+  @IsMongoId()
+  studyParticipationId!: string
+}
+
+class CreateGeneralAssignmentCompletionLogParams {
+  @Expose()
+  @IsMongoId()
+  assignmentCompletionId!: string
+}
 
 @Controller('interaction-logs')
 export class InteractionLogsController {
@@ -17,13 +31,13 @@ export class InteractionLogsController {
   async createAssignmentCompletionLog(
     @Body() dto: InteractionLogCreateDto,
     @ParsedUser() user: User,
-    @Param('assignmentCompletionId') assignmentCompletionId: string,
+    @Param() params: CreateGeneralAssignmentCompletionLogParams,
   ) {
     const entry =
       await this.interactionLogsBackendService.createNewAssignmentCompletionLogEntry(
         dto,
         user,
-        assignmentCompletionId,
+        params.assignmentCompletionId,
       )
 
     return plainToInstance(InteractionLogDto, entry)
@@ -34,13 +48,13 @@ export class InteractionLogsController {
   async createGeneralStudyParticipationLog(
     @Body() dto: InteractionLogCreateDto,
     @ParsedUser() user: User,
-    @Param('studyParticipationId') studyParticipationId: string,
+    @Param() params: CreateGeneralStudyParticipationLogParams,
   ) {
     const entry =
       await this.interactionLogsBackendService.createNewStudyParticipationLogEntry(
         dto,
         user,
-        studyParticipationId,
+        params.studyParticipationId,
       )
 
     return plainToInstance(InteractionLogDto, entry)
