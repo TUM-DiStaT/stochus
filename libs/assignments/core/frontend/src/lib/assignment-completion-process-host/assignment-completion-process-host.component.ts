@@ -111,8 +111,7 @@ export class AssignmentCompletionProcessHostComponent implements OnInit {
             .pipe(
               switchMap((log) =>
                 this.interactionLogsService
-                  .log({
-                    assignmentCompletionId: completion.id,
+                  .log(completion.id, {
                     payload: log,
                   })
                   .pipe(

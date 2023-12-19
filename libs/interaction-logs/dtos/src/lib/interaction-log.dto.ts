@@ -1,12 +1,14 @@
 import { Exclude, Expose, Type } from 'class-transformer'
-import { IsDate, IsMongoId, IsNotEmpty, IsUUID, MaxDate } from 'class-validator'
+import {
+  IsDate,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+  MaxDate,
+} from 'class-validator'
 
 export class InteractionLogCreateDto {
-  @Expose()
-  @IsMongoId()
-  @Type(() => String)
-  assignmentCompletionId!: string
-
   @Expose()
   @IsNotEmpty()
   payload!: unknown
@@ -30,8 +32,11 @@ export class InteractionLogDto extends InteractionLogCreateDto {
 }
 
 export class InteractionLogForDownloadDto extends InteractionLogDto {
-  @Exclude()
-  override assignmentCompletionId!: string
+  @Expose()
+  @IsMongoId()
+  @Type(() => String)
+  @IsOptional()
+  assignmentCompletionId?: string
 
   @Exclude()
   override userId!: string

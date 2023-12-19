@@ -110,7 +110,6 @@ describe('Interaction Logs', () => {
     mockAuthGuard.setCurrentUser(studentUser)
 
     const dto: InteractionLogCreateDto = {
-      assignmentCompletionId: guessRandomNumberJustStartedCompletionDto.id,
       payload: {
         biz: 123,
         asdf: true,
