@@ -19,6 +19,7 @@ export class AssignmentCompletionDto {
 
   @IsNotEmpty()
   @IsUUID()
+  @Expose()
   userId!: string
 
   // @IsIn(

@@ -1,9 +1,17 @@
 import { Controller, Get, Logger, Param, Post } from '@nestjs/common'
+import { Expose } from 'class-transformer'
+import { IsMongoId } from 'class-validator'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyParticipationWithAssignmentCompletionsDto } from '@stochus/studies/shared'
 import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
 import { StudyParticipationBackendService } from './study-participation-backend.service'
+
+class StudyIdParams {
+  @Expose()
+  @IsMongoId()
+  studyId!: string
+}
 
 @Controller('studies/participate')
 export class StudyParticipationController {
@@ -15,10 +23,10 @@ export class StudyParticipationController {
 
   @Get(':studyId')
   @RealmRoles({ roles: [UserRoles.STUDENT] })
-  async get(@ParsedUser() user: User, @Param('studyId') studyId: string) {
+  async get(@ParsedUser() user: User, @Param() params: StudyIdParams) {
     const result = this.studyParticipationService.getActiveParticipation(
       user,
-      studyId,
+      params.studyId,
     )
     return plainToInstance(
       StudyParticipationWithAssignmentCompletionsDto,
@@ -28,11 +36,11 @@ export class StudyParticipationController {
 
   @Post(':studyId')
   @RealmRoles({ roles: [UserRoles.STUDENT] })
-  async create(@ParsedUser() user: User, @Param('studyId') studyId: string) {
-    this.logger.verbose(`Creating a new participation for ${studyId}`)
-    const result = this.studyParticipationService.createParticipation(
+  async create(@ParsedUser() user: User, @Param() params: StudyIdParams) {
+    this.logger.verbose(`Creating a new participation for ${params.studyId}`)
+    const result = await this.studyParticipationService.createParticipation(
       user,
-      studyId,
+      params.studyId,
     )
     return plainToInstance(
       StudyParticipationWithAssignmentCompletionsDto,

@@ -120,7 +120,11 @@ export class StudyParticipationBackendService {
     await transactionSession.commitTransaction()
     await transactionSession.endSession()
 
-    return { ...participation, assignmentCompletions }
+    const result = participation as typeof participation & {
+      assignmentCompletions: typeof assignmentCompletions
+    }
+    result.assignmentCompletions = assignmentCompletions
+    return result
   }
 
   async assertUserMayParticipateInStudy(

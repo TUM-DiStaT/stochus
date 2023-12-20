@@ -77,8 +77,6 @@ export class StudiesBackendController {
   async update(
     @ParsedUser()
     user: User,
-    // TODO: WTF
-    // @Param() params: DeleteParams,
     @Param('id') id: string,
     @Body()
     dto: StudyUpdateDto,
@@ -94,8 +92,6 @@ export class StudiesBackendController {
   async delete(
     @ParsedUser()
     user: User,
-    // TODO: WTF
-    // @Param() params: DeleteParams,
     @Param('id') id: string,
   ) {
     if (!Types.ObjectId.isValid(id)) {

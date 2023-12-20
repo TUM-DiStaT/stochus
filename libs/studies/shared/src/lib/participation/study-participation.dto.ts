@@ -1,5 +1,11 @@
 import { Exclude, Expose, Type } from 'class-transformer'
-import { IsArray, IsMongoId, IsUUID, ValidateNested } from 'class-validator'
+import {
+  IsArray,
+  IsMongoId,
+  IsOptional,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator'
 import {
   AssignmentCompletionDto,
   AssignmentCompletionWithInteractionLogsDto,
@@ -31,6 +37,7 @@ export class StudyParticipationDto extends StudyParticipationCreateDto {
 
 export class StudyParticipationWithAssignmentCompletionsDto extends StudyParticipationDto {
   @Exclude()
+  @IsOptional()
   override assignmentCompletionIds!: string[]
 
   @Expose()
