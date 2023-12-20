@@ -4,10 +4,7 @@ import { Router } from '@angular/router'
 import { map, switchMap } from 'rxjs'
 import { fromPromise } from 'rxjs/internal/observable/innerFrom'
 import { plainToInstance } from '@stochus/core/shared'
-import {
-  StudyParticipationDto,
-  StudyParticipationWithAssignmentCompletionsDto,
-} from '@stochus/studies/shared'
+import { StudyParticipationWithAssignmentCompletionsDto } from '@stochus/studies/shared'
 import { InteractionLogsService } from '@stochus/interaction-logs/frontend'
 
 @Injectable({
@@ -35,14 +32,15 @@ export class StudiesParticipationService {
   create(studyId: string) {
     return this.http
       .post(`${StudiesParticipationService.baseUrl}/${studyId}`, {})
-      .pipe(map((res) => plainToInstance(StudyParticipationDto, res)))
+      .pipe(
+        map((res) =>
+          plainToInstance(StudyParticipationWithAssignmentCompletionsDto, res),
+        ),
+      )
   }
 
   createAndOpen(studyId: string) {
     return this.create(studyId).pipe(
-      map((participation) => {
-        return participation
-      }),
       switchMap((participation) =>
         this.interactionLogsService.logForStudyParticipation(participation.id, {
           payload: {
@@ -53,6 +51,7 @@ export class StudiesParticipationService {
       switchMap(() =>
         fromPromise(this.router.navigate(['studies', 'participate', studyId])),
       ),
+      map(() => undefined),
     )
   }
 }

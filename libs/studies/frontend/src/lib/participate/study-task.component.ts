@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common'
-import { Component, OnDestroy } from '@angular/core'
+import { Component, HostListener, OnDestroy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import {
   BehaviorSubject,
@@ -52,11 +52,13 @@ export class StudyTaskComponent implements OnDestroy {
         )
 
       this.activeCompletionIndex$.next(firstNotCompletedIndex)
-      this.interactionLogsService.logForStudyParticipation(participation.id, {
-        payload: {
-          action: 'participation-resumed',
-        },
-      })
+      firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'participation-resumed',
+          },
+        }),
+      ).catch(console.error)
     }),
     catchError((e) => {
       console.error(e)
@@ -120,10 +122,34 @@ export class StudyTaskComponent implements OnDestroy {
 
   async ngOnDestroy() {
     const participation = await firstValueFrom(this.participation$)
-    this.interactionLogsService.logForStudyParticipation(participation.id, {
-      payload: {
-        action: 'participation-paused',
-      },
-    })
+    await firstValueFrom(
+      this.interactionLogsService.logForStudyParticipation(participation.id, {
+        payload: {
+          action: 'participation-paused',
+        },
+      }),
+    )
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  async onVisibilityChange() {
+    const participation = await firstValueFrom(this.participation$)
+    if (document.visibilityState === 'visible') {
+      await firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'tabbed-back-in',
+          },
+        }),
+      )
+    } else {
+      await firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'tabbed-out',
+          },
+        }),
+      )
+    }
   }
 }
