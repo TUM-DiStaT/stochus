@@ -185,13 +185,9 @@ export class StudyParticipationBackendService {
     user: User,
     assignmentCompletionId: string,
   ) {
-    const participation = await this.studyParticipationModel
-      .findOne({
-        assignmentCompletionIds: assignmentCompletionId,
-      })
-      .populate('studyId')
-      .populate('assignmentCompletionIds')
-      .exec()
+    const participation = await this.getParticipationForAssignmentCompletion(
+      assignmentCompletionId,
+    )
 
     if (!participation) {
       throw new NotFoundException()
@@ -236,6 +232,18 @@ export class StudyParticipationBackendService {
       )
       throw new ForbiddenException()
     }
+  }
+
+  async getParticipationForAssignmentCompletion(
+    assignmentCompletionId: string,
+  ) {
+    return await this.studyParticipationModel
+      .findOne({
+        assignmentCompletionIds: assignmentCompletionId,
+      })
+      .populate('studyId')
+      .populate('assignmentCompletionIds')
+      .exec()
   }
 
   async getStudyByParticipation(studyParticipationId: string) {
