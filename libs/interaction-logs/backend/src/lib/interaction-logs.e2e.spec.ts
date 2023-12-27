@@ -1,20 +1,29 @@
 import { INestApplication } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter'
 import { MongooseModule, getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Connection, Model, connect } from 'mongoose'
+import { Connection, Model, Types, connect } from 'mongoose'
 import * as request from 'supertest'
 import { guessRandomNumberJustStartedCompletionDto } from '@stochus/assignment/core/shared'
-import { researcherUserReggie, studentUser } from '@stochus/auth/shared'
+import {
+  mathmagicianStudentUser,
+  researcherUserReggie,
+  studentUser,
+} from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import {
   validStudyDto,
   validStudyParticipationDto,
 } from '@stochus/studies/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
-import { registerGlobalUtilitiesToApp } from '@stochus/core/backend'
+import {
+  StudyParticipationCreatedPayload,
+  registerGlobalUtilitiesToApp,
+  studyParticipationCreatedToken,
+} from '@stochus/core/backend'
 import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
 import { InteractionLogsController } from './interaction-logs.controller'
@@ -43,6 +52,7 @@ describe('Interaction Logs', () => {
             schema: InteractionLogSchema,
           },
         ]),
+        EventEmitterModule.forRoot(),
       ],
       providers: [
         InteractionLogsService,
@@ -183,5 +193,45 @@ describe('Interaction Logs', () => {
       .post(`/interaction-logs/study-participation/not-a-mongo-id`)
       .send(dto)
       .expect(HttpStatusCode.BadRequest)
+  })
+
+  it('should create a log when a study is created', async () => {
+    const eventEmitter = await app.resolve(EventEmitter2)
+    const model: Model<InteractionLog> = await app.resolve(
+      getModelToken(InteractionLog.name),
+    )
+
+    const participationId = Types.ObjectId.createFromTime(123)
+
+    const currentLogsCount = await model
+      .count({
+        studyParticipationId: participationId,
+      })
+      .exec()
+    expect(currentLogsCount).toBe(0)
+
+    const creationDate = new Date()
+    eventEmitter.emit(studyParticipationCreatedToken, {
+      time: creationDate,
+      userId: mathmagicianStudentUser.id,
+      studyParticipationId: participationId,
+    } satisfies StudyParticipationCreatedPayload)
+
+    const newLogs = await model
+      .find({
+        studyParticipationId: participationId,
+      })
+      .exec()
+    expect(newLogs).toHaveLength(1)
+    expect(newLogs[0]).toEqual(
+      expect.objectContaining({
+        datetime: creationDate,
+        userId: mathmagicianStudentUser.id,
+        studyParticipationId: participationId,
+        payload: {
+          action: 'participation-created',
+        },
+      }),
+    )
   })
 })

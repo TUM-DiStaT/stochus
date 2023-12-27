@@ -1,6 +1,7 @@
 import GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation'
 import { INestApplication } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
@@ -44,7 +45,12 @@ describe('Study Participation', () => {
 
   let mockAuthGuard: MockAuthGuard
 
+  const eventEmitterMock = {
+    emit: jest.fn(),
+  }
+
   beforeAll(async () => {
+    jest.resetAllMocks()
     mongod = await MongoMemoryServer.create()
     mongoConnection = (await connect(mongod.getUri())).connection
 
@@ -81,6 +87,10 @@ describe('Study Participation', () => {
           },
         },
         CompletionsService,
+        {
+          provide: EventEmitter2,
+          useValue: eventEmitterMock,
+        },
       ],
       controllers: [StudyParticipationController],
     }).compile()
@@ -113,6 +123,8 @@ describe('Study Participation', () => {
       .post(`/studies/participate/${validStudyDto.id}`)
       .send({})
       .expect(HttpStatusCode.Unauthorized)
+
+    expect(eventEmitterMock.emit).not.toHaveBeenCalled()
   })
 
   it('should deny creation if roles are missing', async () => {
@@ -122,6 +134,8 @@ describe('Study Participation', () => {
       .post(`/studies/participate/${validStudyDto.id}`)
       .send({})
       .expect(HttpStatusCode.Forbidden)
+
+    expect(eventEmitterMock.emit).not.toHaveBeenCalled()
   })
 
   it("should deny creation when study ID isn't valid", async () => {
@@ -131,6 +145,8 @@ describe('Study Participation', () => {
       .post(`/studies/participate/not-a-mongo-id`)
       .send({})
       .expect(HttpStatusCode.BadRequest)
+
+    expect(eventEmitterMock.emit).not.toHaveBeenCalled()
   })
 
   it('should successfully create a new participation', async () => {
@@ -146,5 +162,7 @@ describe('Study Participation', () => {
       response.body,
     )
     await expect(validate(body)).resolves.toEqual([])
+
+    expect(eventEmitterMock.emit).toHaveBeenCalledTimes(1)
   })
 })

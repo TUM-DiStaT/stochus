@@ -5,6 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { shuffle } from 'lodash'
 import { Connection, Document, Model, Types } from 'mongoose'
@@ -16,6 +17,10 @@ import {
   CompletionsService,
 } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import {
+  StudyParticipationCreatedPayload,
+  studyParticipationCreatedToken,
+} from '@stochus/core/backend'
 import { StudiesBackendService } from '../studies-backend.service'
 import { Study } from '../study.schema'
 import {
@@ -32,6 +37,7 @@ export class StudyParticipationBackendService {
   constructor(
     @InjectModel(StudyParticipation.name)
     private readonly studyParticipationModel: Model<StudyParticipation>,
+    private readonly eventEmitter: EventEmitter2,
     @InjectConnection() private readonly mongooseConnection: Connection,
     private readonly studiesService: StudiesBackendService,
     private readonly keycloakAdminService: KeycloakAdminService,
@@ -119,6 +125,12 @@ export class StudyParticipationBackendService {
 
     await transactionSession.commitTransaction()
     await transactionSession.endSession()
+
+    this.eventEmitter.emit(studyParticipationCreatedToken, {
+      time: new Date(),
+      studyParticipationId: participation._id,
+      userId: user.id,
+    } satisfies StudyParticipationCreatedPayload)
 
     const result = participation as typeof participation & {
       assignmentCompletions: typeof assignmentCompletions
