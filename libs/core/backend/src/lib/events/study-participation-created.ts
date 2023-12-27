@@ -1,10 +1,10 @@
 import { Types } from 'mongoose'
 
-export const studyParticipationCreatedToken = Symbol(
+export const studyParticipationCreatedEventToken = Symbol(
   'study-participation-created',
 )
 
-export type StudyParticipationCreatedPayload = {
+export type StudyParticipationCreatedEventPayload = {
   time: Date
   userId: string
   studyParticipationId: Types.ObjectId

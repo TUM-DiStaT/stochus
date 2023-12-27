@@ -5,12 +5,17 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectModel } from '@nestjs/mongoose'
 import { validate } from 'class-validator'
 import { Model, Types } from 'mongoose'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
 import { User } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
+import {
+  AssignmentCompletedEventPayload,
+  assignmentCompletedEventToken,
+} from '@stochus/core/backend'
 import { AssignmentsCoreBackendService } from '../assignments-core-backend.service'
 import { AssignmentCompletion } from './completion.schema'
 
@@ -21,6 +26,7 @@ export class CompletionsService {
   constructor(
     @InjectModel(AssignmentCompletion.name)
     private readonly assignmentCompletionModel: Model<AssignmentCompletion>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getById(id: string) {
@@ -146,10 +152,20 @@ export class CompletionsService {
       throw new BadRequestException(validationErrors)
     }
 
+    const now = new Date()
+
+    if ((updateInstance as BaseCompletionData).progress === 1) {
+      this.eventEmitter.emit(assignmentCompletedEventToken, {
+        userId: user.id,
+        assignmentCompletionId: new Types.ObjectId(completionId),
+        time: now,
+      } satisfies AssignmentCompletedEventPayload)
+    }
+
     return this.assignmentCompletionModel.findByIdAndUpdate(
       completionId,
       {
-        lastUpdated: new Date(),
+        lastUpdated: now,
         completionData: updateInstance,
       } satisfies Partial<AssignmentCompletion>,
       {

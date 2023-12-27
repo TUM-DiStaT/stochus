@@ -18,8 +18,8 @@ import {
 } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
 import {
-  StudyParticipationCreatedPayload,
-  studyParticipationCreatedToken,
+  StudyParticipationCreatedEventPayload,
+  studyParticipationCreatedEventToken,
 } from '@stochus/core/backend'
 import { StudiesBackendService } from '../studies-backend.service'
 import { Study } from '../study.schema'
@@ -126,11 +126,11 @@ export class StudyParticipationBackendService {
     await transactionSession.commitTransaction()
     await transactionSession.endSession()
 
-    this.eventEmitter.emit(studyParticipationCreatedToken, {
+    this.eventEmitter.emit(studyParticipationCreatedEventToken, {
       time: new Date(),
       studyParticipationId: participation._id,
       userId: user.id,
-    } satisfies StudyParticipationCreatedPayload)
+    } satisfies StudyParticipationCreatedEventPayload)
 
     const result = participation as typeof participation & {
       assignmentCompletions: typeof assignmentCompletions

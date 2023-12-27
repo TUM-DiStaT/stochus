@@ -20,9 +20,9 @@ import {
 } from '@stochus/studies/shared'
 import { MockAuthGuard, MockRoleGuard } from '@stochus/auth/backend'
 import {
-  StudyParticipationCreatedPayload,
+  StudyParticipationCreatedEventPayload,
   registerGlobalUtilitiesToApp,
-  studyParticipationCreatedToken,
+  studyParticipationCreatedEventToken,
 } from '@stochus/core/backend'
 import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
@@ -211,11 +211,11 @@ describe('Interaction Logs', () => {
     expect(currentLogsCount).toBe(0)
 
     const creationDate = new Date()
-    eventEmitter.emit(studyParticipationCreatedToken, {
+    eventEmitter.emit(studyParticipationCreatedEventToken, {
       time: creationDate,
       userId: mathmagicianStudentUser.id,
       studyParticipationId: participationId,
-    } satisfies StudyParticipationCreatedPayload)
+    } satisfies StudyParticipationCreatedEventPayload)
 
     const newLogs = await model
       .find({

@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import { User } from '@stochus/auth/shared'
 import {
-  StudyParticipationCreatedPayload,
-  studyParticipationCreatedToken,
+  StudyParticipationCreatedEventPayload,
+  studyParticipationCreatedEventToken,
 } from '@stochus/core/backend'
 import { StudyParticipationBackendService } from '@stochus/studies/backend'
 import { InteractionLogCreateDto } from '@stochus/interaction-logs/dtos'
@@ -68,9 +68,9 @@ export class InteractionLogsService {
     return await this.interactionLogsModel.find().exec()
   }
 
-  @OnEvent(studyParticipationCreatedToken)
+  @OnEvent(studyParticipationCreatedEventToken)
   async logStudyParticipationCreation(
-    payload: StudyParticipationCreatedPayload,
+    payload: StudyParticipationCreatedEventPayload,
   ) {
     await this.interactionLogsModel.create({
       datetime: new Date(),
