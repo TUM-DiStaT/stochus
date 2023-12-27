@@ -1,4 +1,5 @@
 import { NotFoundException } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { getModelToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { validateOrReject } from 'class-validator'
@@ -24,6 +25,9 @@ describe('CompletionsService', () => {
   let mongod: MongoMemoryServer
   let mongoConnection: Connection
   let completionsModel: Model<AssignmentCompletion>
+  const eventEmitterMock = {
+    emit: jest.fn(),
+  }
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create()
@@ -41,6 +45,7 @@ describe('CompletionsService', () => {
   })
 
   beforeEach(async () => {
+    jest.clearAllMocks()
     await completionsModel.deleteMany().exec()
 
     const module = await Test.createTestingModule({
@@ -49,6 +54,10 @@ describe('CompletionsService', () => {
         {
           provide: getModelToken(AssignmentCompletion.name),
           useValue: completionsModel,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: eventEmitterMock,
         },
       ],
     }).compile()
@@ -239,6 +248,33 @@ describe('CompletionsService', () => {
         (updated?.completionData as GuessRandomNumberAssignmentCompletionData)
           .guesses,
       ).toEqual(newGuesses)
+    })
+
+    it("should NOT fire an event when the update doesn't complete an assignment", async () => {
+      const completion = await service.create(
+        GuessRandomNumberAssignment.id,
+        studentUser,
+      )
+      const newGuesses = [1, 3, 5]
+      await service.updateCompletionData(completion.id, studentUser, {
+        guesses: newGuesses,
+      } as Partial<GuessRandomNumberAssignmentCompletionData>)
+
+      expect(eventEmitterMock.emit).not.toHaveBeenCalled()
+    })
+
+    it('should fire an event when the update completes an assignment', async () => {
+      const completion = await service.create(
+        GuessRandomNumberAssignment.id,
+        studentUser,
+      )
+      const newGuesses = [1, 3, 5]
+      await service.updateCompletionData(completion.id, studentUser, {
+        guesses: newGuesses,
+        progress: 1,
+      } as Partial<GuessRandomNumberAssignmentCompletionData>)
+
+      expect(eventEmitterMock.emit).toHaveBeenCalledTimes(1)
     })
   })
 })

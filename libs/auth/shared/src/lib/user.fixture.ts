@@ -1,6 +1,13 @@
 import { User } from './User'
 import { UserRoles } from './UserRoles'
 
+export const userGroups = {
+  mathmagicians: {
+    name: '/mathmagicians',
+    id: '0f4987e2-3eaf-4030-bc34-25c9b156afb7',
+  },
+}
+
 export const studentUser: User = {
   id: '8b6d51c7-d9b9-453d-89b4-d57ff9a91c5a',
   roles: [
@@ -28,7 +35,7 @@ export const mathmagicianStudentUser: User = {
   email: 'mathmagician-student@example.com',
   firstName: 'Mathmagician',
   lastName: 'Student',
-  groups: [],
+  groups: [userGroups.mathmagicians.name],
 }
 
 export const multiGroupStudentUser: User = {
@@ -43,7 +50,7 @@ export const multiGroupStudentUser: User = {
   email: 'multi-group-student@example.com',
   firstName: 'Multi-Group',
   lastName: 'Student',
-  groups: [],
+  groups: [userGroups.mathmagicians.name],
 }
 
 export const researcherUserReggie: User = {

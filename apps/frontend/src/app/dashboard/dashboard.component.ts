@@ -51,8 +51,9 @@ export class DashboardComponent {
   ) {}
 
   async createNewParticipation(studyId: string) {
-    await firstValueFrom(this.studiesParticipationService.create(studyId))
-    await this.openStudy(studyId)
+    await firstValueFrom(
+      this.studiesParticipationService.createAndOpen(studyId),
+    )
   }
 
   async openStudy(studyId: string) {

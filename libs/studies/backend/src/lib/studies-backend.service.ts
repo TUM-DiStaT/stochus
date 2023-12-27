@@ -178,6 +178,7 @@ export class StudiesBackendService {
       Study & {
         participations: (Document<Types.ObjectId> &
           StudyParticipation & {
+            generalInteractionLogs: Document<Types.ObjectId>[]
             assignmentCompletions: (Document<Types.ObjectId> &
               AssignmentCompletion & {
                 interactionLogs: Document<Types.ObjectId>[]
@@ -209,6 +210,14 @@ export class StudiesBackendService {
                     },
                   },
                 ],
+              },
+            },
+            {
+              $lookup: {
+                from: 'interactionlogs',
+                localField: '_id',
+                foreignField: 'studyParticipationId',
+                as: 'generalInteractionLogs',
               },
             },
           ],
@@ -250,6 +259,7 @@ export class StudiesBackendService {
       .exec()
   }
 
+  // TODO: this should be cleaned up by just emitting an event that other domains listen to
   async delete(studyId: string, user: User) {
     const transactionSession = await this.mongooseConnection.startSession()
     transactionSession.startTransaction()
@@ -261,9 +271,14 @@ export class StudiesBackendService {
       .map((completion) => completion._id)
       .filter(isDefined)
 
-    const interactionLogIds = study.participations
-      .flatMap((participation) => participation.assignmentCompletions)
-      .flatMap((completion) => completion.interactionLogs)
+    const interactionLogIds = [
+      ...study.participations
+        .flatMap((participation) => participation.assignmentCompletions)
+        .flatMap((completion) => completion.interactionLogs),
+      ...study.participations.flatMap(
+        (participation) => participation.generalInteractionLogs,
+      ),
+    ]
       .map((log) => log._id)
       .filter(isDefined)
 

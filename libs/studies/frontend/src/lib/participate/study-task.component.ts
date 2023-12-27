@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, HostListener, OnDestroy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import {
   BehaviorSubject,
@@ -7,8 +7,10 @@ import {
   catchError,
   combineLatest,
   filter,
+  firstValueFrom,
   map,
   of,
+  shareReplay,
   switchMap,
   tap,
 } from 'rxjs'
@@ -17,6 +19,7 @@ import {
   AssignmentCompletionProcessHostComponent,
   AssignmentsService,
 } from '@stochus/assignment/core/frontend'
+import { InteractionLogsService } from '@stochus/interaction-logs/frontend'
 import { StudiesParticipationService } from '@stochus/studies/frontend-static'
 import { ToastService } from '@stochus/daisy-ui'
 
@@ -26,7 +29,7 @@ import { ToastService } from '@stochus/daisy-ui'
   templateUrl: './study-task.component.html',
   imports: [AsyncPipe, AssignmentCompletionProcessHostComponent],
 })
-export class StudyTaskComponent {
+export class StudyTaskComponent implements OnDestroy {
   activeCompletionIndex$ = new BehaviorSubject<number | undefined>(undefined)
   participation$ = this.activatedRoute.paramMap.pipe(
     switchMap((map) => {
@@ -49,6 +52,13 @@ export class StudyTaskComponent {
         )
 
       this.activeCompletionIndex$.next(firstNotCompletedIndex)
+      firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'participation-resumed',
+          },
+        }),
+      ).catch(console.error)
     }),
     catchError((e) => {
       console.error(e)
@@ -58,6 +68,7 @@ export class StudyTaskComponent {
       this.router.navigate([''])
       return EMPTY
     }),
+    shareReplay(),
   )
 
   currCompletion$ = combineLatest([
@@ -77,6 +88,7 @@ export class StudyTaskComponent {
 
       return of(participation.assignmentCompletions[activeCompletionIndex])
     }),
+    shareReplay(),
   )
   currAssignment$ = this.currCompletion$.pipe(
     map((completion) =>
@@ -87,6 +99,7 @@ export class StudyTaskComponent {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly studiesParticipationService: StudiesParticipationService,
+    private readonly interactionLogsService: InteractionLogsService,
     private readonly toastService: ToastService,
     private readonly router: Router,
   ) {}
@@ -95,5 +108,38 @@ export class StudyTaskComponent {
     this.activeCompletionIndex$.next(
       (this.activeCompletionIndex$.value ?? -1) + 1,
     )
+  }
+
+  async ngOnDestroy() {
+    const participation = await firstValueFrom(this.participation$)
+    await firstValueFrom(
+      this.interactionLogsService.logForStudyParticipation(participation.id, {
+        payload: {
+          action: 'participation-paused',
+        },
+      }),
+    )
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  async onVisibilityChange() {
+    const participation = await firstValueFrom(this.participation$)
+    if (document.visibilityState === 'visible') {
+      await firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'tabbed-back-in',
+          },
+        }),
+      )
+    } else {
+      await firstValueFrom(
+        this.interactionLogsService.logForStudyParticipation(participation.id, {
+          payload: {
+            action: 'tabbed-out',
+          },
+        }),
+      )
+    }
   }
 }

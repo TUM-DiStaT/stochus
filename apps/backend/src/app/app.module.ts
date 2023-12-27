@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
 import { AssignmentsCoreBackendModule } from '@stochus/assignments/core/backend'
 import { BackendAuthModule, KeycloakAdminModule } from '@stochus/auth/backend'
@@ -12,6 +13,7 @@ import { StudiesBackendModule } from '@stochus/studies/backend'
 @Module({
   imports: [
     AppConfigurationModule,
+    EventEmitterModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [AppConfigurationModule],
       inject: [AppConfigurationService],

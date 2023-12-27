@@ -1,3 +1,4 @@
+@if (((toastService.toasts$ | async)?.length ?? 0) > 0) {
 <daisy-toast [class]="class">
   <ng-container *ngFor="let toast of toastService.toasts$ | async">
     <daisy-standard-toast-alert
@@ -9,3 +10,4 @@
     </daisy-standard-toast-alert>
   </ng-container>
 </daisy-toast>
+}

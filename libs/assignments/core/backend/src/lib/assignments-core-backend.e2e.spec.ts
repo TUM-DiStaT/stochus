@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
 import { HttpStatusCode } from 'axios'
@@ -27,6 +28,7 @@ describe('Assignments', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [
         MongooseModule.forRoot(mongod.getUri()),
+        EventEmitterModule.forRoot(),
         AssignmentsCoreBackendModule,
       ],
     })
@@ -121,6 +123,7 @@ describe('Assignments', () => {
           "id": Any<String>,
           "isForStudy": false,
           "lastUpdated": Any<Date>,
+          "userId": "creation-test-user",
         }
       `,
       )

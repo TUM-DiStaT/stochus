@@ -5,6 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectConnection, InjectModel } from '@nestjs/mongoose'
 import { shuffle } from 'lodash'
 import { Connection, Document, Model, Types } from 'mongoose'
@@ -16,6 +17,10 @@ import {
   CompletionsService,
 } from '@stochus/assignments/core/backend'
 import { KeycloakAdminService } from '@stochus/auth/backend'
+import {
+  StudyParticipationCreatedEventPayload,
+  studyParticipationCreatedEventToken,
+} from '@stochus/core/backend'
 import { StudiesBackendService } from '../studies-backend.service'
 import { Study } from '../study.schema'
 import {
@@ -32,6 +37,7 @@ export class StudyParticipationBackendService {
   constructor(
     @InjectModel(StudyParticipation.name)
     private readonly studyParticipationModel: Model<StudyParticipation>,
+    private readonly eventEmitter: EventEmitter2,
     @InjectConnection() private readonly mongooseConnection: Connection,
     private readonly studiesService: StudiesBackendService,
     private readonly keycloakAdminService: KeycloakAdminService,
@@ -120,10 +126,31 @@ export class StudyParticipationBackendService {
     await transactionSession.commitTransaction()
     await transactionSession.endSession()
 
-    return { ...participation, assignmentCompletions }
+    this.eventEmitter.emit(studyParticipationCreatedEventToken, {
+      time: new Date(),
+      studyParticipationId: participation._id,
+      userId: user.id,
+    } satisfies StudyParticipationCreatedEventPayload)
+
+    const result = participation as typeof participation & {
+      assignmentCompletions: typeof assignmentCompletions
+    }
+    result.assignmentCompletions = assignmentCompletions
+    return result
   }
 
-  async assertUserMayParticipateInStudy(user: User, studyDto: StudyDto) {
+  async assertUserMayParticipateInStudy(
+    user: User,
+    studyIdOrDto: StudyDto | string,
+  ) {
+    const studyDto =
+      typeof studyIdOrDto === 'string'
+        ? plainToInstance(
+            StudyDto,
+            await this.studiesService.getById(studyIdOrDto),
+          )
+        : studyIdOrDto
+
     const userGroups = await this.keycloakAdminService.getGroupsForUser(user)
     const now = new Date().valueOf()
 
@@ -158,13 +185,9 @@ export class StudyParticipationBackendService {
     user: User,
     assignmentCompletionId: string,
   ) {
-    const participation = await this.studyParticipationModel
-      .findOne({
-        assignmentCompletionIds: assignmentCompletionId,
-      })
-      .populate('studyId')
-      .populate('assignmentCompletionIds')
-      .exec()
+    const participation = await this.getParticipationForAssignmentCompletion(
+      assignmentCompletionId,
+    )
 
     if (!participation) {
       throw new NotFoundException()
@@ -209,5 +232,25 @@ export class StudyParticipationBackendService {
       )
       throw new ForbiddenException()
     }
+  }
+
+  async getParticipationForAssignmentCompletion(
+    assignmentCompletionId: string,
+  ) {
+    return await this.studyParticipationModel
+      .findOne({
+        assignmentCompletionIds: assignmentCompletionId,
+      })
+      .populate('studyId')
+      .populate('assignmentCompletionIds')
+      .exec()
+  }
+
+  async getStudyByParticipation(studyParticipationId: string) {
+    const study = await this.studyParticipationModel
+      .findById(studyParticipationId)
+      .populate('studyId')
+      .exec()
+    return plainToInstance(StudyDto, study?.studyId)
   }
 }

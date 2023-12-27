@@ -2,7 +2,7 @@ import {
   GuessRandomNumberAssignment,
   GuessRandomNumberAssignmentConfiguration,
 } from '@stochus/assignments/demos/guess-random-number/shared'
-import { researcherUserReggie } from '@stochus/auth/shared'
+import { researcherUserReggie, userGroups } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
 import { StudyCreateDto, StudyDto } from './study.dto'
 
@@ -14,8 +14,8 @@ export const plainValidStudyDto = {
 This is **amazing** markdown`,
   ownerId: researcherUserReggie.id,
   startDate: new Date(2022, 8, 1),
-  endDate: new Date(2022, 8, 29),
-  participantsGroupId: '922b8216-6527-46be-a577-5c4fa86ad78e',
+  endDate: new Date(2092, 8, 29),
+  participantsGroupId: userGroups.mathmagicians.id,
   randomizeTaskOrder: false,
   tasks: [
     {
