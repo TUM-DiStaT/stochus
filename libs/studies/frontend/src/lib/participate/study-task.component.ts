@@ -82,16 +82,6 @@ export class StudyTaskComponent implements OnDestroy {
         activeCompletionIndex < 0 ||
         activeCompletionIndex >= participation.assignmentCompletions.length
       ) {
-        firstValueFrom(
-          this.interactionLogsService.logForStudyParticipation(
-            participation.studyId,
-            {
-              payload: {
-                action: 'study-completed',
-              },
-            },
-          ),
-        ).catch(console.error)
         this.router.navigate(['studies', 'completed', participation.studyId])
         return EMPTY
       }
