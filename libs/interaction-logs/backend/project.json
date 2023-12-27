@@ -19,5 +19,5 @@
       }
     }
   },
-  "tags": ["backend"]
+  "tags": ["scope:backend"]
 }

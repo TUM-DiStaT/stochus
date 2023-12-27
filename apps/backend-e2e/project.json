@@ -17,5 +17,6 @@
         "lintFilePatterns": ["apps/backend-e2e/**/*.{js,ts}"]
       }
     }
-  }
+  },
+  "tags": ["scope:backend", "e2e"]
 }

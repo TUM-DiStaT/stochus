@@ -2,7 +2,7 @@
   "name": "guess-random-number-demo-assignment-frontend",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/assignments/demos/guess-random-number/frontend/src",
-  "tags": [],
+  "tags": ["scope:frontend"],
   "projectType": "library",
   "targets": {
     "test": {

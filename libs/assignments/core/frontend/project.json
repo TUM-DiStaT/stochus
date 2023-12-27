@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/assignments/core/frontend/src",
   "prefix": "stochus",
-  "tags": [],
+  "tags": ["scope:frontend"],
   "projectType": "library",
   "targets": {
     "test": {

@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/interaction-logs/frontend/src",
   "prefix": "lib",
-  "tags": [],
+  "tags": ["scope:frontend"],
   "projectType": "library",
   "targets": {
     "test": {

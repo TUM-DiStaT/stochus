@@ -18,7 +18,11 @@
               },
               {
                 "sourceTag": "scope:frontend",
-                "onlyDependOnLibsWithTags": ["scope:shared", "scope:frontend"]
+                "onlyDependOnLibsWithTags": [
+                  "scope:shared",
+                  "scope:daisyui",
+                  "scope:frontend"
+                ]
               },
               {
                 "sourceTag": "scope:backend",
@@ -27,6 +31,10 @@
               {
                 "sourceTag": "scope:daisyui",
                 "onlyDependOnLibsWithTags": ["scope:daisyui"]
+              },
+              {
+                "sourceTag": "*",
+                "notDependOnLibsWithTags": ["deployable", "e2e"]
               }
             ]
           }
