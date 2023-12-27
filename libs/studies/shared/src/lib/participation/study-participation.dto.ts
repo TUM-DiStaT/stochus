@@ -10,6 +10,7 @@ import {
   AssignmentCompletionDto,
   AssignmentCompletionWithInteractionLogsDto,
 } from '@stochus/assignment/core/shared'
+import { InteractionLogForDownloadDto } from '@stochus/interaction-logs/dtos'
 
 export class StudyParticipationCreateDto {
   @Expose()
@@ -62,4 +63,10 @@ export class StudyParticipationWithAssignmentCompletionsAndLogsDto extends Study
   @ValidateNested({ each: true })
   @IsArray()
   assignmentCompletions!: AssignmentCompletionWithInteractionLogsDto[]
+
+  @Expose()
+  @Type(() => InteractionLogForDownloadDto)
+  @ValidateNested({ each: true })
+  @IsArray()
+  generalInteractionLogs!: InteractionLogForDownloadDto[]
 }

@@ -211,6 +211,14 @@ export class StudiesBackendService {
                 ],
               },
             },
+            {
+              $lookup: {
+                from: 'interactionlogs',
+                localField: '_id',
+                foreignField: 'studyParticipationId',
+                as: 'generalInteractionLogs',
+              },
+            },
           ],
         },
       },
