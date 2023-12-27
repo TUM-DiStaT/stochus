@@ -13,8 +13,28 @@
             "allow": [],
             "depConstraints": [
               {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
+              },
+              {
+                "sourceTag": "scope:frontend",
+                "onlyDependOnLibsWithTags": [
+                  "scope:shared",
+                  "scope:daisyui",
+                  "scope:frontend"
+                ]
+              },
+              {
+                "sourceTag": "scope:backend",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:backend"]
+              },
+              {
+                "sourceTag": "scope:daisyui",
+                "onlyDependOnLibsWithTags": ["scope:daisyui"]
+              },
+              {
                 "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "notDependOnLibsWithTags": ["deployable", "e2e"]
               }
             ]
           }

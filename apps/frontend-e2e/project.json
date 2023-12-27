@@ -25,6 +25,6 @@
       }
     }
   },
-  "tags": [],
+  "tags": ["scope:frontend", "e2e"],
   "implicitDependencies": ["frontend"]
 }
