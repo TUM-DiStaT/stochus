@@ -18,6 +18,8 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noImplicitOverride": true,
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/@testing-library"],
     "paths": {
       "@stochus/assignment/core/frontend": [
         "libs/assignments/core/frontend/src/index.ts"
