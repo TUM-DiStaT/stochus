@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { ExtractFromHistogramAssignmentFrontendComponent } from './extract-from-histogram-assignment-frontend.component'
+import { ExtractFromHistogramAssignmentProcessComponent } from './extract-from-histogram-assignment-process.component'
 
 describe('ExtractFromHistogramAssignmentFrontendComponent', () => {
-  let component: ExtractFromHistogramAssignmentFrontendComponent
-  let fixture: ComponentFixture<ExtractFromHistogramAssignmentFrontendComponent>
+  let component: ExtractFromHistogramAssignmentProcessComponent
+  let fixture: ComponentFixture<ExtractFromHistogramAssignmentProcessComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExtractFromHistogramAssignmentFrontendComponent],
+      imports: [ExtractFromHistogramAssignmentProcessComponent],
     }).compileComponents()
 
     fixture = TestBed.createComponent(
-      ExtractFromHistogramAssignmentFrontendComponent,
+      ExtractFromHistogramAssignmentProcessComponent,
     )
     component = fixture.componentInstance
     fixture.detectChanges()

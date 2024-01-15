@@ -31,7 +31,7 @@ export const getOptimalGuessesForResult = (target?: number) => {
 }
 
 @Component({
-  selector: 'stochus-guess-random-number-assignment-feedback',
+  selector: 'stochus-feedback',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './guess-random-number-assignment-feedback.component.html',

@@ -13,10 +13,13 @@ import {
   emptyBaseCompletionData,
 } from '@stochus/assignments/model/shared'
 
+export const extractableProperties = ['mean', 'median'] as const
+export type ExtractableProperty = (typeof extractableProperties)[number]
+
 export class ExtractFromHistogramAssignmentConfiguration {
   @Expose()
-  @IsEnum(['mean', 'median'])
-  targetProperty!: 'mean' | 'median'
+  @IsEnum(extractableProperties)
+  targetProperty!: ExtractableProperty
 
   @Expose()
   @IsArray()
