@@ -34,6 +34,9 @@
       "@stochus/assignments/demos/guess-random-number/shared": [
         "libs/assignments/demos/guess-random-number/shared/src/index.ts"
       ],
+      "@stochus/assignments/extract-from-histogram-assignment/shared": [
+        "libs/assignments/extract-from-histogram/shared/src/index.ts"
+      ],
       "@stochus/assignments/model/frontend": [
         "libs/assignments/model/frontend/src/index.ts"
       ],
