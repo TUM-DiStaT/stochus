@@ -37,10 +37,9 @@
   <canvas
     baseChart
     class="chart"
-    [type]="chartType"
     [data]="(chartData$ | async) ?? undefined"
     [plugins]="chartPlugins"
-    [options]="chartOptions"
+    [options]="(chartOptions$ | async) ?? undefined"
   ></canvas>
 </div>
 }

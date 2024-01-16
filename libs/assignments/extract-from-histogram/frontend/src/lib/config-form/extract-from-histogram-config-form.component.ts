@@ -1,11 +1,19 @@
 import { AsyncPipe } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { ChartData, ChartOptions, ChartType } from 'chart.js'
+import { ChartData, ChartOptions } from 'chart.js'
 import DataLabelsPlugin from 'chartjs-plugin-datalabels'
 import { NgChartsModule } from 'ng2-charts'
 import { FormModel } from 'ngx-mf'
-import { Observable, concat, map, of, shareReplay } from 'rxjs'
+import {
+  Observable,
+  concat,
+  debounceTime,
+  filter,
+  map,
+  of,
+  shareReplay,
+} from 'rxjs'
 import { ExtractFromHistogramAssignmentConfiguration } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 
@@ -77,45 +85,107 @@ export class ExtractFromHistogramConfigFormComponent
     )
   })
 
-  chartType = 'bar' as const satisfies ChartType
-  chartOptions: ChartOptions<typeof this.chartType> = {
-    // We use these empty structures as placeholders for dynamic theming.
-    scales: {
-      x: {},
-      y: {},
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
-      },
-    },
-  }
-  chartPlugins = [DataLabelsPlugin]
-  chartData$: Observable<ChartData<typeof this.chartType>> =
-    this.parsedCsv$.pipe(
-      map((data) => {
-        // compute frequency of each item in data
-        const frequencies = new Map<number, number>()
-        for (const item of data ?? []) {
-          frequencies.set(item, (frequencies.get(item) ?? 0) + 1)
-        }
-        const frequencyEntries = [...frequencies.entries()].sort(
-          ([a], [b]) => a - b,
-        )
-        return {
-          labels: frequencyEntries.map(([value]) => value.toString()),
-          datasets: [
-            {
-              data: frequencyEntries.map(([, frequency]) => frequency),
+  chartOptions$ = this.parsedCsv$.pipe(
+    filter(Boolean),
+    debounceTime(1000),
+    map((data): ChartOptions => {
+      const min = Math.min(...data)
+      const max = Math.max(...data)
+      return {
+        // We use these empty structures as placeholders for dynamic theming.
+        scales: {
+          inputRangeY: {
+            type: 'linear',
+            position: 'right',
+            axis: 'y',
+            min,
+            max,
+            title: {
+              text: 'Eingabebereich (Durchschnitt, Median)',
+              display: true,
             },
-          ],
+          },
+          histogramY: {
+            type: 'linear',
+            position: 'left',
+            axis: 'y',
+            title: {
+              text: 'Häufigkeit (Histogramm)',
+              display: true,
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+          },
+        },
+      }
+    }),
+  )
+  chartPlugins = [DataLabelsPlugin]
+  chartData$: Observable<ChartData> = this.parsedCsv$.pipe(
+    filter(Boolean),
+    debounceTime(1000),
+    map((data) => {
+      // compute frequency of each item in data
+      const frequencies = new Map<number, number>()
+      let mean = 0
+      for (const item of data) {
+        frequencies.set(item, (frequencies.get(item) ?? 0) + 1)
+        mean += item
+      }
+      mean /= data.length ?? 1
+      const frequencyEntries = [...frequencies.entries()].sort(
+        ([a], [b]) => a - b,
+      )
+
+      // compute median
+      let median = 0
+      let medianIndex = 0
+      for (const [value, frequency] of frequencyEntries) {
+        medianIndex += frequency
+        if (medianIndex >= data.length / 2) {
+          median = value
+          break
         }
-      }),
-    )
+      }
+
+      return {
+        labels: frequencyEntries.map(([value]) => value.toString()),
+        datasets: [
+          {
+            label: 'Histogramm',
+            type: 'bar',
+            data: frequencyEntries.map(([, frequency]) => frequency),
+            yAxisID: 'histogramY',
+          },
+          {
+            type: 'line',
+            label: 'Durchschnitt',
+            data: frequencyEntries.map(() => mean),
+            yAxisID: 'inputRangeY',
+            datalabels: {
+              display: false,
+            },
+          },
+          {
+            type: 'line',
+            label: 'Median',
+            data: frequencyEntries.map(() => median),
+            yAxisID: 'inputRangeY',
+            datalabels: {
+              display: false,
+            },
+          },
+        ],
+      }
+    }),
+  )
 
   ngOnDestroy() {
     this.csvTransformationSubscription.unsubscribe()
