@@ -3,6 +3,7 @@ import type { ChartData, ChartDataset } from 'chart.js'
 export type HistogramOptions = {
   showMean?: boolean
   showMedian?: boolean
+  showBoxPlot?: boolean
 }
 
 export const computeChartDataForHistogram = (
@@ -75,6 +76,22 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
+    } as ChartDataset)
+  }
+
+  if (options?.showBoxPlot) {
+    datasets.push({
+      type: 'boxplot' as string,
+      label: 'Boxplot',
+      data: [data],
+      xAxisID: 'inputRangeX',
+      yAxisID: 'boxplotY',
+      indexAxis: 'y',
+      datalabels: {
+        display: false,
+      },
+      backgroundColor: '#78E3C1',
+      borderColor: '#21A179',
     } as ChartDataset)
   }
 

@@ -125,6 +125,12 @@ export class ExtractFromHistogramConfigFormComponent
               display: true,
             },
           },
+          boxplotY: {
+            type: 'category',
+            axis: 'y',
+            labels: ['Boxplot'],
+            display: false,
+          },
         },
         plugins: {
           legend: {
@@ -144,8 +150,7 @@ export class ExtractFromHistogramConfigFormComponent
     debounceTime(1000),
     map((data) =>
       computeChartDataForHistogram(data, {
-        showMean: true,
-        showMedian: true,
+        showBoxPlot: true,
       }),
     ),
   )
