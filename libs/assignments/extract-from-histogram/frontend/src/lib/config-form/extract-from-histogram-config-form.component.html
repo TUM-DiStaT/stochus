@@ -32,6 +32,15 @@
   }
 </label>
 
-<code>
-  {{ formControl.value | json }}
-</code>
+@if (formControl.controls.data.valid) {
+<div>
+  <canvas
+    baseChart
+    class="chart"
+    [type]="chartType"
+    [data]="(chartData$ | async) ?? undefined"
+    [plugins]="chartPlugins"
+    [options]="chartOptions"
+  ></canvas>
+</div>
+}
