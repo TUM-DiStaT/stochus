@@ -95,23 +95,28 @@ export class ExtractFromHistogramConfigFormComponent
       return {
         // We use these empty structures as placeholders for dynamic theming.
         scales: {
-          inputRangeY: {
+          inputRangeX: {
+            type: 'linear',
+            position: 'bottom',
+            axis: 'x',
+            min,
+            max,
+            display: false,
+          },
+          fullVerticalLineY: {
             type: 'linear',
             position: 'right',
             axis: 'y',
-            min,
-            max,
-            title: {
-              text: 'Eingabebereich (Durchschnitt, Median)',
-              display: true,
-            },
+            min: 0,
+            max: 1,
+            display: false,
           },
           histogramY: {
             type: 'linear',
             position: 'left',
             axis: 'y',
             title: {
-              text: 'Häufigkeit (Histogramm)',
+              text: 'Häufigkeit',
               display: true,
             },
           },

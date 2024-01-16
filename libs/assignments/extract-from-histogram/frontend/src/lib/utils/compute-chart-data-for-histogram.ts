@@ -55,8 +55,10 @@ export const computeChartDataForHistogram = (
     datasets.push({
       type: 'line',
       label: 'Durchschnitt',
-      data: Array(range).fill(mean),
-      yAxisID: 'inputRangeY',
+      data: Array(2).fill(mean),
+      xAxisID: 'inputRangeX',
+      yAxisID: 'fullVerticalLineY',
+      indexAxis: 'y',
       datalabels: {
         display: false,
       },
@@ -67,8 +69,10 @@ export const computeChartDataForHistogram = (
     datasets.push({
       type: 'line',
       label: 'Median',
-      data: Array(range).fill(median),
-      yAxisID: 'inputRangeY',
+      data: Array(2).fill(median),
+      xAxisID: 'inputRangeX',
+      yAxisID: 'fullVerticalLineY',
+      indexAxis: 'y',
       datalabels: {
         display: false,
       },
@@ -76,7 +80,9 @@ export const computeChartDataForHistogram = (
   }
 
   return {
-    labels,
+    // labels,
+    xLabels: labels,
+    yLabels: ['0', '1'],
     datasets,
   }
 }
