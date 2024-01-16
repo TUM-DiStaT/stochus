@@ -52,6 +52,8 @@
       class="chart"
       [data]="chartData"
       [options]="chartOptions"
+      (chartClick)="onChartEvent('click', $event)"
+      (chartHover)="onChartEvent('hover', $event)"
     ></canvas>
   </div>
 </div>

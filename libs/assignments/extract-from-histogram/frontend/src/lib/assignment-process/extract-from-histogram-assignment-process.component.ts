@@ -8,9 +8,11 @@ import {
   Output,
 } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { ChartData, ChartOptions } from 'chart.js'
+import { ActiveElement, ChartData, ChartEvent, ChartOptions } from 'chart.js'
+import { isEqual } from 'lodash'
 import { NgChartsModule } from 'ng2-charts'
 import {
+  Subject,
   Subscription,
   debounceTime,
   distinctUntilChanged,
@@ -18,6 +20,7 @@ import {
   map,
   merge,
   pairwise,
+  tap,
 } from 'rxjs'
 import {
   ExtractFromHistogramAssignmentCompletionData,
@@ -99,6 +102,14 @@ export class ExtractFromHistogramAssignmentProcessComponent
       value,
     })),
   )
+  chartEventsSubject = new Subject<{
+    action: 'histogram-hover' | 'histogram-click'
+    targets: { datasetLabel: string | undefined; value: string }[]
+  }>()
+  loggableChartEvents$ = this.chartEventsSubject.pipe(
+    distinctUntilChanged((last, curr) => isEqual(last, curr)),
+    tap((event) => console.log(event)),
+  )
 
   subscriptions: Subscription[] = []
 
@@ -118,7 +129,7 @@ export class ExtractFromHistogramAssignmentProcessComponent
       }),
     )
     this.subscriptions.push(
-      merge(this.deletions$, this.enteredValues$)
+      merge(this.deletions$, this.enteredValues$, this.loggableChartEvents$)
         .pipe(
           distinctUntilChanged(
             (lastEvent, currEvent) =>
@@ -134,6 +145,29 @@ export class ExtractFromHistogramAssignmentProcessComponent
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe())
+  }
+
+  onChartEvent(
+    eventType: 'click' | 'hover',
+    event: { event?: ChartEvent; active?: object[] },
+  ) {
+    const activeElements = event.active as ActiveElement[] | undefined
+    if (activeElements && activeElements.length > 0) {
+      const targets = activeElements.map((activeElement) => {
+        const datasetIndex = activeElement.datasetIndex
+        const index = activeElement.index
+        const dataset = this.chartData.datasets[datasetIndex]
+        const value = this.chartData.xLabels?.[index] as string
+        return {
+          datasetLabel: dataset?.label,
+          value,
+        }
+      })
+      this.chartEventsSubject.next({
+        action: `histogram-${eventType}`,
+        targets,
+      })
+    }
   }
 
   private computeChartInput() {
