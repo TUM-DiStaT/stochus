@@ -1,6 +1,6 @@
 import type { ChartOptions } from 'chart.js'
 
-export const computeChartOptions = (data: number[]): ChartOptions => {
+export const computeChartOptions = (data: number[]) => {
   const min = Math.min(...data)
   const max = Math.max(...data)
   return {
@@ -35,6 +35,9 @@ export const computeChartOptions = (data: number[]): ChartOptions => {
           text: 'Häufigkeit',
           display: true,
         },
+        ticks: {
+          stepSize: 1,
+        },
       },
       boxplotY: {
         type: 'category',
@@ -43,6 +46,7 @@ export const computeChartOptions = (data: number[]): ChartOptions => {
         display: false,
       },
     },
+    animation: false,
     plugins: {
       legend: {
         display: true,
@@ -52,5 +56,5 @@ export const computeChartOptions = (data: number[]): ChartOptions => {
         align: 'end',
       },
     },
-  }
+  } as ChartOptions
 }
