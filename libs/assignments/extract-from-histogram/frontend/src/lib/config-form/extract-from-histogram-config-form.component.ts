@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { ChartData, ChartOptions } from 'chart.js'
+import { ChartData } from 'chart.js'
 import DataLabelsPlugin from 'chartjs-plugin-datalabels'
 import { NgChartsModule } from 'ng2-charts'
 import { FormModel } from 'ngx-mf'
@@ -17,6 +17,7 @@ import {
 import { ExtractFromHistogramAssignmentConfiguration } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 import { computeChartDataForHistogram } from '../utils/compute-chart-data-for-histogram'
+import { computeChartOptions } from '../utils/compute-chart-options'
 
 @Component({
   standalone: true,
@@ -89,60 +90,7 @@ export class ExtractFromHistogramConfigFormComponent
   chartOptions$ = this.parsedCsv$.pipe(
     filter(Boolean),
     debounceTime(1000),
-    map((data): ChartOptions => {
-      const min = Math.min(...data)
-      const max = Math.max(...data)
-      return {
-        // We use these empty structures as placeholders for dynamic theming.
-        scales: {
-          inputRangeX: {
-            type: 'linear',
-            position: 'bottom',
-            axis: 'x',
-            // compute custom grace / offset to account for bar widths
-            // in the bar chart. this ensures that some x position here
-            // aligns perfectly with the center of the corresponding bar
-            min: min - 0.5,
-            max: max + 0.5,
-            grace: 0,
-            offset: false,
-            display: false,
-          },
-          fullVerticalLineY: {
-            type: 'linear',
-            position: 'right',
-            axis: 'y',
-            min: 0,
-            max: 1,
-            display: false,
-          },
-          histogramY: {
-            type: 'linear',
-            position: 'left',
-            axis: 'y',
-            title: {
-              text: 'Häufigkeit',
-              display: true,
-            },
-          },
-          boxplotY: {
-            type: 'category',
-            axis: 'y',
-            labels: ['Boxplot'],
-            display: false,
-          },
-        },
-        plugins: {
-          legend: {
-            display: true,
-          },
-          datalabels: {
-            anchor: 'end',
-            align: 'end',
-          },
-        },
-      }
-    }),
+    map(computeChartOptions),
   )
   chartPlugins = [DataLabelsPlugin]
   chartData$: Observable<ChartData> = this.parsedCsv$.pipe(
