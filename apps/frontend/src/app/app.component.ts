@@ -7,6 +7,7 @@ import {
   BoxPlotController,
 } from '@sgratzl/chartjs-chart-boxplot'
 import { CategoryScale, Chart, LinearScale } from 'chart.js'
+import DataLabelsPlugin from 'chartjs-plugin-datalabels'
 import { NgChartsConfiguration } from 'ng2-charts'
 import { ToastServiceHostComponent } from '@stochus/daisy-ui'
 import { NavbarComponent } from './navbar/navbar.component'
@@ -26,6 +27,7 @@ import { NavbarComponent } from './navbar/navbar.component'
       provide: NgChartsConfiguration,
       useValue: {
         generateColors: true,
+        plugins: [DataLabelsPlugin],
       } satisfies NgChartsConfiguration,
     },
   ],

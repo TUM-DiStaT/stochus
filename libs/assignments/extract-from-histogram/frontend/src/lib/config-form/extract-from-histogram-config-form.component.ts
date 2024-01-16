@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ChartData } from 'chart.js'
-import DataLabelsPlugin from 'chartjs-plugin-datalabels'
 import { NgChartsModule } from 'ng2-charts'
 import { FormModel } from 'ngx-mf'
 import {
@@ -92,7 +91,6 @@ export class ExtractFromHistogramConfigFormComponent
     debounceTime(1000),
     map(computeChartOptions),
   )
-  chartPlugins = [DataLabelsPlugin]
   chartData$: Observable<ChartData> = this.parsedCsv$.pipe(
     filter(Boolean),
     debounceTime(1000),

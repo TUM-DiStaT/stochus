@@ -7,7 +7,7 @@ it('should not throw an error when data is empty', () => {
 it('should compute correct median when odd number of items', () => {
   const data = [1, 2, 3, 4, 5]
   const chartData = computeChartDataForHistogram(data, {
-    showMedian: true,
+    showActualMedian: true,
   })
   const medianDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Median',
@@ -18,7 +18,7 @@ it('should compute correct median when odd number of items', () => {
 it('should compute correct median when even number of items', () => {
   const data = [1, 2, 3, 4]
   const chartData = computeChartDataForHistogram(data, {
-    showMedian: true,
+    showActualMedian: true,
   })
   const medianDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Median',
@@ -29,7 +29,7 @@ it('should compute correct median when even number of items', () => {
 it('should compute correct mean', () => {
   const data = [1, 2, 3, 4]
   const chartData = computeChartDataForHistogram(data, {
-    showMean: true,
+    showActualMean: true,
   })
   const meanDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Durchschnitt',

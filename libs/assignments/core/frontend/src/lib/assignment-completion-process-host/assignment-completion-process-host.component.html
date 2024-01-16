@@ -1,2 +1,6 @@
-{{ (assignment$ | async)?.name }}
-<ng-template stochusDynamicContent />
+<div class="p-12 flex gap-12 flex-col">
+  <h1 class="text-4xl font-bold">
+    {{ (assignment$ | async)?.name }}
+  </h1>
+  <ng-template stochusDynamicContent />
+</div>

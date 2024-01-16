@@ -1,11 +1,12 @@
 import type { ChartData, ChartDataset } from 'chart.js'
 
 export type HistogramOptions = {
-  showMean?: boolean
-  showMedian?: boolean
+  showActualMean?: boolean
+  showActualMedian?: boolean
+  customMean?: number
+  customMedian?: number
   showBoxPlot?: boolean
 }
-
 export const computeChartDataForHistogram = (
   data: number[],
   options?: HistogramOptions,
@@ -41,11 +42,11 @@ export const computeChartDataForHistogram = (
     },
   ]
 
-  if (options?.showMean) {
+  if (options?.customMean !== undefined) {
     datasets.push({
       type: 'line',
-      label: 'Durchschnitt',
-      data: Array(2).fill(mean),
+      label: 'Eingegebener Durchschnitt',
+      data: Array(2).fill(options.customMean),
       xAxisID: 'inputRangeX',
       yAxisID: 'fullVerticalLineY',
       indexAxis: 'y',
@@ -55,7 +56,35 @@ export const computeChartDataForHistogram = (
     } as ChartDataset)
   }
 
-  if (options?.showMedian) {
+  if (options?.showActualMean) {
+    datasets.push({
+      type: 'line',
+      label: 'Tatsächlicher Durchschnitt',
+      data: Array(2).fill(options?.showActualMean ? mean : 0),
+      xAxisID: 'inputRangeX',
+      yAxisID: 'fullVerticalLineY',
+      indexAxis: 'y',
+      datalabels: {
+        display: false,
+      },
+    } as ChartDataset)
+  }
+
+  if (options?.customMedian !== undefined) {
+    datasets.push({
+      type: 'line',
+      label: 'Eingegebener Median',
+      data: Array(2).fill(options.customMedian),
+      xAxisID: 'inputRangeX',
+      yAxisID: 'fullVerticalLineY',
+      indexAxis: 'y',
+      datalabels: {
+        display: false,
+      },
+    } as ChartDataset)
+  }
+
+  if (options?.showActualMedian) {
     let median = 0
     let medianIndex = 0
     for (const [value, frequency] of frequencyEntries) {
@@ -68,7 +97,7 @@ export const computeChartDataForHistogram = (
 
     datasets.push({
       type: 'line',
-      label: 'Median',
+      label: 'Tatsächlicher Median',
       data: Array(2).fill(median),
       xAxisID: 'inputRangeX',
       yAxisID: 'fullVerticalLineY',
@@ -83,7 +112,10 @@ export const computeChartDataForHistogram = (
     datasets.push({
       type: 'boxplot' as string,
       label: 'Boxplot',
-      data: [data],
+      // Type definition doesn't include box plots, where data must be number[][]
+      // TODO: Expand type definition somehow
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: [data] as any,
       xAxisID: 'inputRangeX',
       yAxisID: 'boxplotY',
       indexAxis: 'y',
