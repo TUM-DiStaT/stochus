@@ -16,6 +16,7 @@ import {
 } from 'rxjs'
 import { ExtractFromHistogramAssignmentConfiguration } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
+import { computeChartDataForHistogram } from '../utils/compute-chart-data-for-histogram'
 
 @Component({
   standalone: true,
@@ -131,60 +132,12 @@ export class ExtractFromHistogramConfigFormComponent
   chartData$: Observable<ChartData> = this.parsedCsv$.pipe(
     filter(Boolean),
     debounceTime(1000),
-    map((data) => {
-      // compute frequency of each item in data
-      const frequencies = new Map<number, number>()
-      let mean = 0
-      for (const item of data) {
-        frequencies.set(item, (frequencies.get(item) ?? 0) + 1)
-        mean += item
-      }
-      mean /= data.length ?? 1
-      const frequencyEntries = [...frequencies.entries()].sort(
-        ([a], [b]) => a - b,
-      )
-
-      // compute median
-      let median = 0
-      let medianIndex = 0
-      for (const [value, frequency] of frequencyEntries) {
-        medianIndex += frequency
-        if (medianIndex >= data.length / 2) {
-          median = value
-          break
-        }
-      }
-
-      return {
-        labels: frequencyEntries.map(([value]) => value.toString()),
-        datasets: [
-          {
-            label: 'Histogramm',
-            type: 'bar',
-            data: frequencyEntries.map(([, frequency]) => frequency),
-            yAxisID: 'histogramY',
-          },
-          {
-            type: 'line',
-            label: 'Durchschnitt',
-            data: frequencyEntries.map(() => mean),
-            yAxisID: 'inputRangeY',
-            datalabels: {
-              display: false,
-            },
-          },
-          {
-            type: 'line',
-            label: 'Median',
-            data: frequencyEntries.map(() => median),
-            yAxisID: 'inputRangeY',
-            datalabels: {
-              display: false,
-            },
-          },
-        ],
-      }
-    }),
+    map((data) =>
+      computeChartDataForHistogram(data, {
+        showMean: true,
+        showMedian: true,
+      }),
+    ),
   )
 
   ngOnDestroy() {
