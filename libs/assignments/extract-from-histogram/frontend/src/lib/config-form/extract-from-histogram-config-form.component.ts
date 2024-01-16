@@ -99,8 +99,13 @@ export class ExtractFromHistogramConfigFormComponent
             type: 'linear',
             position: 'bottom',
             axis: 'x',
-            min,
-            max,
+            // compute custom grace / offset to account for bar widths
+            // in the bar chart. this ensures that some x position here
+            // aligns perfectly with the center of the corresponding bar
+            min: min - 0.5,
+            max: max + 0.5,
+            grace: 0,
+            offset: false,
             display: false,
           },
           fullVerticalLineY: {

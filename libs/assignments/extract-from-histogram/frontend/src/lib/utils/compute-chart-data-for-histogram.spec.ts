@@ -12,7 +12,7 @@ it('should compute correct median when odd number of items', () => {
   const medianDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Median',
   )
-  expect(medianDataset?.data).toEqual([3, 3, 3, 3, 3])
+  expect(medianDataset?.data).toEqual([3, 3])
 })
 
 it('should compute correct median when even number of items', () => {
@@ -23,7 +23,7 @@ it('should compute correct median when even number of items', () => {
   const medianDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Median',
   )
-  expect(medianDataset?.data).toEqual([2, 2, 2, 2])
+  expect(medianDataset?.data).toEqual([2, 2])
 })
 
 it('should compute correct mean', () => {
@@ -34,7 +34,7 @@ it('should compute correct mean', () => {
   const meanDataset = chartData.datasets?.find(
     (dataset) => dataset.label === 'Durchschnitt',
   )
-  expect(meanDataset?.data).toEqual([2.5, 2.5, 2.5, 2.5])
+  expect(meanDataset?.data).toEqual([2.5, 2.5])
 })
 
 it('should compute correct histogram', () => {
@@ -58,5 +58,5 @@ it('should compute correct histogram', () => {
 it('should generate labels for all values from min to max, including missing values', () => {
   const data = [3, 8, 1]
   const chartData = computeChartDataForHistogram(data)
-  expect(chartData.labels).toEqual(['1', '2', '3', '4', '5', '6', '7', '8'])
+  expect(chartData.xLabels).toEqual(['1', '2', '3', '4', '5', '6', '7', '8'])
 })

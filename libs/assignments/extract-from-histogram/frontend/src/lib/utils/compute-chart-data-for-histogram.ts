@@ -19,17 +19,6 @@ export const computeChartDataForHistogram = (
   mean /= data.length ?? 1
   const frequencyEntries = [...frequencies.entries()].sort(([a], [b]) => a - b)
 
-  // compute median
-  let median = 0
-  let medianIndex = 0
-  for (const [value, frequency] of frequencyEntries) {
-    medianIndex += frequency
-    if (medianIndex >= data.length / 2) {
-      median = value
-      break
-    }
-  }
-
   // compute frequencies from start to end, 0 if no frequency is given
   const start = frequencyEntries[0]?.[0] ?? 0
   const end = frequencyEntries.at(-1)?.[0] ?? 0
@@ -66,6 +55,16 @@ export const computeChartDataForHistogram = (
   }
 
   if (options?.showMedian) {
+    let median = 0
+    let medianIndex = 0
+    for (const [value, frequency] of frequencyEntries) {
+      medianIndex += frequency
+      if (medianIndex >= data.length / 2) {
+        median = value
+        break
+      }
+    }
+
     datasets.push({
       type: 'line',
       label: 'Median',
