@@ -1,4 +1,4 @@
-import { Validators } from '@angular/forms'
+import { FormControl, ValidatorFn, Validators } from '@angular/forms'
 import {
   ExtractFromHistogramAssignment,
   ExtractFromHistogramAssignmentCompletionData,
@@ -20,6 +20,36 @@ export const ExtractFromHistogramAssignmentForFrontend: AssignmentForFrontend<
   generateConfigFormControl: (fb, { targetProperty, data }) =>
     fb.group({
       targetProperty: [targetProperty, [Validators.required]],
-      data: [data, [Validators.required]],
+      data: [
+        data,
+        [
+          Validators.required,
+          ((formControl: FormControl<unknown>) => {
+            const value = formControl.value
+
+            if (!Array.isArray(value)) {
+              return { invalidData: true }
+            }
+
+            if (value.length < 1) {
+              return { invalidData: true }
+            }
+
+            if (
+              value.some(
+                (v) =>
+                  typeof v !== 'number' ||
+                  isNaN(v) ||
+                  !isFinite(v) ||
+                  Math.floor(v) !== v,
+              )
+            ) {
+              return { invalidData: true }
+            }
+
+            return null
+          }) as ValidatorFn,
+        ],
+      ],
     }),
 }
