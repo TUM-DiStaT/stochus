@@ -1,13 +1,14 @@
 import { FormBuilder } from '@angular/forms'
 import { render, screen, within } from '@testing-library/angular'
 import { userEvent } from '@testing-library/user-event'
+import 'jest-canvas-mock'
 import { FormModel } from 'ngx-mf'
 import {
   ExtractFromHistogramAssignment,
   ExtractFromHistogramAssignmentConfiguration,
 } from '@stochus/assignments/extract-from-histogram-assignment/shared'
-import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
+import { ExtractFromHistogramAssignmentForFrontend } from '../extract-from-histogram-assignment-for-frontend'
 import { ExtractFromHistogramConfigFormComponent } from './extract-from-histogram-config-form.component'
 
 describe('GuessRandomNumberConfigFormComponent', () => {

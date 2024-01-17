@@ -10,7 +10,7 @@ it('should compute correct median when odd number of items', () => {
     showActualMedian: true,
   })
   const medianDataset = chartData.datasets?.find(
-    (dataset) => dataset.label === 'Median',
+    (dataset) => dataset.label === 'Tatsächlicher Median',
   )
   expect(medianDataset?.data).toEqual([3, 3])
 })
@@ -21,7 +21,7 @@ it('should compute correct median when even number of items', () => {
     showActualMedian: true,
   })
   const medianDataset = chartData.datasets?.find(
-    (dataset) => dataset.label === 'Median',
+    (dataset) => dataset.label === 'Tatsächlicher Median',
   )
   expect(medianDataset?.data).toEqual([2, 2])
 })
@@ -32,7 +32,7 @@ it('should compute correct mean', () => {
     showActualMean: true,
   })
   const meanDataset = chartData.datasets?.find(
-    (dataset) => dataset.label === 'Durchschnitt',
+    (dataset) => dataset.label === 'Tatsächlicher Durchschnitt',
   )
   expect(meanDataset?.data).toEqual([2.5, 2.5])
 })
