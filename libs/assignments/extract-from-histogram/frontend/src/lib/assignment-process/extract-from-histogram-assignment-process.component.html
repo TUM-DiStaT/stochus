@@ -47,13 +47,19 @@
     </div>
   </div>
   <div>
-    <canvas
-      baseChart
-      class="chart"
-      [data]="chartData"
-      [options]="chartOptions"
-      (chartClick)="onChartEvent('click', $event)"
-      (chartHover)="onChartEvent('hover', $event)"
-    ></canvas>
+    <stochus-histogram
+      [data]="config?.data"
+      [customMean]="
+        config?.targetProperty === 'mean'
+          ? targetValueFormControl.value
+          : undefined
+      "
+      [customMedian]="
+        config?.targetProperty === 'median'
+          ? targetValueFormControl.value
+          : undefined
+      "
+      (chartMouseEvent)="onChartEvent($event)"
+    />
   </div>
 </div>

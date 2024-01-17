@@ -8,7 +8,6 @@ import {
   Output,
 } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { ActiveElement, ChartData, ChartEvent, ChartOptions } from 'chart.js'
 import { isEqual } from 'lodash'
 import { NgChartsModule } from 'ng2-charts'
 import {
@@ -26,15 +25,16 @@ import {
   ExtractFromHistogramAssignmentConfiguration,
 } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
-import {
-  HistogramOptions,
-  computeChartDataForHistogram,
-} from '../utils/compute-chart-data-for-histogram'
-import { computeChartOptions } from '../utils/compute-chart-options'
+import { HistogramComponent } from '@stochus/core/frontend'
 
 @Component({
   standalone: true,
-  imports: [CommonModule, NgChartsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    NgChartsModule,
+    ReactiveFormsModule,
+    HistogramComponent,
+  ],
   templateUrl: './extract-from-histogram-assignment-process.component.html',
 })
 export class ExtractFromHistogramAssignmentProcessComponent
@@ -46,15 +46,12 @@ export class ExtractFromHistogramAssignmentProcessComponent
     OnInit,
     OnDestroy
 {
-  chartOptions!: ChartOptions
-  chartData!: ChartData
   targetValueTypeName = ''
   private _config?: ExtractFromHistogramAssignmentConfiguration
 
   @Input()
   set config(config: ExtractFromHistogramAssignmentConfiguration) {
     this._config = config
-    this.computeChartInput()
     this.targetValueTypeName =
       config.targetProperty === 'median' ? 'Median' : 'Durchschnitt'
   }
@@ -122,11 +119,6 @@ export class ExtractFromHistogramAssignmentProcessComponent
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.targetValueFormControl.valueChanges.subscribe(() => {
-        this.computeChartInput()
-      }),
-    )
-    this.subscriptions.push(
       merge(this.deletions$, this.enteredValues$, this.loggableChartEvents$)
         .pipe(
           distinctUntilChanged(
@@ -145,42 +137,10 @@ export class ExtractFromHistogramAssignmentProcessComponent
     this.subscriptions.forEach((subscription) => subscription.unsubscribe())
   }
 
-  onChartEvent(
-    eventType: 'click' | 'hover',
-    event: { event?: ChartEvent; active?: object[] },
-  ) {
-    const activeElements = event.active as ActiveElement[] | undefined
-    if (activeElements && activeElements.length > 0) {
-      const targets = activeElements.map((activeElement) => {
-        const datasetIndex = activeElement.datasetIndex
-        const index = activeElement.index
-        const dataset = this.chartData.datasets[datasetIndex]
-        const value = this.chartData.xLabels?.[index] as string
-        return {
-          datasetLabel: dataset?.label,
-          value,
-        }
-      })
-      this.chartEventsSubject.next({
-        action: `histogram-${eventType}`,
-        targets,
-      })
-    }
-  }
-
-  private computeChartInput() {
-    const options: HistogramOptions = {}
-
-    if (this._config?.targetProperty === 'median') {
-      options.customMedian = this.targetValueFormControl.value ?? undefined
-    } else if (this._config?.targetProperty === 'mean') {
-      options.customMean = this.targetValueFormControl.value ?? undefined
-    }
-
-    this.chartData = computeChartDataForHistogram(
-      this._config?.data ?? [],
-      options,
-    )
-    this.chartOptions = computeChartOptions(this._config?.data ?? [])
+  onChartEvent($event: {
+    action: 'histogram-hover' | 'histogram-click'
+    targets: { datasetLabel: string | undefined; value: string }[]
+  }) {
+    this.chartEventsSubject.next($event)
   }
 }

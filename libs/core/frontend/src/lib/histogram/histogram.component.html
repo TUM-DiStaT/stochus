@@ -1,0 +1,10 @@
+<div class="w-full h-full">
+  <canvas
+    baseChart
+    class="chart"
+    [data]="(chartData$ | async) ?? undefined"
+    [options]="(chartOptions$ | async) ?? undefined"
+    (chartClick)="onChartEvent('click', $event)"
+    (chartHover)="onChartEvent('hover', $event)"
+  ></canvas>
+</div>

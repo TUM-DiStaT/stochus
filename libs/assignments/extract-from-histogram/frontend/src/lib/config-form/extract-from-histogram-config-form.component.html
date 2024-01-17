@@ -34,11 +34,6 @@
 
 @if (formControl.controls.data.valid) {
 <div>
-  <canvas
-    baseChart
-    class="chart"
-    [data]="(chartData$ | async) ?? undefined"
-    [options]="(chartOptions$ | async) ?? undefined"
-  ></canvas>
+  <stochus-histogram [data]="debouncedParsedCsv$ | async" showBoxPlot />
 </div>
 }

@@ -11,7 +11,7 @@ import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 import { ExtractFromHistogramAssignmentForFrontend } from '../extract-from-histogram-assignment-for-frontend'
 import { ExtractFromHistogramConfigFormComponent } from './extract-from-histogram-config-form.component'
 
-describe('GuessRandomNumberConfigFormComponent', () => {
+describe('ExtractFromHistogramConfigFormComponent', () => {
   let formControl: FormModel<ExtractFromHistogramAssignmentConfiguration>
 
   beforeEach(async () => {

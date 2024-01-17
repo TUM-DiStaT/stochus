@@ -1,28 +1,18 @@
 import { AsyncPipe } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { ChartData } from 'chart.js'
 import { NgChartsModule } from 'ng2-charts'
 import { FormModel } from 'ngx-mf'
-import {
-  Observable,
-  concat,
-  debounceTime,
-  filter,
-  map,
-  of,
-  shareReplay,
-} from 'rxjs'
+import { concat, debounceTime, filter, map, of, shareReplay } from 'rxjs'
 import { ExtractFromHistogramAssignmentConfiguration } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
-import { computeChartDataForHistogram } from '../utils/compute-chart-data-for-histogram'
-import { computeChartOptions } from '../utils/compute-chart-options'
+import { HistogramComponent } from '@stochus/core/frontend'
 
 @Component({
   standalone: true,
   templateUrl: './extract-from-histogram-config-form.component.html',
   styles: [':host { display: contents }'],
-  imports: [ReactiveFormsModule, NgChartsModule, AsyncPipe],
+  imports: [ReactiveFormsModule, NgChartsModule, AsyncPipe, HistogramComponent],
 })
 export class ExtractFromHistogramConfigFormComponent
   implements
@@ -76,6 +66,11 @@ export class ExtractFromHistogramConfigFormComponent
 
       return parsedCsv
     }),
+    shareReplay(),
+  )
+  debouncedParsedCsv$ = this.parsedCsv$.pipe(
+    filter(Boolean),
+    debounceTime(1000),
   )
   csvTransformationSubscription = this.parsedCsv$.subscribe((data) => {
     this.formControl?.patchValue(
@@ -85,21 +80,6 @@ export class ExtractFromHistogramConfigFormComponent
       {},
     )
   })
-
-  chartOptions$ = this.parsedCsv$.pipe(
-    filter(Boolean),
-    debounceTime(1000),
-    map(computeChartOptions),
-  )
-  chartData$: Observable<ChartData> = this.parsedCsv$.pipe(
-    filter(Boolean),
-    debounceTime(1000),
-    map((data) =>
-      computeChartDataForHistogram(data, {
-        showBoxPlot: true,
-      }),
-    ),
-  )
 
   ngOnDestroy() {
     this.csvTransformationSubscription.unsubscribe()

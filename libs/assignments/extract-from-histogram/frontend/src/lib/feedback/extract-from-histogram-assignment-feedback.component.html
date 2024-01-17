@@ -34,11 +34,16 @@
     } }
   </div>
   <div>
-    <canvas
-      baseChart
-      class="chart"
-      [data]="chartData"
-      [options]="chartOptions"
-    ></canvas>
+    <stochus-histogram
+      [data]="config?.data"
+      [showActualMean]="config?.targetProperty === 'mean'"
+      [showActualMedian]="config?.targetProperty === 'median'"
+      [customMean]="
+        config?.targetProperty === 'mean' ? completionData.result : undefined
+      "
+      [customMedian]="
+        config?.targetProperty === 'median' ? completionData.result : undefined
+      "
+    />
   </div>
 </div>
