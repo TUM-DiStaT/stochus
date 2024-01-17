@@ -1,1 +1,9 @@
-<ng-template stochusDynamicContent />
+<div class="p-12 flex flex-col gap-8">
+  <h1 class="text-3xl font-bold">
+    Feedback zu "{{ (assignment$ | async)?.name }}"
+  </h1>
+  <ng-template stochusDynamicContent />
+  <a [routerLink]="['/assignments']" class="btn btn-primary">
+    Zurück zu den Aufgaben
+  </a>
+</div>

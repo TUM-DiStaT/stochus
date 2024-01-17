@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-8">
+  <div class="prose">
+    @if (!result) { } @else if (result.correct) {
+    <p>
+      Das ist richtig! Du hast den {{ targetValueTypeName }} richtig abgelesen
+      bzw. berechnet. Sehr gut!
+    </p>
+    <aside>
+      Da du richtig gelegen hast, liegen die tatsächliche Linie und deine Linie
+      aufeinander, sodass man nur eine davon sieht.
+    </aside>
+    } @else {
+    <p>
+      Das ist leider falsch. Der tatsächliche {{ targetValueTypeName }} ist
+      {{ result.actualValue }}. Um ihn aus dem Histogramm zu bestimmen, musst
+      du:
+    </p>
+    @if (config?.targetProperty === 'mean') {
+    <ol>
+      <li>
+        Alle vorgekommenen Werte aufsummieren, indem du pro Wert die Häufigkeit
+        abliest und mit dem Wert multiplizierst.
+      </li>
+      <li>Die Summe durch die Anzahl der Werte teilen.</li>
+    </ol>
+    } @else {
+    <ol>
+      <li>Bestimmen, wie viele Werte es insgesamt gibt.</li>
+      <li>
+        Die gesamtanzahl halbieren (ggf. abrunden) und den sovielten Wert
+        bestimmen.
+      </li>
+    </ol>
+    } }
+  </div>
+  <div>
+    <canvas
+      baseChart
+      class="chart"
+      [data]="chartData"
+      [options]="chartOptions"
+    ></canvas>
+  </div>
+</div>

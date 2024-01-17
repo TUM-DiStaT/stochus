@@ -47,7 +47,7 @@ export const ExtractFromHistogramAssignment: BaseAssignment<
   id: 'ExtractFromHistogramAssignment',
   name: 'Kennwerte aus Histogramm extrahieren',
   version: 0,
-  description: 'Extrahiere den Mittelwert oder Median aus einem Histogramm.',
+  description: 'Extrahiere den Durchschnitt oder Median aus einem Histogramm.',
   getInitialCompletionData: () =>
     initialExtractFromHistogramAssignmentCompletionData,
   getRandomConfig: () => {

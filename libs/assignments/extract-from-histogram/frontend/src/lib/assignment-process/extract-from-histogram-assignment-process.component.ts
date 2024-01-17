@@ -20,7 +20,6 @@ import {
   map,
   merge,
   pairwise,
-  tap,
 } from 'rxjs'
 import {
   ExtractFromHistogramAssignmentCompletionData,
@@ -108,7 +107,6 @@ export class ExtractFromHistogramAssignmentProcessComponent
   }>()
   loggableChartEvents$ = this.chartEventsSubject.pipe(
     distinctUntilChanged((last, curr) => isEqual(last, curr)),
-    tap((event) => console.log(event)),
   )
 
   subscriptions: Subscription[] = []
