@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { GuessRandomNumberAssignmentForFrontend } from '@stochus/assignments/demos/guess-random-number/frontend'
 import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
+import { IdentifySharedCharacteristicsAssignmentForFrontend } from '@stochus/assignments/identify-shared-characteristics/frontend'
 import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
 
 @Injectable({
@@ -18,6 +19,8 @@ export class AssignmentsService {
     GuessRandomNumberAssignmentForFrontend as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ExtractFromHistogramAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    IdentifySharedCharacteristicsAssignmentForFrontend as any,
   ]
 
   static getById(assignmentId?: string | null) {

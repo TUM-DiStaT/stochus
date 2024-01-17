@@ -1,1 +1,1 @@
-export * from './lib/identify-shared-characteristics-frontend.component'
+export * from './lib/identify-shared-characteristics-assignment-for-frontend.component'
