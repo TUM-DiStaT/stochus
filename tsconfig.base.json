@@ -42,6 +42,12 @@
       "@stochus/assignments/extract-from-histogram-assignment/shared": [
         "libs/assignments/extract-from-histogram/shared/src/index.ts"
       ],
+      "@stochus/assignments/identify-shared-characteristics/frontend": [
+        "libs/identify-shared-characteristics/frontend/src/index.ts"
+      ],
+      "@stochus/assignments/identify-shared-characteristics/shared": [
+        "libs/identify-shared-characteristics/shared/src/index.ts"
+      ],
       "@stochus/assignments/model/frontend": [
         "libs/assignments/model/frontend/src/index.ts"
       ],
