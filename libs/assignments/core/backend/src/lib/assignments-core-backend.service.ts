@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
+import { ExtractFromHistogramAssignment } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { BaseAssignment } from '@stochus/assignments/model/shared'
 
 @Injectable()
@@ -12,6 +13,7 @@ export class AssignmentsCoreBackendService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static readonly assignments: BaseAssignment<any, any>[] = [
     GuessRandomNumberAssignment,
+    ExtractFromHistogramAssignment,
   ]
 
   static getAllAssignments() {

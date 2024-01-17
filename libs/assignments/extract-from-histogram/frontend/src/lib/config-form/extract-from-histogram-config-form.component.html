@@ -1,0 +1,39 @@
+<label class="form-control">
+  <span class="label">Abzulesende Eigenschaft</span>
+  <select
+    class="select select-bordered"
+    data-testid="target-property-select"
+    [formControl]="formControl.controls.targetProperty"
+    [class.select-error]="formControl.controls.targetProperty.errors"
+  >
+    <option value="mean">Durchschnitt</option>
+    <option value="median">Median</option>
+  </select>
+</label>
+
+<label class="form-control">
+  <span class="label">Daten des Histogramms (Ganzzahlen im CSV-Format)</span>
+  <textarea
+    class="textarea textarea-bordered h-24"
+    data-testid="data-textarea"
+    [formControl]="csvFormControl"
+    [class.textarea-error]="csvFormControl.invalid"
+  ></textarea>
+  @if (csvFormControl.invalid) {
+  <div class="label">
+    <span
+      class="label-text-alt text-error"
+      data-testid="invalid-csv-error-message"
+    >
+      Bitte eine Liste von Ganzzahlen als CSV eingeben (z.B.
+      <code>1, 2, 3</code>)
+    </span>
+  </div>
+  }
+</label>
+
+@if (formControl.controls.data.valid) {
+<div>
+  <stochus-histogram [data]="debouncedParsedCsv$ | async" showBoxPlot />
+</div>
+}

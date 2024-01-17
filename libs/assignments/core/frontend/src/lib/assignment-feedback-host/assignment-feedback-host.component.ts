@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, RouterLink } from '@angular/router'
 import { filter, map, of, switchMap } from 'rxjs'
 import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import { DynamicContentDirective } from '@stochus/core/frontend'
+import { ButtonComponent } from '@stochus/daisy-ui'
 import { AssignmentsService } from '../assignments.service'
 import { CompletionsService } from '../completions.service'
 
 @Component({
   selector: 'stochus-assignment-feedback-host',
   standalone: true,
-  imports: [CommonModule, DynamicContentDirective],
+  imports: [CommonModule, DynamicContentDirective, ButtonComponent, RouterLink],
   templateUrl: './assignment-feedback-host.component.html',
 })
 export class AssignmentFeedbackHostComponent implements OnInit {
@@ -41,6 +42,7 @@ export class AssignmentFeedbackHostComponent implements OnInit {
         ] as const,
     ),
   )
+  assignment$ = this.completion$.pipe(map(([, assignment]) => assignment))
 
   @ViewChild(DynamicContentDirective, { static: true })
   host!: DynamicContentDirective

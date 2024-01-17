@@ -1,9 +1,10 @@
 /* eslint-disable */
 export default {
-  displayName: 'assignments-core-frontend',
+  displayName: 'extract-from-histogram-assignment-frontend',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../../coverage/libs/assignments/core/frontend',
+  coverageDirectory:
+    '../../../../coverage/libs/assignments/extract-from-histogram/frontend',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

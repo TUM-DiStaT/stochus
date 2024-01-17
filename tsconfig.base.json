@@ -18,6 +18,8 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noImplicitOverride": true,
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/@testing-library"],
     "paths": {
       "@stochus/assignment/core/frontend": [
         "libs/assignments/core/frontend/src/index.ts"
@@ -33,6 +35,12 @@
       ],
       "@stochus/assignments/demos/guess-random-number/shared": [
         "libs/assignments/demos/guess-random-number/shared/src/index.ts"
+      ],
+      "@stochus/assignments/extract-from-assignment/frontend": [
+        "libs/assignments/extract-from-histogram/frontend/src/index.ts"
+      ],
+      "@stochus/assignments/extract-from-histogram-assignment/shared": [
+        "libs/assignments/extract-from-histogram/shared/src/index.ts"
       ],
       "@stochus/assignments/model/frontend": [
         "libs/assignments/model/frontend/src/index.ts"

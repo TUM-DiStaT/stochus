@@ -15,4 +15,12 @@ describe('AssignmentsCoreBackendService', () => {
   it('should be defined', () => {
     expect(service).toBeTruthy()
   })
+
+  it('sanity check: should have no assignment ID collisions', () => {
+    const ids = AssignmentsCoreBackendService.getAllAssignments().map(
+      (a) => a.id,
+    )
+    const set = new Set(ids)
+    expect(set.size).toBe(ids.length)
+  })
 })

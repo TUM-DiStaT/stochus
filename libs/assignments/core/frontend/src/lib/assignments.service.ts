@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { GuessRandomNumberAssignmentForFrontend } from '@stochus/assignments/demos/guess-random-number/frontend'
+import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
 import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
 
 @Injectable({
@@ -15,6 +16,8 @@ export class AssignmentsService {
   private static readonly assignments: AssignmentForFrontend<any, any>[] = [
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     GuessRandomNumberAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ExtractFromHistogramAssignmentForFrontend as any,
   ]
 
   static getById(assignmentId?: string | null) {

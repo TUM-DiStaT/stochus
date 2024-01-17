@@ -76,22 +76,23 @@
           {{ study.description }}
         </p>
         <div *ngIf="study.remainingDays >= 0" class="card-actions justify-end">
+          @if (!study.participation) {
           <button
-            *ngIf="!study.participation"
             daisyButton
             [color]="ButtonColor.PRIMARY"
             (click)="createNewParticipation(study.id)"
           >
             Starten
           </button>
+          } @else if (study.progress < 100) {
           <button
-            *ngIf="study.participation"
             daisyButton
             [color]="ButtonColor.PRIMARY"
             (click)="openStudy(study.id)"
           >
             Fortsetzen
           </button>
+          }
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { AsyncPipe, JsonPipe } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { Component } from '@angular/core'
 import { RouterModule } from '@angular/router'
@@ -9,9 +8,7 @@ import { NavbarComponent } from './navbar/navbar.component'
   standalone: true,
   imports: [
     RouterModule,
-    AsyncPipe,
     HttpClientModule,
-    JsonPipe,
     NavbarComponent,
     ToastServiceHostComponent,
   ],
