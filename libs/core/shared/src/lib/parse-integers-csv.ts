@@ -3,7 +3,7 @@ export const parseIntegersCsv = (csv?: string | null) => {
     throw new Error('No CSV provided')
   }
 
-  let parsedCsv: number[] | undefined = csv
+  const parsedCsv: number[] | undefined = csv
     .split(/\s*,\s*/gim)
     .filter(Boolean)
     .map((value) => parseFloat(value))
