@@ -1,12 +1,14 @@
-import { random } from 'lodash'
+import { random, shuffle } from 'lodash'
 import { calculateMean } from '@stochus/core/shared'
 
 export type Datasets = [number[], number[], number[], number[]]
 
-export const generateDatasetsWithIdenticalMedian = (): Datasets => {
+export const generateDatasetsWithIdenticalMedian = (
+  count: number,
+): Datasets => {
   const median = random(5, 95)
 
-  return Array.from({ length: 4 }, (): number[] => {
+  return Array.from({ length: count }, (): number[] => {
     const range = random(5, 20)
     const length = random(10, 100)
     const lowerBound = random(median - range, median - 1)
@@ -24,10 +26,10 @@ export const generateDatasetsWithIdenticalMedian = (): Datasets => {
   }) as Datasets
 }
 
-export const generateDatasetsWithIdenticalMean = (): Datasets => {
+export const generateDatasetsWithIdenticalMean = (count: number): Datasets => {
   const desiredMean = random(5, 95)
 
-  return Array.from({ length: 4 }, (): number[] => {
+  return Array.from({ length: count }, (): number[] => {
     const range = random(5, 20)
     // this length will probably not be reached exactly
     const roughTargetLength = random(10, 100)
@@ -62,4 +64,26 @@ export const generateDatasetsWithIdenticalMean = (): Datasets => {
 
     return result
   }) as Datasets
+}
+
+const generateRandomDataset = () => {
+  const range = random(5, 20)
+  const length = random(10, 100)
+  const lowerBound = random(0, 100 - range)
+  const upperBound = lowerBound + range
+  return Array.from({ length }, () => random(lowerBound, upperBound))
+}
+
+export const generateDatasets = (targetCharacteristic: 'mean' | 'median') => {
+  const countWithSharedCharacteristic = random(2, 4)
+  const countWithoutSharedCharacteristic = 4 - countWithSharedCharacteristic
+  const randomDatasets = Array.from(
+    { length: countWithoutSharedCharacteristic },
+    generateRandomDataset,
+  )
+  const sharedCharacteristicDatasets =
+    targetCharacteristic === 'mean'
+      ? generateDatasetsWithIdenticalMean(countWithSharedCharacteristic)
+      : generateDatasetsWithIdenticalMedian(countWithSharedCharacteristic)
+  return shuffle([...randomDatasets, ...sharedCharacteristicDatasets])
 }

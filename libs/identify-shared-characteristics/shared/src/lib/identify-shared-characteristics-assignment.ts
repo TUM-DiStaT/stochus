@@ -13,10 +13,7 @@ import {
   BaseCompletionData,
   emptyBaseCompletionData,
 } from '@stochus/assignments/model/shared'
-import {
-  generateDatasetsWithIdenticalMean,
-  generateDatasetsWithIdenticalMedian,
-} from './generate-datasets'
+import { generateDatasets } from './generate-datasets'
 
 const extractableCharacteristics = ['mean', 'median'] as const
 type ExtractableCharacteristic = (typeof extractableCharacteristics)[number]
@@ -73,10 +70,7 @@ export const IdentifySharedCharacteristicsAssignment: BaseAssignment<
     initialIdentifySharedCharacteristicsAssignmentCompletionData,
   getRandomConfig: () => {
     const targetCharacteristic = Math.random() > 0.5 ? 'mean' : 'median'
-    const datasets =
-      targetCharacteristic === 'mean'
-        ? generateDatasetsWithIdenticalMean()
-        : generateDatasetsWithIdenticalMedian()
+    const datasets = generateDatasets(targetCharacteristic)
 
     return {
       targetCharacteristic,
