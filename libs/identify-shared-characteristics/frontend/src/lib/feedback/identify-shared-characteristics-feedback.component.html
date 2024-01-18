@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-12">
+  <div class="grid grid-cols-2 gap-8">
+    @for (dataset of datasets;track dataset?.data) {
+    <div
+      class="flex flex-col border-2 rounded-xl p-4 transition-all"
+      [class.shadow-md]="!dataset.selected"
+      [class.shadow-2xl]="dataset.selected"
+      [class.border-success]="dataset.wasCorrect"
+      [class.border-error]="!dataset.wasCorrect"
+    >
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text"> </span>
+          <input
+            type="checkbox"
+            [checked]="dataset.selected"
+            (click)="$event.preventDefault()"
+            class="checkbox cursor-not-allowed"
+            [class.checkbox-success]="dataset.wasCorrect"
+            [class.checkbox-error]="!dataset.wasCorrect"
+          />
+        </label>
+      </div>
+      <stochus-histogram
+        [data]="dataset.data"
+        [showActualMean]="config.targetCharacteristic === 'mean'"
+        [showActualMedian]="config.targetCharacteristic === 'median'"
+      />
+    </div>
+    }
+  </div>
+</div>

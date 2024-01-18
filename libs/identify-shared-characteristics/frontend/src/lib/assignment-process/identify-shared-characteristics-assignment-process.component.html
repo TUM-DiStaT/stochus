@@ -1,0 +1,47 @@
+<div class="flex flex-col gap-12">
+  <div class="prose">
+    <p>
+      Mindestens zwei der folgenden Histogramme haben denselben
+      {{ targetPropertyName }}. Finde heraus, welche das sind, und setze bei
+      ihnen ein Häkchen.
+    </p>
+  </div>
+  <div class="grid grid-cols-2 gap-8">
+    @for (dataset of datasets;track dataset.originalIndex) {
+    <div
+      class="flex flex-col border border-gray-300 rounded-xl p-4 transition-all"
+      [class.shadow-md]="
+        !selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+      [class.shadow-2xl]="
+        selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+      [class.border-gray-500]="
+        selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+    >
+      <div class="form-control">
+        <label class="label cursor-pointer">
+          <span class="label-text">
+            Dieses Histogramm hat denselben {{ targetPropertyName }} wie mind.
+            ein anderes
+          </span>
+          <input
+            type="checkbox"
+            checked="checked"
+            class="checkbox"
+            [formControl]="
+              selectedDatasetsFormControls.controls[dataset.originalIndex]
+            "
+          />
+        </label>
+      </div>
+      <stochus-histogram
+        [data]="dataset.data"
+        (chartMouseEvent)="histogramMouseEvent($event, dataset.originalIndex)"
+      />
+    </div>
+    }
+  </div>
+  <button class="btn btn-primary" (click)="submit()">Abgeben</button>
+</div>

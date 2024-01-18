@@ -1,4 +1,5 @@
 import type { ChartData, ChartDataset } from 'chart.js'
+import { calculateMean, calculateMedian } from '@stochus/core/shared'
 
 export type HistogramOptions = {
   showActualMean?: boolean
@@ -13,12 +14,9 @@ export const computeChartDataForHistogram = (
 ): ChartData => {
   // compute frequency of each item in data
   const frequencies = new Map<number, number>()
-  let mean = 0
   for (const item of data) {
     frequencies.set(item, (frequencies.get(item) ?? 0) + 1)
-    mean += item
   }
-  mean /= data.length ?? 1
   const frequencyEntries = [...frequencies.entries()].sort(([a], [b]) => a - b)
 
   // compute frequencies from start to end, 0 if no frequency is given
@@ -57,6 +55,7 @@ export const computeChartDataForHistogram = (
   }
 
   if (options?.showActualMean) {
+    const mean = calculateMean(data)
     datasets.push({
       type: 'line',
       label: 'Tatsächlicher Durchschnitt',
@@ -85,15 +84,7 @@ export const computeChartDataForHistogram = (
   }
 
   if (options?.showActualMedian) {
-    let median = 0
-    let medianIndex = 0
-    for (const [value, frequency] of frequencyEntries) {
-      medianIndex += frequency
-      if (medianIndex >= data.length / 2) {
-        median = value
-        break
-      }
-    }
+    const median = calculateMedian(data)
 
     datasets.push({
       type: 'line',
