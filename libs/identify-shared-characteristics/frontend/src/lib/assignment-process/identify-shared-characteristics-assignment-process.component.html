@@ -8,7 +8,18 @@
   </div>
   <div class="grid grid-cols-2 gap-8">
     @for (dataset of datasets;track dataset.originalIndex) {
-    <div class="flex flex-col border border-primary-content rounded-xl p-4">
+    <div
+      class="flex flex-col border border-gray-300 rounded-xl p-4 transition-all"
+      [class.shadow-md]="
+        !selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+      [class.shadow-2xl]="
+        selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+      [class.border-gray-500]="
+        selectedDatasetsFormControls.value[dataset.originalIndex]
+      "
+    >
       <div class="form-control">
         <label class="label cursor-pointer">
           <span class="label-text">
