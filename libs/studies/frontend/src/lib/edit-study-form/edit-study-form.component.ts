@@ -154,6 +154,7 @@ export class EditStudyFormComponent implements OnDestroy {
     this.tasksChangeSubscription = result.controls.tasks.valueChanges
       .pipe(
         pairwise(),
+        // finds all assignments that changed compared to last time
         map(([prev, curr]) =>
           curr.flatMap(({ assignmentId }, index) =>
             prev[index]?.assignmentId === assignmentId
