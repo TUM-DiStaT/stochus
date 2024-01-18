@@ -6,7 +6,7 @@ export type Datasets = [number[], number[], number[], number[]]
 export const generateDatasetsWithIdenticalMedian = (
   count: number,
 ): Datasets => {
-  const median = random(5, 95)
+  const median = random(20, 95)
 
   return Array.from({ length: count }, (): number[] => {
     const range = random(5, 20)
@@ -27,7 +27,7 @@ export const generateDatasetsWithIdenticalMedian = (
 }
 
 export const generateDatasetsWithIdenticalMean = (count: number): Datasets => {
-  const desiredMean = random(5, 95)
+  const desiredMean = random(20, 95)
 
   return Array.from({ length: count }, (): number[] => {
     const range = random(5, 20)
