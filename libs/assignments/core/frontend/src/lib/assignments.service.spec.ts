@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing'
+import 'reflect-metadata'
 import { AssignmentsService } from './assignments.service'
 
 describe('AssignmentsService', () => {
