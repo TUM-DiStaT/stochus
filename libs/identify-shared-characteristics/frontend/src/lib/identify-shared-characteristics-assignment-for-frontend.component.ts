@@ -28,7 +28,7 @@ export const IdentifySharedCharacteristicsAssignmentForFrontend: AssignmentForFr
       {
         targetCharacteristic: [
           targetCharacteristic,
-          [Validators.required, Validators.pattern(/^(mean)|(median¬)$/)],
+          [Validators.required, Validators.pattern(/^(mean)|(median)$/)],
         ],
         datasets: [
           datasets,
@@ -55,11 +55,24 @@ export const IdentifySharedCharacteristicsAssignmentForFrontend: AssignmentForFr
               value.targetCharacteristic === 'mean'
                 ? calculateMean
                 : calculateMedian
-            const targetValues = value.datasets.map(targetComputer)
+            const targetValues = value.datasets.map(({ data }) =>
+              targetComputer(data),
+            )
 
-            // target values may not all be unique
-            if (new Set(targetValues).size !== targetValues.length) {
+            // count frequencies of target values
+            const frequencies = new Map<number, number>()
+            for (const targetValue of targetValues) {
+              const frequency = frequencies.get(targetValue) ?? 0
+              frequencies.set(targetValue, frequency + 1)
+            }
+            const numberOfNonUniqueValues = [...frequencies.values()].filter(
+              (frequency) => frequency > 1,
+            ).length
+
+            if (numberOfNonUniqueValues === 0) {
               return { noSharedValues: true }
+            } else if (numberOfNonUniqueValues > 1) {
+              return { tooManySharedValues: true }
             }
 
             return null

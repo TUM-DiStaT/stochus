@@ -1,5 +1,7 @@
-import { Expose } from 'class-transformer'
+import { Expose, Type } from 'class-transformer'
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   ArrayNotEmpty,
   IsArray,
   IsBoolean,
@@ -9,15 +11,23 @@ import {
 import {
   BaseAssignment,
   BaseCompletionData,
+  emptyBaseCompletionData,
 } from '@stochus/assignments/model/shared'
 import {
-  Datasets,
   generateDatasetsWithIdenticalMean,
   generateDatasetsWithIdenticalMedian,
 } from './generate-datasets'
 
 const extractableCharacteristics = ['mean', 'median'] as const
 type ExtractableCharacteristic = (typeof extractableCharacteristics)[number]
+
+class Dataset {
+  @Expose()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @ArrayNotEmpty()
+  data!: number[]
+}
 
 export class IdentifySharedCharacteristicsAssignmentConfiguration {
   @Expose()
@@ -26,9 +36,11 @@ export class IdentifySharedCharacteristicsAssignmentConfiguration {
 
   @Expose()
   @IsArray()
-  @IsNumber({}, { each: true })
   @ArrayNotEmpty()
-  datasets!: Datasets
+  @Type(() => Dataset)
+  @ArrayMinSize(4)
+  @ArrayMaxSize(4)
+  datasets!: Dataset[]
 
   @Expose()
   @IsBoolean()
@@ -44,7 +56,7 @@ export class IdentifySharedCharacteristicsAssignmentCompletionData extends BaseC
 }
 
 const initialIdentifySharedCharacteristicsAssignmentCompletionData = {
-  ...new BaseCompletionData(),
+  ...emptyBaseCompletionData,
   selectedDatasets: [],
 } satisfies IdentifySharedCharacteristicsAssignmentCompletionData
 
@@ -68,7 +80,7 @@ export const IdentifySharedCharacteristicsAssignment: BaseAssignment<
 
     return {
       targetCharacteristic,
-      datasets,
+      datasets: datasets.map((data) => ({ data })),
       randomizeDatasetOrder: Math.random() > 0.5,
     } satisfies IdentifySharedCharacteristicsAssignmentConfiguration
   },

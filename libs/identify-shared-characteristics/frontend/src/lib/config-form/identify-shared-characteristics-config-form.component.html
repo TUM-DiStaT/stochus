@@ -1,1 +1,92 @@
-test
+<div class="grid grid-cols-2 gap-4">
+  <label class="form-control">
+    <span class="label">Abzulesende Eigenschaft</span>
+    <select
+      class="select select-bordered"
+      data-testid="target-property-select"
+      [formControl]="formControl.controls.targetCharacteristic"
+      [class.select-error]="formControl.controls.targetCharacteristic.errors"
+    >
+      <option value="mean">Durchschnitt</option>
+      <option value="median">Median</option>
+    </select>
+  </label>
+
+  <label class="label cursor-pointer">
+    <span class="label-text"> Reihenfolge der Datensätze randomisieren </span>
+    <input
+      type="checkbox"
+      class="toggle"
+      [formControl]="formControl.controls.randomizeDatasetOrder"
+      [class.toggle-error]="formControl.controls.targetCharacteristic.errors"
+    />
+  </label>
+</div>
+
+<div class="grid grid-cols-2 gap-8">
+  @for (control of csvInputs.controls;track control; let index = $index) {
+  <div class="flex flex-col gap-4">
+    <label class="form-control">
+      <span class="label">
+        Daten des {{ index + 1 }}. Histogramms (Ganzzahlen im CSV-Format)
+      </span>
+      <textarea
+        class="textarea textarea-bordered h-24"
+        data-testid="data-textarea"
+        [formControl]="control"
+        [class.textarea-error]="control.invalid"
+      ></textarea>
+      @if (control.invalid) {
+      <div class="label">
+        <span
+          class="label-text-alt text-error"
+          data-testid="invalid-csv-error-message"
+        >
+          Bitte eine Liste von Ganzzahlen als CSV eingeben (z.B.
+          <code>1, 2, 3</code>)
+        </span>
+      </div>
+      }
+    </label>
+    @if (control.valid) {
+    <div>
+      <stochus-histogram
+        [data]="(debouncedParsedCsv$ | async)?.[index]"
+        showBoxPlot
+      />
+    </div>
+    }
+  </div>
+  }
+</div>
+
+@if (formControl.errors?.['noSharedValues']) {
+<div role="alert" class="alert alert-error">
+  <svg class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <em>
+    Keine Datensätze mit gemeinsamem {{ targetCharacteristicName }} gefunden.
+  </em>
+</div>
+} @if (formControl.errors?.['tooManySharedValues']) {
+<div role="alert" class="alert alert-error">
+  <svg class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <em>
+    Es gibt mehr als einen {{ targetCharacteristicName }}, der in mehreren
+    Datensätzen vorkommt.
+  </em>
+</div>
+}

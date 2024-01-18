@@ -5,6 +5,7 @@ import { NgChartsModule } from 'ng2-charts'
 import { FormModel } from 'ngx-mf'
 import { concat, debounceTime, filter, map, of, shareReplay } from 'rxjs'
 import { ExtractFromHistogramAssignmentConfiguration } from '@stochus/assignments/extract-from-histogram-assignment/shared'
+import { parseIntegersCsv } from '@stochus/core/shared'
 import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 import { HistogramComponent } from '@stochus/core/frontend'
 
@@ -50,21 +51,11 @@ export class ExtractFromHistogramConfigFormComponent
   ).pipe(
     shareReplay(),
     map((value) => {
-      let parsedCsv: number[] | undefined = value
-        ?.split(/\s*,\s*/gim)
-        .filter(Boolean)
-        .map((value) => parseFloat(value))
-
-      if (
-        parsedCsv?.some(
-          (value) =>
-            isNaN(value) || !isFinite(value) || Math.floor(value) !== value,
-        )
-      ) {
-        parsedCsv = undefined
+      try {
+        return parseIntegersCsv(value)
+      } catch (e) {
+        return undefined
       }
-
-      return parsedCsv
     }),
     shareReplay(),
   )
