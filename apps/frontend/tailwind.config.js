@@ -22,6 +22,8 @@ module.exports = {
     // list copied from https://daisyui.com/docs/themes/ on 2023-04-10
     themes: [
       {
+        // color palette: https://coolors.co/749EBE-9BAFBF-F7B1AB
+        // (extra colors used in charts)
         stochus: {
           ...require('daisyui/src/theming/themes')['bumblebee'],
           primary: '#749EBE',
