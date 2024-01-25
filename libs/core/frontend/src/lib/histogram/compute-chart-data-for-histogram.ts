@@ -31,12 +31,15 @@ export const computeChartDataForHistogram = (
     (index + start).toString(),
   )
 
+  // Color palette: https://coolors.co/3b607d-9bafbf-af1b3f-bf9e0d-ffa69e
   const datasets: ChartDataset[] = [
     {
       label: 'Histogramm',
       type: 'bar',
       data: frequenciesFromStartToEnd,
       yAxisID: 'histogramY',
+      backgroundColor: '#BF9E0D',
+      borderColor: '#5F4F07',
     },
   ]
 
@@ -51,6 +54,10 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
+      backgroundColor: '#FFA69E',
+      borderColor: '#FFA69E',
+      pointBorderColor: '#FFA69E',
+      pointBackgroundColor: '#FFA69E',
     } as ChartDataset)
   }
 
@@ -66,6 +73,10 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
+      backgroundColor: '#AF1B3F',
+      borderColor: '#AF1B3F',
+      pointBorderColor: '#AF1B3F',
+      pointBackgroundColor: '#AF1B3F',
     } as ChartDataset)
   }
 
@@ -80,6 +91,10 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
+      backgroundColor: '#FFA69E',
+      borderColor: '#FFA69E',
+      pointBorderColor: '#FFA69E',
+      pointBackgroundColor: '#FFA69E',
     } as ChartDataset)
   }
 
@@ -96,6 +111,10 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
+      backgroundColor: '#AF1B3F',
+      borderColor: '#AF1B3F',
+      pointBorderColor: '#AF1B3F',
+      pointBackgroundColor: '#AF1B3F',
     } as ChartDataset)
   }
 
@@ -113,8 +132,10 @@ export const computeChartDataForHistogram = (
       datalabels: {
         display: false,
       },
-      backgroundColor: '#78E3C1',
-      borderColor: '#21A179',
+      backgroundColor: '#CDD7DF',
+      borderColor: '#3B607D',
+      pointBorderColor: '#3B607D',
+      pointBackgroundColor: '#CDD7DF',
     } as ChartDataset)
   }
 
