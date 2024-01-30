@@ -1,4 +1,5 @@
 import { Controller, Get, Logger, Param, Post } from '@nestjs/common'
+import { ApiProperty, ApiTags } from '@nestjs/swagger'
 import { Expose } from 'class-transformer'
 import { IsMongoId } from 'class-validator'
 import { User, UserRoles } from '@stochus/auth/shared'
@@ -10,10 +11,12 @@ import { StudyParticipationBackendService } from './study-participation-backend.
 class StudyIdParams {
   @Expose()
   @IsMongoId()
+  @ApiProperty()
   studyId!: string
 }
 
 @Controller('studies/participate')
+@ApiTags('study-participation')
 export class StudyParticipationController {
   private readonly logger = new Logger(StudyParticipationController.name)
 

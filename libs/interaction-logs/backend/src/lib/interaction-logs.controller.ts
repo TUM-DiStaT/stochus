@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { ApiProperty, ApiTags } from '@nestjs/swagger'
 import { Expose } from 'class-transformer'
 import { IsMongoId } from 'class-validator'
 import { User, UserRoles } from '@stochus/auth/shared'
@@ -13,15 +14,18 @@ import { InteractionLogsService } from './interaction-logs.service'
 class CreateGeneralStudyParticipationLogParams {
   @Expose()
   @IsMongoId()
+  @ApiProperty()
   studyParticipationId!: string
 }
 
 class CreateGeneralAssignmentCompletionLogParams {
   @Expose()
   @IsMongoId()
+  @ApiProperty()
   assignmentCompletionId!: string
 }
 
+@ApiTags('interaction-logs')
 @Controller('interaction-logs')
 export class InteractionLogsController {
   constructor(private interactionLogsBackendService: InteractionLogsService) {}

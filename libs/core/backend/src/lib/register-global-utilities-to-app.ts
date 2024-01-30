@@ -4,6 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 export const registerGlobalUtilitiesToApp = (app: INestApplication) => {
   app.useGlobalInterceptors(
@@ -19,4 +20,8 @@ export const registerGlobalUtilitiesToApp = (app: INestApplication) => {
       transform: true,
     }),
   )
+
+  const swaggerConfig = new DocumentBuilder().setTitle('Stochus API').build()
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig)
+  SwaggerModule.setup('docs', app, swaggerDocument)
 }

@@ -8,6 +8,8 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common'
+import { ApiProperty, ApiTags } from '@nestjs/swagger'
+import { Expose } from 'class-transformer'
 import { AuthGuard } from 'nest-keycloak-connect'
 import { AssignmentCompletionDto } from '@stochus/assignment/core/shared'
 import { BaseCompletionData } from '@stochus/assignments/model/shared'
@@ -16,7 +18,20 @@ import { plainToInstance } from '@stochus/core/shared'
 import { ParsedUser } from '@stochus/auth/backend'
 import { CompletionsService } from './completions.service'
 
+class WithCompletionIdParams {
+  @ApiProperty()
+  @Expose()
+  completionId!: string
+}
+
+class WithAssignmentIdParams {
+  @ApiProperty()
+  @Expose()
+  assignmentId!: string
+}
+
 @Controller('assignments/completions')
+@ApiTags('assignment-completions')
 export class CompletionsController {
   constructor(private readonly completionsService: CompletionsService) {}
 
@@ -30,7 +45,7 @@ export class CompletionsController {
 
   @Get(':completionId')
   @UseGuards(AuthGuard)
-  async getById(@Param() { completionId }: { completionId: string }) {
+  async getById(@Param() { completionId }: WithCompletionIdParams) {
     const completion = await this.completionsService.getById(completionId)
 
     if (!completion) {
@@ -43,7 +58,7 @@ export class CompletionsController {
   @Get(':assignmentId/active')
   @UseGuards(AuthGuard)
   async getActive(
-    @Param() { assignmentId }: { assignmentId: string },
+    @Param() { assignmentId }: WithAssignmentIdParams,
     @ParsedUser() user: User,
   ) {
     const completion = await this.completionsService.getMostRecentForAssignment(
@@ -63,7 +78,7 @@ export class CompletionsController {
   @Post(':assignmentId')
   @UseGuards(AuthGuard)
   async createForAssignment(
-    @Param() { assignmentId }: { assignmentId: string },
+    @Param() { assignmentId }: WithAssignmentIdParams,
     @ParsedUser() user: User,
   ) {
     const created = await this.completionsService.create(assignmentId, user)
@@ -74,11 +89,7 @@ export class CompletionsController {
   @UseGuards(AuthGuard)
   async updateCompletionData(
     @Param()
-    {
-      completionId,
-    }: {
-      completionId: string
-    },
+    { completionId }: WithCompletionIdParams,
     @ParsedUser() user: User,
     @Body() update: Partial<BaseCompletionData>,
   ) {
