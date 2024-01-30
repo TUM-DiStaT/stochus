@@ -10,6 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { Types } from 'mongoose'
 import { User, UserRoles } from '@stochus/auth/shared'
 import { plainToInstance } from '@stochus/core/shared'
@@ -25,6 +26,7 @@ import { ParsedUser, RealmRoles } from '@stochus/auth/backend'
 import { StudiesBackendService } from './studies-backend.service'
 
 @Controller('studies')
+@ApiTags('studies')
 export class StudiesBackendController {
   private readonly logger = new Logger(StudiesBackendController.name)
 
