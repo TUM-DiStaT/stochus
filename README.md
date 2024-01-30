@@ -4,6 +4,33 @@
 
 ## Getting up and running
 
+### Prerequisites
+
+You need to have the following tools installed on your machine:
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Node.js](https://nodejs.org/en/download/) (you might want to install this via [nvm](https://github.com/nvm-sh/nvm)
+
+### Running the backend API
+
+To start the backend, first you must ensure docker is running on your machine. Then, if the stochus containers aren't already running, run the following command:
+
+```shell
+docker compose up -d
+```
+
+Once all containers are up and running, you can start the actual backend API by running
+
+```shell
+npx nx run backend:serve
+```
+
+This will also make OpenAPI documentation available at http://localhost:3333/docs. These do not reload automatically.
+
+### Running the frontend
+
+Run `npx nx run frontend:serve` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+
 ### Pre-configured users
 
 | Username               | Password   | Roles                              | Groups                        |
