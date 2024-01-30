@@ -33,7 +33,7 @@ export const generateDatasetsWithIdenticalMean = (count: number): Datasets => {
     const range = random(5, 20)
     // this length will probably not be reached exactly
     const roughTargetLength = random(10, 100)
-    const lowerBound = random(desiredMean - range, desiredMean - 1)
+    const lowerBound = random(desiredMean - range + 1, desiredMean - 1)
     const upperBound = lowerBound + range
 
     const result = Array.from({ length: roughTargetLength / 2 }, () =>
@@ -42,7 +42,7 @@ export const generateDatasetsWithIdenticalMean = (count: number): Datasets => {
 
     for (
       let actualMean = calculateMean(result), i = 0;
-      actualMean !== desiredMean && i < 1000;
+      actualMean !== desiredMean;
       actualMean = calculateMean(result), i++
     ) {
       // Searching for the "missing element" x so that the actual mean is the desired mean:
