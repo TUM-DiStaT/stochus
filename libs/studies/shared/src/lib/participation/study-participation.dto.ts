@@ -1,8 +1,12 @@
 import { Exclude, Expose, Type } from 'class-transformer'
 import {
   IsArray,
+  IsDate,
   IsMongoId,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator'
@@ -57,6 +61,24 @@ export class StudyParticipationWithAssignmentCompletionsAndLogsDto extends Study
 
   @Exclude()
   override userId!: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  userGender?: string
+
+  @Expose()
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  userDateOfBirth?: Date
+
+  @Expose()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsOptional()
+  userGrade?: number
 
   @Expose()
   @Type(() => AssignmentCompletionWithInteractionLogsDto)

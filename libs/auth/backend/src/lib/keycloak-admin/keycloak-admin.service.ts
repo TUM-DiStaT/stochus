@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common'
 import { Issuer, TokenSet } from 'openid-client'
 import { User } from '@stochus/auth/shared'
+import { plainToInstance } from '@stochus/core/shared'
 import { keycloakUrl, realm } from '../keycloak-config'
+import { StudentMetadata } from './student-metadata'
 
 @Injectable()
 export class KeycloakAdminService implements OnModuleInit, OnModuleDestroy {
@@ -39,6 +41,22 @@ export class KeycloakAdminService implements OnModuleInit, OnModuleDestroy {
         })
       )?.length ?? 0
     )
+  }
+
+  async getStudentMetadata(userId: string) {
+    const user = await this.keycloakAdminClient.users.findOne({
+      id: userId,
+    })
+
+    if (!user) {
+      return undefined
+    }
+
+    return plainToInstance(StudentMetadata, {
+      gender: user.attributes?.['gender']?.[0],
+      dateOfBirth: user.attributes?.['dateOfBirth']?.[0],
+      grade: user.attributes?.['grade']?.[0],
+    })
   }
 
   async onModuleInit() {

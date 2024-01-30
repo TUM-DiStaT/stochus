@@ -234,7 +234,25 @@ export class StudiesBackendService {
       throw new ForbiddenException()
     }
 
-    return study
+    const participationsWithMetadata = await Promise.all(
+      study.participations.map(async (participation) => {
+        const metadata =
+          (await this.keycloakAdminService.getStudentMetadata(
+            participation.userId,
+          )) ?? {}
+        return {
+          ...participation,
+          userGender: metadata.gender,
+          userDateOfBirth: metadata.dateOfBirth,
+          userGrade: metadata.grade,
+          userMetadata: metadata,
+        }
+      }),
+    )
+    return {
+      ...study,
+      participations: participationsWithMetadata,
+    }
   }
 
   async getById(id: string) {
