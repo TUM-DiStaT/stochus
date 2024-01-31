@@ -1,1 +1,1 @@
-export * from './lib/determine-dice-fairness-assignment-shared'
+export * from './lib/determine-dice-fairness-assignment'
