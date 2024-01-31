@@ -1,1 +1,1 @@
-export * from './lib/determine-dice-fairness-assignment-frontend.component'
+export * from './lib/determine-dice-fairness-assignment-for-frontend'
