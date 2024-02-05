@@ -1,4 +1,4 @@
-import { Directive, Input, OnDestroy, OnInit } from '@angular/core'
+import { Directive, DoCheck, Input, OnDestroy, OnInit } from '@angular/core'
 import {
   AbstractControl,
   FormControl,
@@ -20,7 +20,7 @@ import { parseIntegersCsv } from '@stochus/core/shared'
   selector: 'input[stochusCsvInput], textarea[stochusCsvInput]',
   standalone: true,
 })
-export class CsvInputDirective implements OnInit, OnDestroy {
+export class CsvInputDirective implements OnInit, OnDestroy, DoCheck {
   static generateCsvStringFormControl() {
     return new FormControl<string>('', {
       validators: [
@@ -88,5 +88,13 @@ export class CsvInputDirective implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.csvTransformationSubscription?.unsubscribe()
+  }
+
+  // Necessary workaround as there is no touched event on formControls
+  // https://github.com/angular/angular/issues/10887
+  ngDoCheck(): void {
+    if (this.ngControl.control?.touched) {
+      this._arrayInputFormControl?.markAsTouched()
+    }
   }
 }
