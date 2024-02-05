@@ -22,8 +22,15 @@ export const DetermineDiceFairnessAssignmentForFrontend: AssignmentForFrontend<
   generateConfigFormControl: (fb, { proportions, initialRolls, dicePerRoll }) =>
     fb.group(
       {
-        proportions: [proportions, [Validators.required]],
-        initialRolls: [initialRolls, [Validators.required]],
+        proportions: [
+          proportions,
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(6),
+          ],
+        ],
+        initialRolls: [initialRolls, []],
         dicePerRoll: [dicePerRoll, [Validators.required]],
       },
       {
@@ -36,7 +43,7 @@ export const DetermineDiceFairnessAssignmentForFrontend: AssignmentForFrontend<
               ),
             )
 
-            errors.reduce(
+            return errors.reduce(
               (errors, currError) => ({
                 ...(errors ?? {}),
                 proportionsDtoError: currError.property === 'proportions',
@@ -45,11 +52,6 @@ export const DetermineDiceFairnessAssignmentForFrontend: AssignmentForFrontend<
               }),
               null as Record<string, boolean> | null,
             )
-
-            if (errors.length > 0) {
-              return { invalidConfig: true }
-            }
-            return null
           },
         ],
       },

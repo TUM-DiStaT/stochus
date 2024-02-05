@@ -1,1 +1,44 @@
-<p>determine-dice-fairness-config-form works!</p>
+<label class="form-control">
+  <span class="label">Initiale Würfe (bevor echter Zufall einsetzt)</span>
+  <textarea
+    class="textarea textarea-bordered h-24"
+    data-testid="initial-rolls-textarea"
+    [formControl]="theCsvControl"
+    stochusCsvInput
+    [arrayInputFormControl]="formControl.controls.initialRolls"
+    [class.textarea-error]="
+      formControl.controls.initialRolls.touched &&
+      (formControl.controls.initialRolls.invalid || formControl.errors?.['initialRollsDtoError'])
+    "
+  ></textarea>
+  @if (formControl.controls.initialRolls.touched &&
+  (formControl.controls.initialRolls.invalid ||
+  formControl.errors?.['initialRollsDtoError'])) {
+  <div class="label">
+    @if (formControl.controls.initialRolls.errors?.['invalidCsv']) {
+    <span
+      class="label-text-alt text-error"
+      data-testid="invalid-csv-error-message"
+    >
+      Bitte eine Liste Würfelergebnissen angeben (z.B.
+      <code>1, 6, 3</code>)
+    </span>
+    } @else if (formControl.errors?.['initialRollsDtoError']) {
+    <span
+      class="label-text-alt text-error"
+      data-testid="invalid-csv-error-message"
+    >
+      Bitte nur Ganzzahlen zwischen 1 und 6 angeben
+    </span>
+    }
+  </div>
+  }
+</label>
+<code>
+  {{ formControl.value | json }}
+  <!--  {{ formControl.errors | json }}-->
+  <!--  {{ formControl.controls.initialRolls.errors | json }}-->
+  <!--  {{ formControl.controls.dicePerRoll.errors | json }}-->
+  <!--  {{ formControl.controls.proportions.errors | json }}-->
+  <!--  {{ formControl.valid | json }}-->
+</code>
