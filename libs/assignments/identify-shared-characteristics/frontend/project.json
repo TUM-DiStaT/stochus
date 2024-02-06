@@ -1,7 +1,7 @@
 {
   "name": "identify-shared-characteristics-frontend",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/identify-shared-characteristics/frontend/src",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/assignments/identify-shared-characteristics/frontend/src",
   "prefix": "lib",
   "tags": ["scope:frontend"],
   "projectType": "library",

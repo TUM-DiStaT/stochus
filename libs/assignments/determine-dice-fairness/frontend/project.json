@@ -1,7 +1,7 @@
 {
   "name": "determine-dice-fairness-assignment-frontend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "../frontend/src",
+  "sourceRoot": "libs/assignments/determine-dice-fairness/frontend/src",
   "prefix": "lib",
   "tags": ["scope:frontend"],
   "projectType": "library",

@@ -1,7 +1,7 @@
 {
   "name": "identify-shared-characteristics-shared",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/identify-shared-characteristics/shared/src",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/assignments/identify-shared-characteristics/shared/src",
   "projectType": "library",
   "targets": {
     "lint": {
