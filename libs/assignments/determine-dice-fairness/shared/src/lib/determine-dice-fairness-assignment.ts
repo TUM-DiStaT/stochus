@@ -39,9 +39,10 @@ export class DetermineDiceFairnessAssignmentCompletionData extends BaseCompletio
   @Expose()
   @IsArray()
   @IsNumber({}, { each: true })
-  @Min(1, { each: true })
-  @Max(6, { each: true })
-  rolls!: number[]
+  @Min(0, { each: true })
+  @ArrayMinSize(6)
+  @ArrayMaxSize(6)
+  resultFrequencies!: number[]
 
   @Expose()
   @IsNumber({ maxDecimalPlaces: 0 })
@@ -61,7 +62,7 @@ export const DetermineDiceFairnessAssignment: BaseAssignment<
   getInitialCompletionData:
     (): DetermineDiceFairnessAssignmentCompletionData => ({
       ...emptyBaseCompletionData,
-      rolls: [],
+      resultFrequencies: Array.from({ length: 6 }, () => 0),
       confidence: 3,
     }),
   getRandomConfig: (): DetermineDiceFairnessAssignmentConfiguration => ({

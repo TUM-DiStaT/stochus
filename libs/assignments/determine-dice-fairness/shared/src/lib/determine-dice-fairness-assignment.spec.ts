@@ -102,12 +102,12 @@ describe('DetermineDiceFairnessAssignmentCompletionData', () => {
     ).resolves.toBeUndefined()
   })
 
-  it('should reject invalid rolls', async () => {
+  it('should reject invalid resultFrequencies', async () => {
     await expect(
       validateOrReject(
         plainToInstance(DetermineDiceFairnessAssignmentCompletionData, {
           ...DetermineDiceFairnessAssignment.getInitialCompletionData(),
-          rolls: 1,
+          resultFrequencies: 1,
         }),
       ),
     ).rejects.toHaveLength(1)
@@ -115,7 +115,7 @@ describe('DetermineDiceFairnessAssignmentCompletionData', () => {
       validateOrReject(
         plainToInstance(DetermineDiceFairnessAssignmentCompletionData, {
           ...DetermineDiceFairnessAssignment.getInitialCompletionData(),
-          rolls: ['1'],
+          resultFrequencies: ['1', '1', '1', '1', '1', '1'],
         }),
       ),
     ).rejects.toHaveLength(1)
@@ -123,7 +123,8 @@ describe('DetermineDiceFairnessAssignmentCompletionData', () => {
       validateOrReject(
         plainToInstance(DetermineDiceFairnessAssignmentCompletionData, {
           ...DetermineDiceFairnessAssignment.getInitialCompletionData(),
-          rolls: [0],
+          // 7 elements
+          resultFrequencies: [0, 0, 0, 0, 0, 0, 0],
         }),
       ),
     ).rejects.toHaveLength(1)
@@ -131,7 +132,7 @@ describe('DetermineDiceFairnessAssignmentCompletionData', () => {
       validateOrReject(
         plainToInstance(DetermineDiceFairnessAssignmentCompletionData, {
           ...DetermineDiceFairnessAssignment.getInitialCompletionData(),
-          rolls: [7],
+          resultFrequencies: [0, 0, 0, 0, 0, -1],
         }),
       ),
     ).rejects.toHaveLength(1)
