@@ -1,44 +1,104 @@
-<label class="form-control">
-  <span class="label">Initiale Würfe (bevor echter Zufall einsetzt)</span>
-  <textarea
-    class="textarea textarea-bordered h-24"
-    data-testid="initial-rolls-textarea"
-    [formControl]="theCsvControl"
-    stochusCsvInput
-    [arrayInputFormControl]="formControl.controls.initialRolls"
-    [class.textarea-error]="
+<div class="flex flex-col gap-4">
+  <label class="form-control">
+    <span class="label">Initiale Würfe (bevor echter Zufall einsetzt)</span>
+    <textarea
+      class="textarea textarea-bordered h-24"
+      data-testid="initial-rolls-textarea"
+      [formControl]="theCsvControl"
+      stochusCsvInput
+      [arrayInputFormControl]="formControl.controls.initialRolls"
+      [class.textarea-error]="
       formControl.controls.initialRolls.touched &&
       (formControl.controls.initialRolls.invalid || formControl.errors?.['initialRollsDtoError'])
     "
-  ></textarea>
-  @if (formControl.controls.initialRolls.touched &&
-  (formControl.controls.initialRolls.invalid ||
-  formControl.errors?.['initialRollsDtoError'])) {
-  <div class="label">
-    @if (formControl.controls.initialRolls.errors?.['invalidCsv']) {
-    <span
-      class="label-text-alt text-error"
-      data-testid="invalid-csv-error-message"
-    >
-      Bitte eine Liste Würfelergebnissen angeben (z.B.
-      <code>1, 6, 3</code>)
-    </span>
-    } @else if (formControl.errors?.['initialRollsDtoError']) {
-    <span
-      class="label-text-alt text-error"
-      data-testid="invalid-csv-error-message"
-    >
-      Bitte nur Ganzzahlen zwischen 1 und 6 angeben
-    </span>
+    ></textarea>
+    @if (formControl.controls.initialRolls.touched &&
+    (formControl.controls.initialRolls.invalid ||
+    formControl.errors?.['initialRollsDtoError'])) {
+    <div class="label">
+      @if (formControl.controls.initialRolls.errors?.['invalidCsv']) {
+      <span
+        class="label-text-alt text-error"
+        data-testid="invalid-csv-error-message"
+      >
+        Bitte eine Liste Würfelergebnissen angeben (z.B.
+        <code>1, 6, 3</code>)
+      </span>
+      } @else if (formControl.errors?.['initialRollsDtoError']) {
+      <span
+        class="label-text-alt text-error"
+        data-testid="invalid-csv-error-message"
+      >
+        Bitte nur Ganzzahlen zwischen 1 und 6 angeben
+      </span>
+      }
+    </div>
     }
+  </label>
+  <div class="form-control">
+    <span class="label">Wahrscheinlichkeitsverteilung des Würfels</span>
+    <div
+      class="flex flex-col gap-4 rounded-box p-4 border border-primary"
+      [class.border-error]="
+        proportionControls.touched && proportionControls.invalid
+      "
+    >
+      <aside class="alert">
+        <ng-icon name="heroInformationCircle"></ng-icon>
+        <span>
+          Um Rundungsprobleme zu vermeiden, werden die
+          Würfelwahrscheinlichkeiten in proportionalen Häufigkeiten angegeben.
+          Sind alle Häufigkeiten gleich, so ist die Wahrscheinlichkeit
+          gleichverteilt bzw. der Würfel fair. Ist eine Häufigkeit doppelt so
+          hoch wie die andere, so ist die Wahrscheinlichkeit für das erste
+          Ergebnis doppelt so hoch wie für das zweite.
+        </span>
+      </aside>
+
+      <div class="grid grid-cols-2 gap-4">
+        @for (proportionControl of proportionControls.controls; track
+        proportionControl; let i = $index) {
+        <label class="form-control">
+          <span class="label">Häufigkeit "{{ i + 1 }}"</span>
+          <input
+            class="input input-bordered"
+            type="number"
+            min="0"
+            [formControl]="proportionControls.at(i)"
+            [class.input-error]="
+              proportionControls.at(i).touched &&
+              proportionControls.at(i).invalid
+            "
+          />
+          @if (proportionControls.at(i).touched &&
+          proportionControls.at(i).invalid) {
+          <div class="label">
+            <span
+              class="label-text-alt text-error"
+              data-testid="invalid-proportion-error-message"
+            >
+              Bitte eine ganze Zahl angeben
+            </span>
+          </div>
+          }
+        </label>
+        }
+      </div>
+
+      @if (proportionControls.touched &&
+      proportionControls.errors?.['atLeastOneNonZero']) {
+      <p class="text-error">
+        Mindestens ein Ergebnis muss eine Häufigkeit größer 0 haben.
+      </p>
+      }
+    </div>
   </div>
-  }
-</label>
-<code>
-  {{ formControl.value | json }}
-  <!--  {{ formControl.errors | json }}-->
-  <!--  {{ formControl.controls.initialRolls.errors | json }}-->
-  <!--  {{ formControl.controls.dicePerRoll.errors | json }}-->
-  <!--  {{ formControl.controls.proportions.errors | json }}-->
-  <!--  {{ formControl.valid | json }}-->
-</code>
+  <code>
+    {{ formControl.value | json }}
+    <!--  {{ formControl.errors | json }}-->
+    <!--  {{ formControl.controls.initialRolls.errors | json }}-->
+    <!--  {{ formControl.controls.dicePerRoll.errors | json }}-->
+    <!--  {{ formControl.controls.proportions.errors | json }}-->
+    <!--  {{ formControl.valid | json }}-->
+  </code>
+</div>
