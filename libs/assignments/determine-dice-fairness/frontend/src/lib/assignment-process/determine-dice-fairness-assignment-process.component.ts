@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { ActiveElement, ChartData, ChartEvent, ChartOptions } from 'chart.js'
 import { isEqual, random } from 'lodash'
 import { NgChartsModule } from 'ng2-charts'
@@ -14,6 +15,7 @@ import {
   BehaviorSubject,
   Subject,
   Subscription,
+  debounceTime,
   distinctUntilChanged,
   firstValueFrom,
   map,
@@ -29,7 +31,7 @@ import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
 @Component({
   selector: 'lib-determine-dice-fairness-assignment-process',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, NgChartsModule, ReactiveFormsModule],
   templateUrl: './determine-dice-fairness-assignment-process.component.html',
 })
 export class DetermineDiceFairnessAssignmentProcessComponent
@@ -51,14 +53,32 @@ export class DetermineDiceFairnessAssignmentProcessComponent
   >()
   private _completionData!: DetermineDiceFairnessAssignmentCompletionData
 
+  confidenceControl = new FormControl(this._completionData?.confidence)
+  debouncedConfidence$ = this.confidenceControl.valueChanges.pipe(
+    debounceTime(500),
+  )
+  confidenceLogs$ = this.debouncedConfidence$.pipe(
+    map((confidence) => ({
+      action: 'enteredConfidenceValue',
+      value: confidence,
+    })),
+  )
+
+  isFairControl = new FormControl(this._completionData?.isFairGuess)
+  debouncedIsFair$ = this.isFairControl.valueChanges.pipe(debounceTime(500))
+  isFairLogs$ = this.debouncedIsFair$.pipe(
+    map((isFair) => ({
+      action: 'enteredIsFairValue',
+      value: isFair,
+    })),
+  )
+
   private subscriptions: Subscription[] = []
   rolls$ = new Subject<number[]>()
   $rollLogs = this.rolls$.pipe(
     map((rolls) => ({
       action: 'roll',
       rolls,
-      curr: 1,
-      value: 1,
     })),
   )
   private completionData$ =
@@ -169,25 +189,40 @@ export class DetermineDiceFairnessAssignmentProcessComponent
   }
 
   ngOnInit() {
+    this.isFairControl.setValue(this.completionData.isFairGuess)
+    this.confidenceControl.setValue(this.completionData.confidence)
+
     this.subscriptions.push(
-      merge(this.$rollLogs, this.loggableChartEvents$)
-        .pipe(
-          distinctUntilChanged(
-            (lastEvent, currEvent) =>
-              // Ignore enteredValue if the last event was the corresponding deletion
-              lastEvent.action === 'deletion' &&
-              currEvent.action === 'enteredValue' &&
-              lastEvent.curr === currEvent.value,
-          ),
-        )
-        .subscribe((log) => {
-          this.createInteractionLog.emit(log)
-        }),
+      merge(
+        this.$rollLogs,
+        this.loggableChartEvents$,
+        this.isFairLogs$,
+        this.confidenceLogs$,
+      ).subscribe((log) => {
+        this.createInteractionLog.emit(log)
+      }),
+    )
+
+    this.subscriptions.push(
+      this.debouncedConfidence$.subscribe((confidence) => {
+        this.updateCompletionData.emit({ confidence: confidence ?? undefined })
+      }),
+    )
+    this.subscriptions.push(
+      this.isFairControl.valueChanges.subscribe((isFair) => {
+        this.updateCompletionData.emit({ isFairGuess: isFair ?? undefined })
+      }),
     )
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe())
+  }
+
+  submit() {
+    this.updateCompletionData.emit({
+      progress: 1,
+    })
   }
 
   get completionData(): DetermineDiceFairnessAssignmentCompletionData {

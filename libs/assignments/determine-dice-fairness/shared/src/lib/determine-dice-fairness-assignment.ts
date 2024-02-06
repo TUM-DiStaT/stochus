@@ -3,7 +3,9 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsNumber,
+  IsOptional,
   Max,
   Min,
 } from 'class-validator'
@@ -43,6 +45,11 @@ export class DetermineDiceFairnessAssignmentCompletionData extends BaseCompletio
   @ArrayMinSize(6)
   @ArrayMaxSize(6)
   resultFrequencies!: number[]
+
+  @Expose()
+  @IsOptional()
+  @IsBoolean()
+  isFairGuess?: boolean
 
   @Expose()
   @IsNumber({ maxDecimalPlaces: 0 })
