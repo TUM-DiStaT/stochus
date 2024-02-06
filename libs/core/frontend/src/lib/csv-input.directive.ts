@@ -23,10 +23,7 @@ import { parseIntegersCsv } from '@stochus/core/shared'
 export class CsvInputDirective implements OnInit, OnDestroy, DoCheck {
   static generateCsvStringFormControl() {
     return new FormControl<string>('', {
-      validators: [
-        Validators.required,
-        Validators.pattern(/^\s*,?\s*\d+\s*(?:,\s*\d+\s*)*,?\s*$/),
-      ],
+      validators: [Validators.pattern(/^\s*,?\s*\d+\s*(?:,\s*\d+\s*)*,?\s*$/)],
     })
   }
 
