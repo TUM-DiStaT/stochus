@@ -1,5 +1,30 @@
 <div class="flex flex-col gap-4">
   <label class="form-control">
+    <span class="label">Anzahl gleichzeitiger Würfe</span>
+    <input
+      class="input input-bordered"
+      type="number"
+      min="1"
+      [formControl]="formControl.controls.dicePerRoll"
+      [class.input-error]="
+        formControl.controls.dicePerRoll.touched &&
+        formControl.controls.dicePerRoll.invalid
+      "
+    />
+    @if (formControl.controls.dicePerRoll.touched &&
+    formControl.controls.dicePerRoll.invalid) {
+    <div class="label">
+      <span
+        class="label-text-alt text-error"
+        data-testid="invalid-dice-per-roll-error-message"
+      >
+        Bitte eine ganze Zahl größer 0 angeben
+      </span>
+    </div>
+    }
+  </label>
+
+  <label class="form-control">
     <span class="label">Initiale Würfe (bevor echter Zufall einsetzt)</span>
     <textarea
       class="textarea textarea-bordered h-24"
