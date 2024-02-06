@@ -1,1 +1,11 @@
-<p>determine-dice-fairness-assignment-process works!</p>
+<canvas
+  baseChart
+  class="chart"
+  [data]="(chartData$ | async) ?? undefined"
+  [options]="chartOptions"
+  (chartClick)="onChartEvent('click', $event)"
+  (chartHover)="onChartEvent('hover', $event)"
+></canvas>
+<button (click)="rollDice()" class="btn btn-primary">
+  {{ config.dicePerRoll }} mal würfeln
+</button>
