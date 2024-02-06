@@ -151,10 +151,44 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     distinctUntilChanged((last, curr) => isEqual(last, curr)),
   )
 
-  rollDice() {
-    const nextRolls = Array.from({ length: this.config.dicePerRoll }, () =>
-      random(1, 6),
+  private getRolls() {
+    const amountPreviouslyRolled =
+      this._completionData.resultFrequencies.reduce(
+        (acc, curr) => acc + curr,
+        0,
+      )
+    const predeterminedRolls = this.config.initialRolls.slice(
+      amountPreviouslyRolled + 1,
+      amountPreviouslyRolled + this.config.dicePerRoll + 1,
     )
+
+    if (predeterminedRolls.length === this.config.dicePerRoll) {
+      return predeterminedRolls
+    }
+
+    const proportionSum = this.config.proportions.reduce(
+      (acc, curr) => acc + curr,
+      0,
+    )
+
+    return Array.from({ length: this.config.dicePerRoll }, () => {
+      let valWithinProportionRange = random(1, proportionSum)
+
+      // iterate over proportions finding the first one that is greater than the random value
+      for (let i = 0; i < this.config.proportions.length; i++) {
+        if (valWithinProportionRange <= this.config.proportions[i]) {
+          return i + 1
+        } else {
+          valWithinProportionRange -= this.config.proportions[i]
+        }
+      }
+
+      return 6
+    })
+  }
+
+  rollDice() {
+    const nextRolls = this.getRolls()
     this.rolls$.next(nextRolls)
 
     const newFrequencies = nextRolls.reduce(
