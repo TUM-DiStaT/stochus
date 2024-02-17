@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
+    require('tailwindcss-3d'),
     require('daisyui'),
     ({ addVariant }) => {
       addVariant('ng-invalid', '&.ng-touched.ng-invalid')
