@@ -72,11 +72,16 @@ export const DetermineDiceFairnessAssignment: BaseAssignment<
       resultFrequencies: Array.from({ length: 6 }, () => 0),
       confidence: 3,
     }),
-  getRandomConfig: (): DetermineDiceFairnessAssignmentConfiguration => ({
-    proportions: Array.from({ length: 6 }, () => random(0, 10)),
-    dicePerRoll: 4,
-    initialRolls: [],
-  }),
+  getRandomConfig: (): DetermineDiceFairnessAssignmentConfiguration => {
+    const shouldCreateFairConfig = Math.random() > 0.5
+    return {
+      proportions: Array.from({ length: 6 }, () =>
+        shouldCreateFairConfig ? 1 : random(0, 10),
+      ),
+      dicePerRoll: 4,
+      initialRolls: [],
+    }
+  },
   configurationClass: DetermineDiceFairnessAssignmentConfiguration,
   completionDataClass: DetermineDiceFairnessAssignmentCompletionData,
 }
