@@ -64,7 +64,7 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     })),
   )
 
-  isFairControl = new FormControl(this._completionData?.isFairGuess)
+  isFairControl = new FormControl(this._completionData?.isFairGuess ?? null)
   debouncedIsFair$ = this.isFairControl.valueChanges.pipe(debounceTime(500))
   isFairLogs$ = this.debouncedIsFair$.pipe(
     map((isFair) => ({
@@ -223,7 +223,7 @@ export class DetermineDiceFairnessAssignmentProcessComponent
   }
 
   ngOnInit() {
-    this.isFairControl.setValue(this.completionData.isFairGuess)
+    this.isFairControl.setValue(this.completionData.isFairGuess ?? null)
     this.confidenceControl.setValue(this.completionData.confidence)
 
     this.subscriptions.push(
