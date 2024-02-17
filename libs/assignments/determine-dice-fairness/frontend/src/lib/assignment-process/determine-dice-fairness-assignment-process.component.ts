@@ -158,15 +158,15 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     distinctUntilChanged((last, curr) => isEqual(last, curr)),
   )
 
-  private getRolls() {
+  getNextRolls() {
     const amountPreviouslyRolled =
       this._completionData.resultFrequencies.reduce(
         (acc, curr) => acc + curr,
         0,
       )
     const predeterminedRolls = this.config.initialRolls.slice(
-      amountPreviouslyRolled + 1,
-      amountPreviouslyRolled + this.config.dicePerRoll + 1,
+      amountPreviouslyRolled,
+      amountPreviouslyRolled + this.config.dicePerRoll,
     )
 
     if (predeterminedRolls.length === this.config.dicePerRoll) {
@@ -178,24 +178,29 @@ export class DetermineDiceFairnessAssignmentProcessComponent
       0,
     )
 
-    return Array.from({ length: this.config.dicePerRoll }, () => {
-      let valWithinProportionRange = random(1, proportionSum)
+    const randomRolls = Array.from(
+      { length: this.config.dicePerRoll - predeterminedRolls.length },
+      () => {
+        let valWithinProportionRange = random(1, proportionSum)
 
-      // iterate over proportions finding the first one that is greater than the random value
-      for (let i = 0; i < this.config.proportions.length; i++) {
-        if (valWithinProportionRange <= this.config.proportions[i]) {
-          return i + 1
-        } else {
-          valWithinProportionRange -= this.config.proportions[i]
+        // iterate over proportions finding the first one that is greater than the random value
+        for (let i = 0; i < this.config.proportions.length; i++) {
+          if (valWithinProportionRange <= this.config.proportions[i]) {
+            return i + 1
+          } else {
+            valWithinProportionRange -= this.config.proportions[i]
+          }
         }
-      }
 
-      return 6
-    })
+        return 6
+      },
+    )
+
+    return [...predeterminedRolls, ...randomRolls]
   }
 
   rollDice() {
-    const nextRolls = this.getRolls()
+    const nextRolls = this.getNextRolls()
 
     const newFrequencies = nextRolls.reduce(
       (acc, curr) => {
