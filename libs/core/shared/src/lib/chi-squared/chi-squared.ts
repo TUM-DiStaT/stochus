@@ -16,7 +16,20 @@ const sortedThresholdEntries = Object.entries(thresholds)
   .sort(([, a], [, b]) => b - a)
   .map(([a, b]) => [parseFloat(a), b])
 
-export const chiSquared = (observed: number[], expected: number[]) => {
+const getCorrespondingEqualDistribution = (observed: number[]) => {
+  const totalObserved = observed.reduce((acc, n) => acc + n, 0)
+  const expected = Array.from({ length: observed.length }, () =>
+    Math.round(totalObserved / observed.length),
+  )
+  const currTotalExpected = expected.reduce((acc, n) => acc + n, 0)
+  expected[0] += totalObserved - currTotalExpected
+  return expected
+}
+
+export const chiSquared = (observed: number[], optionalExpected?: number[]) => {
+  const expected =
+    optionalExpected ?? getCorrespondingEqualDistribution(observed)
+
   if (observed.length !== expected.length) {
     throw new Error('observed and expected must have the same length')
   }
@@ -35,14 +48,7 @@ export const chiSquared = (observed: number[], expected: number[]) => {
 }
 
 export const minimumProbabilityD6IsUnfair = (observed: number[]) => {
-  const totalObserved = observed.reduce((acc, n) => acc + n, 0)
-  const expected = Array.from({ length: observed.length }, () =>
-    Math.round(totalObserved / observed.length),
-  )
-  const currTotalExpected = expected.reduce((acc, n) => acc + n, 0)
-  expected[0] += totalObserved - currTotalExpected
-
-  const chiSquaredValue = chiSquared(observed, expected)
+  const chiSquaredValue = chiSquared(observed)
   return (sortedThresholdEntries.find(
     ([, threshold]) => chiSquaredValue > threshold,
   ) ?? sortedThresholdEntries.at(-1)!)[0]

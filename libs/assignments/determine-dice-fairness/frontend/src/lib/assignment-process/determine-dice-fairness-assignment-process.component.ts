@@ -26,6 +26,7 @@ import {
   DetermineDiceFairnessAssignmentCompletionData,
   DetermineDiceFairnessAssignmentConfiguration,
 } from '@stochus/assignments/determine-dice-fairness/shared'
+import { chiSquared } from '@stochus/core/shared'
 import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
 
 @Component({
@@ -74,12 +75,18 @@ export class DetermineDiceFairnessAssignmentProcessComponent
   )
 
   private subscriptions: Subscription[] = []
-  rolls$ = new Subject<number[]>()
+  rolls$ = new Subject<{
+    nextRolls: number[]
+    newFrequencies: number[]
+  }>()
   $rollLogs = this.rolls$.pipe(
-    map((rolls) => ({
-      action: 'roll',
-      rolls,
-    })),
+    map(({ nextRolls, newFrequencies }) => {
+      return {
+        action: 'roll',
+        rolls: nextRolls,
+        chiSquared: chiSquared(newFrequencies),
+      }
+    }),
   )
   private completionData$ =
     new BehaviorSubject<DetermineDiceFairnessAssignmentCompletionData>(
@@ -189,7 +196,6 @@ export class DetermineDiceFairnessAssignmentProcessComponent
 
   rollDice() {
     const nextRolls = this.getRolls()
-    this.rolls$.next(nextRolls)
 
     const newFrequencies = nextRolls.reduce(
       (acc, curr) => {
@@ -199,6 +205,8 @@ export class DetermineDiceFairnessAssignmentProcessComponent
       [...this._completionData.resultFrequencies],
     )
     this.updateCompletionData.emit({ resultFrequencies: newFrequencies })
+
+    this.rolls$.next({ nextRolls, newFrequencies })
   }
 
   async onChartEvent(
