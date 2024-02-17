@@ -1,22 +1,18 @@
-import { Component } from '@angular/core'
-import { DieComponent } from '../die/die.component'
+import { Component, Input } from '@angular/core'
+import { clamp } from 'lodash'
 
 @Component({
   standalone: true,
-  selector: 'stochus-animated-dice',
-  templateUrl: './animated-dice.component.html',
-  imports: [DieComponent],
+  selector: 'stochus-die',
+  templateUrl: './die.component.html',
+  styleUrls: ['./die.component.scss'],
 })
-export class AnimatedDiceComponent {
+export class DieComponent {
   sides: undefined[][] = Array.from({ length: 6 }, (_, i) =>
     Array.from({ length: i + 1 }),
   )
 
-  shownSide = 1
-
-  showNextSide() {
-    this.shownSide = this.shownSide === 6 ? 1 : this.shownSide + 1
-  }
+  private _shownSide = 1
 
   getDotGridPositionClassNames(sideIndex: number, dotIndex: number) {
     // top left
@@ -106,5 +102,14 @@ export class AnimatedDiceComponent {
     }
 
     throw new Error(`Cannot render side ${sideIndex} dot ${dotIndex}`)
+  }
+
+  get shownSide(): number {
+    return this._shownSide
+  }
+
+  @Input()
+  set shownSide(value: number) {
+    this._shownSide = clamp(value, 1, 6)
   }
 }
