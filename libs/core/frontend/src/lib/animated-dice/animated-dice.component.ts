@@ -4,11 +4,18 @@ import { Component } from '@angular/core'
   standalone: true,
   selector: 'stochus-animated-dice',
   templateUrl: './animated-dice.component.html',
+  styleUrls: ['./animated-dice.component.scss'],
 })
 export class AnimatedDiceComponent {
   sides: undefined[][] = Array.from({ length: 6 }, (_, i) =>
     Array.from({ length: i + 1 }),
   )
+
+  shownSide = 1
+
+  showNextSide() {
+    this.shownSide = this.shownSide === 6 ? 1 : this.shownSide + 1
+  }
 
   getDotGridPositionClassNames(sideIndex: number, dotIndex: number) {
     // top left
