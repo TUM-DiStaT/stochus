@@ -1,6 +1,29 @@
-<div class="flex flex-wrap gap-24 place-content-between">
-  @for(value$ of values; track value$) {
-  <stochus-die [value$]="value$" />
-  }
-  <button class="btn btn-primary" (click)="roll()">Roll now</button>
+<div class="w-full h-full flex flex-col" [style.gap]="diceSize / 2 + 'px'">
+  <div
+    class="flex flex-wrap place-content-around"
+    [style.gap]="diceSize + 'px'"
+  >
+    @for (value$ of values; track value$) {
+    <stochus-die [value$]="value$" [size]="diceSize" />
+    }
+  </div>
+  <div class="flex gap-4">
+    <button
+      class="btn btn-primary"
+      [disabled]="!canRoll"
+      (click)="count = count - 1"
+    >
+      -
+    </button>
+    <button class="btn btn-primary" [disabled]="!canRoll" (click)="roll()">
+      Roll now
+    </button>
+    <button
+      class="btn btn-primary"
+      [disabled]="!canRoll"
+      (click)="count = count + 1"
+    >
+      +
+    </button>
+  </div>
 </div>
