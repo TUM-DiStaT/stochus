@@ -1,8 +1,9 @@
 import { inject } from '@angular/core'
 import { Route, Router } from '@angular/router'
-import { map } from 'rxjs'
+import { map, of, switchMap } from 'rxjs'
 import { UserRoles } from '@stochus/auth/shared'
 import { AuthGuard, PublicOnlyGuard, UserService } from '@stochus/auth/frontend'
+import { StudiesService } from '@stochus/studies/frontend-static'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { LandingpageComponent } from './landingpage/landingpage.component'
 
@@ -34,15 +35,23 @@ export const appRoutes: StochusRoute[] = [
       () => {
         const userService = inject(UserService)
         const router = inject(Router)
+        const studiesService = inject(StudiesService)
 
         return userService.userHasRole(UserRoles.RESEARCHER).pipe(
-          map((isResearcher) => {
+          switchMap((isResearcher) => {
             if (isResearcher) {
-              router.navigate(['studiesManagement'])
-              return false
+              router.navigate(['studiesManagement']).catch(console.error)
+              return of(false)
             }
 
-            return true
+            return studiesService.hasActiveStudies().pipe(
+              map((hasActiveStudies) => {
+                if (!hasActiveStudies) {
+                  router.navigate(['assignments']).catch(console.error)
+                }
+                return hasActiveStudies
+              }),
+            )
           }),
         )
       },
