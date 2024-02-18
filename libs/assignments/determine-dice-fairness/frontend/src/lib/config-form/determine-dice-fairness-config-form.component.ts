@@ -14,7 +14,6 @@ import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
 import { CsvInputDirective } from '@stochus/core/frontend'
 
 @Component({
-  selector: 'lib-determine-dice-fairness-config-form',
   standalone: true,
   imports: [
     CommonModule,

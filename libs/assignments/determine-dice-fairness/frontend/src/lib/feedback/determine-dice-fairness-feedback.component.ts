@@ -9,7 +9,6 @@ import {
 import { minimumProbabilityD6IsUnfair } from '@stochus/core/shared'
 
 @Component({
-  selector: 'lib-determine-dice-fairness-feedback',
   standalone: true,
   imports: [CommonModule, NgIconComponent],
   templateUrl: './determine-dice-fairness-feedback.component.html',

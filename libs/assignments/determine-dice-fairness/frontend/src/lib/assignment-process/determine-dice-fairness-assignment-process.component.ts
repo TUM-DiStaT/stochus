@@ -32,7 +32,6 @@ import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
 import { AnimatedDiceComponent } from '@stochus/core/frontend'
 
 @Component({
-  selector: 'lib-determine-dice-fairness-assignment-process',
   standalone: true,
   imports: [
     CommonModule,

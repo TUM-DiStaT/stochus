@@ -9,7 +9,7 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/assignments/determine-dice-fairness-assignment/shared/**/*.ts"
+          "libs/assignments/determine-dice-fairness/shared/**/*.ts"
         ]
       }
     },
@@ -17,7 +17,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/assignments/determine-dice-fairness-assignment/shared/jest.config.ts"
+        "jestConfig": "libs/assignments/determine-dice-fairness/shared/jest.config.ts"
       }
     }
   },

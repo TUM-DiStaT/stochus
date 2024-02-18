@@ -2,7 +2,7 @@
   "name": "extract-from-histogram-assignment-frontend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/assignments/extract-from-histogram/frontend/src",
-  "prefix": "lib",
+  "prefix": "stochus",
   "tags": ["scope:frontend"],
   "projectType": "library",
   "targets": {
