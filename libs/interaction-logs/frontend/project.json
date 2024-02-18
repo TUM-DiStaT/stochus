@@ -2,7 +2,7 @@
   "name": "interaction-logs-frontend",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/interaction-logs/frontend/src",
-  "prefix": "lib",
+  "prefix": "stochus",
   "tags": ["scope:frontend"],
   "projectType": "library",
   "targets": {

@@ -1,10 +1,10 @@
 /* eslint-disable */
 export default {
-  displayName: 'identify-shared-characteristics-frontend',
-  preset: '../../../jest.preset.js',
+  displayName: 'determine-dice-fairness-frontend',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory:
-    '../../../coverage/libs/identify-shared-characteristics/frontend',
+    '../../../../coverage/libs/assignments/determine-dice-fairness/frontend',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
@@ -20,4 +20,7 @@ export default {
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
   ],
+  moduleNameMapper: {
+    'lodash-es': 'lodash',
+  },
 }

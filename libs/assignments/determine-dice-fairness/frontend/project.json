@@ -1,7 +1,7 @@
 {
-  "name": "extract-from-histogram-assignment-frontend",
+  "name": "determine-dice-fairness-assignment-frontend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/assignments/extract-from-histogram/frontend/src",
+  "sourceRoot": "libs/assignments/determine-dice-fairness/frontend/src",
   "prefix": "stochus",
   "tags": ["scope:frontend"],
   "projectType": "library",
@@ -10,7 +10,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/assignments/extract-from-histogram/frontend/jest.config.ts"
+        "jestConfig": "libs/assignments/determine-dice-fairness/frontend/jest.config.ts"
       }
     },
     "lint": {
@@ -18,8 +18,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/assignments/extract-from-histogram/frontend/**/*.ts",
-          "libs/assignments/extract-from-histogram/frontend/**/*.html"
+          "libs/assignments/determine-dice-fairness/frontend/**/*.ts",
+          "libs/assignments/determine-dice-fairness/frontend/**/*.html"
         ]
       }
     }

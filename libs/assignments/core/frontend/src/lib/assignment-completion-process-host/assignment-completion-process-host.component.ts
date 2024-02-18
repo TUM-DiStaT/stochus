@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common'
 import {
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   OnInit,
   Output,
@@ -31,6 +32,9 @@ import { CompletionsService } from '../completions.service'
   templateUrl: './assignment-completion-process-host.component.html',
 })
 export class AssignmentCompletionProcessHostComponent implements OnInit {
+  @HostBinding('class')
+  hostClass = 'flex-1 flex items-stretch'
+
   @Input()
   assignment$ = this.activatedRoute.paramMap.pipe(
     map((v) =>

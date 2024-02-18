@@ -36,6 +36,12 @@
       "@stochus/assignments/demos/guess-random-number/shared": [
         "libs/assignments/demos/guess-random-number/shared/src/index.ts"
       ],
+      "@stochus/assignments/determine-dice-fairness/frontend": [
+        "libs/assignments/determine-dice-fairness/frontend/src/index.ts"
+      ],
+      "@stochus/assignments/determine-dice-fairness/shared": [
+        "libs/assignments/determine-dice-fairness/shared/src/index.ts"
+      ],
       "@stochus/assignments/extract-from-assignment/frontend": [
         "libs/assignments/extract-from-histogram/frontend/src/index.ts"
       ],
@@ -43,10 +49,10 @@
         "libs/assignments/extract-from-histogram/shared/src/index.ts"
       ],
       "@stochus/assignments/identify-shared-characteristics/frontend": [
-        "libs/identify-shared-characteristics/frontend/src/index.ts"
+        "libs/assignments/identify-shared-characteristics/frontend/src/index.ts"
       ],
       "@stochus/assignments/identify-shared-characteristics/shared": [
-        "libs/identify-shared-characteristics/shared/src/index.ts"
+        "libs/assignments/identify-shared-characteristics/shared/src/index.ts"
       ],
       "@stochus/assignments/model/frontend": [
         "libs/assignments/model/frontend/src/index.ts"

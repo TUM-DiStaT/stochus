@@ -1,0 +1,58 @@
+@if (result) {
+<div class="prose prose-em:not-italic prose-em:font-bold">
+  <p>
+    <em>
+      @if (result.correct) { Das war richtig! } @else { Das war leider falsch! }
+    </em>
+  </p>
+
+  <div>
+    @if (result.totalAmountOfThrows < 100) {
+    <div class="alert alert-warning">
+      <ng-icon name="heroExclamationTriangle" />
+      <p>
+        Du hast den Würfel insgesamt nur
+        {{ result.totalAmountOfThrows | number : '1.0-0' }} mal geworfen. Das
+        ist nicht oft genug, um dir sicher genug sein zu können - denk an das
+        Gesetz der großen Zahlen! Am besten wirfst du den Würfel 100 mal oder
+        öfter.
+      </p>
+    </div>
+    }
+    <p>
+      Um zu bestimmen, ob ein Würfel unfair ist, müssen wir ihn oft werfen und
+      die Ergebnisse zählen.
+    </p>
+    @if (result.unfairnessProbabilityInPercent >= 95) {
+    <p>
+      Die Verteilung, die du dieses Mal beobachtet hast, befindet sich unter den
+      <em>
+        {{ 100 - result.unfairnessProbabilityInPercent | number : '1.0-1' }}%
+        der unwahrscheinlichsten
+      </em>
+      Verteilungen, die ein Fairer Würfel erzeugen kann. Das bedeutet, dass wir
+      davon ausgehen können, dass dieser Würfel nicht fair gewesen ist.
+    </p>
+    } @else {
+    <p>
+      Die Verteilung, die du dieses Mal beobachtet hast, befindet sich unter den
+      <em>
+        {{ result.unfairnessProbabilityInPercent | number : '1.0-1' }}% der
+        wahrscheinlichsten
+      </em>
+      Verteilungen, die ein Fairer Würfel erzeugen kann.
+    </p>
+    <p>
+      Daher ist es durchaus @if (result.totalAmountOfThrows < 100) { möglich }
+      @else { wahrscheinlich }, dass dieser Würfel fair gewesen ist.
+    </p>
+    } @if (result.totalAmountOfThrows < 100) {
+    <p>
+      Wenn du den Würfel aber noch öfter geworfen hättest, hättest du irgendwann
+      beobachten können, dass er tatsächlich @if (!result.isFair) { nicht } fair
+      ist.
+    </p>
+    }
+  </div>
+</div>
+}

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
+import { DetermineDiceFairnessAssignment } from '@stochus/assignments/determine-dice-fairness/shared'
 import { ExtractFromHistogramAssignment } from '@stochus/assignments/extract-from-histogram-assignment/shared'
 import { IdentifySharedCharacteristicsAssignment } from '@stochus/assignments/identify-shared-characteristics/shared'
 import { BaseAssignment } from '@stochus/assignments/model/shared'
@@ -16,6 +17,7 @@ export class AssignmentsCoreBackendService {
     GuessRandomNumberAssignment,
     ExtractFromHistogramAssignment,
     IdentifySharedCharacteristicsAssignment,
+    DetermineDiceFairnessAssignment,
   ]
 
   static getAllAssignments() {
