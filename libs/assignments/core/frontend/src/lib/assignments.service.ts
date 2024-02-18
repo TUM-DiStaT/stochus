@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core'
-import { GuessRandomNumberAssignmentForFrontend } from '@stochus/assignments/demos/guess-random-number/frontend'
 import { DetermineDiceFairnessAssignmentForFrontend } from '@stochus/assignments/determine-dice-fairness/frontend'
 import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
 import { IdentifySharedCharacteristicsAssignmentForFrontend } from '@stochus/assignments/identify-shared-characteristics/frontend'
@@ -16,8 +15,6 @@ export class AssignmentsService {
   // at runtime using the id as a discriminator. Not nice, but it should work
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static readonly assignments: AssignmentForFrontend<any, any>[] = [
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    GuessRandomNumberAssignmentForFrontend as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ExtractFromHistogramAssignmentForFrontend as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
