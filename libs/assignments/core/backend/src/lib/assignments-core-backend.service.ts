@@ -14,10 +14,13 @@ export class AssignmentsCoreBackendService {
   // at runtime using the id as a discriminator. Not nice, but it should work
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static readonly assignments: BaseAssignment<any, any>[] = [
-    GuessRandomNumberAssignment,
     ExtractFromHistogramAssignment,
     IdentifySharedCharacteristicsAssignment,
     DetermineDiceFairnessAssignment,
+    // we want to be able to use this assignment for testing but not in production
+    ...(process.env['NODE_ENV'] === 'test'
+      ? [GuessRandomNumberAssignment]
+      : []),
   ]
 
   static getAllAssignments() {
