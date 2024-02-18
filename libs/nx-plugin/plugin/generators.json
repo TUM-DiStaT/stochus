@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "assignment": {
+      "factory": "./src/generators/assignment/generator",
+      "schema": "./src/generators/assignment/schema.json",
+      "description": "Create a new assignment and embed it into the app"
+    }
+  }
+}
