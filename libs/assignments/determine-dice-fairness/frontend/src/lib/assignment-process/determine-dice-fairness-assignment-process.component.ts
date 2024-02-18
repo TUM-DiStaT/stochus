@@ -122,6 +122,7 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     shareReplay(),
   )
   chartOptions: ChartOptions = {
+    maintainAspectRatio: false,
     scales: {
       inputRangeX: {
         type: 'linear',

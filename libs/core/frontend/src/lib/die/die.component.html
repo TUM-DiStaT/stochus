@@ -18,7 +18,7 @@
   >
     @for (side of sides; track side; let sideIndex = $index) {
     <div
-      class="absolute rounded-lg bg-blue-400 border border-blue-500 p-[10%] grid grid-rows-3 grid-cols-3 gap-1 w-full h-full side"
+      class="absolute rounded-lg bg-primary border border-sky-700 p-[10%] grid grid-rows-3 grid-cols-3 gap-1 w-full h-full side"
       [attr.data-testid]="'side-' + sideIndex"
     >
       @for (_ of side; track dotIndex; let dotIndex = $index) {
