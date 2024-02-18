@@ -1,6 +1,29 @@
 import { AsyncPipe } from '@angular/common'
 import { Component, Input, OnDestroy } from '@angular/core'
-import { BehaviorSubject, Observable, Subscription, shareReplay } from 'rxjs'
+import { random } from 'lodash'
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  scan,
+  shareReplay,
+} from 'rxjs'
+
+const baseRotations: Record<
+  number,
+  {
+    x: number
+    y: number
+    z: number
+  }
+> = {
+  1: { x: 0, y: 0, z: 0 },
+  2: { x: 180, y: 0, z: 0 },
+  3: { x: 0, y: 90, z: 0 },
+  4: { x: -90, y: 0, z: 0 },
+  5: { x: 90, y: 0, z: 0 },
+  6: { x: 0, y: -90, z: 0 },
+}
 
 @Component({
   standalone: true,
@@ -21,10 +44,35 @@ export class DieComponent implements OnDestroy {
       this.shownSideSubject.next(value)
     })
   }
+
   private value$Subscription?: Subscription
 
   private shownSideSubject = new BehaviorSubject(1)
   shownSide$ = this.shownSideSubject.asObservable().pipe(shareReplay())
+
+  rotation$ = this.shownSide$.pipe(
+    scan(
+      (previousRotations, side) => {
+        const getRotation = (oldRotation: number) => {
+          const oldSign = Math.sign(oldRotation)
+          const sign =
+            oldSign !== 0 ? -1 * oldSign : random(0, 1) === 0 ? -1 : 1
+          return sign * random(1, 3) * 360
+        }
+
+        return {
+          x: baseRotations[side].x + getRotation(previousRotations.x),
+          y: baseRotations[side].y + getRotation(previousRotations.y),
+          z: baseRotations[side].z + getRotation(previousRotations.z),
+        }
+      },
+      {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+    ),
+  )
 
   ngOnDestroy() {
     this.value$Subscription?.unsubscribe()
