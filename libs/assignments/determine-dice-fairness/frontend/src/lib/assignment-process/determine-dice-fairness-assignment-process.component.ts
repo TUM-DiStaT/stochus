@@ -28,11 +28,17 @@ import {
 } from '@stochus/assignments/determine-dice-fairness/shared'
 import { chiSquared } from '@stochus/core/shared'
 import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
+import { AnimatedDiceComponent } from '@stochus/core/frontend'
 
 @Component({
   selector: 'lib-determine-dice-fairness-assignment-process',
   standalone: true,
-  imports: [CommonModule, NgChartsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    NgChartsModule,
+    ReactiveFormsModule,
+    AnimatedDiceComponent,
+  ],
   templateUrl: './determine-dice-fairness-assignment-process.component.html',
 })
 export class DetermineDiceFairnessAssignmentProcessComponent

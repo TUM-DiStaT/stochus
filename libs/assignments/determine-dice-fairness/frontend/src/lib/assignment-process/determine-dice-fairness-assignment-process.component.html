@@ -1,63 +1,72 @@
-<div class="flex flex-col gap-4">
-  <canvas
-    baseChart
-    class="chart"
-    [data]="(chartData$ | async) ?? undefined"
-    [options]="chartOptions"
-    (chartClick)="onChartEvent('click', $event)"
-    (chartHover)="onChartEvent('hover', $event)"
-  ></canvas>
-  <button (click)="rollDice()" class="btn btn-primary">
-    {{ config.dicePerRoll }} mal würfeln
-  </button>
-
-  <label class="form-group">
-    <span class="label">Ist der Würfel fair?</span>
-    <span class="flex gap-4 p-4 rounded-box border border-gray-300 w-fit">
-      Nein
-      <input
-        class="toggle toggle-success text-error"
-        type="checkbox"
-        [formControl]="isFairControl"
-        [indeterminate]="isFairControl.value === null"
-        [disabled]="isFairControl.value === null"
-      />
-      Ja
-    </span>
-  </label>
-  <label class="form-group">
-    <span class="label">Wie sicher bist du dir mit der Aussage?</span>
-    <div
-      class="grid grid-cols-[auto,1fr,auto] gap-x-4 gap-y-2 w-fit p-2 rounded-box border-gray-300 border"
-    >
-      <span class="justify-self-end self-center">Sehr unsicher</span>
-      <input
-        class="range w-56"
-        type="range"
-        min="1"
-        max="5"
-        step="1"
-        [formControl]="confidenceControl"
-      />
-      <span class="self-center">Sehr sicher</span>
-
-      <!--  filler div to be underneath "sehr unsicher"  -->
-      <div></div>
-      <div class="w-full flex justify-between hover:border-error text-xs px-2">
-        <span>|</span>
-        <span>|</span>
-        <span>|</span>
-        <span>|</span>
-        <span>|</span>
-      </div>
-    </div>
-  </label>
-
-  <button
-    class="btn btn-primary"
-    [disabled]="isFairControl.value === null"
-    (click)="submit()"
+<div class="grid grid-cols-2 grid-rows-2 gap-4">
+  <stochus-animated-dice class="row-start-1 col-start-1" />
+  <div
+    class="self-start flex flex-wrap gap-4 items-center row-start-2 col-start-1 col-span-2"
   >
-    Abgeben
-  </button>
+    <label class="form-group">
+      <span class="label">Ist der Würfel fair?</span>
+      <span class="flex gap-4 p-4 rounded-box border border-gray-300 w-fit">
+        Nein
+        <input
+          class="toggle toggle-success text-error"
+          type="checkbox"
+          [formControl]="isFairControl"
+          [indeterminate]="isFairControl.value === null"
+          [disabled]="isFairControl.value === null"
+        />
+        Ja
+      </span>
+    </label>
+    <label class="form-group">
+      <span class="label">Wie sicher bist du dir mit der Aussage?</span>
+      <div
+        class="grid grid-cols-[auto,1fr,auto] gap-x-4 gap-y-2 w-fit p-2 rounded-box border-gray-300 border"
+      >
+        <span class="justify-self-end self-center">Sehr unsicher</span>
+        <input
+          class="range w-56"
+          type="range"
+          min="1"
+          max="5"
+          step="1"
+          [formControl]="confidenceControl"
+        />
+        <span class="self-center">Sehr sicher</span>
+
+        <!--  filler div to be underneath "sehr unsicher"  -->
+        <div></div>
+        <div
+          class="w-full flex justify-between hover:border-error text-xs px-2"
+        >
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+        </div>
+      </div>
+    </label>
+
+    <!--  This wrapping in a label etc. is just for vertical alignment  -->
+    <label class="form-group flex-1">
+      <span class="label">&nbsp;</span>
+      <button
+        class="btn btn-primary w-full"
+        [disabled]="isFairControl.value === null"
+        (click)="submit()"
+      >
+        Abgeben
+      </button>
+    </label>
+  </div>
+  <div class="row-start-1 col-start-2 self-center">
+    <canvas
+      baseChart
+      class="chart"
+      [data]="(chartData$ | async) ?? undefined"
+      [options]="chartOptions"
+      (chartClick)="onChartEvent('click', $event)"
+      (chartHover)="onChartEvent('hover', $event)"
+    ></canvas>
+  </div>
 </div>
