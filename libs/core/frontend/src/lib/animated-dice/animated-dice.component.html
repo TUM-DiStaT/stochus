@@ -1,6 +1,10 @@
-<div class="w-full h-full flex flex-col" [style.gap]="diceSize / 2 + 'px'">
+<div
+  #container
+  class="w-full h-full flex flex-col"
+  [style.gap]="diceSize / 2 + 'px'"
+>
   <div
-    class="flex flex-wrap place-content-around"
+    class="flex-1 flex flex-wrap content-center place-content-between justify-around"
     [style.gap]="diceSize + 'px'"
   >
     @for (value$ of values; track value$) {
@@ -8,6 +12,7 @@
     }
   </div>
   <button
+    #button
     [attr.data-testid]="'roll-dice-button'"
     class="btn btn-primary"
     [disabled]="!canRoll"

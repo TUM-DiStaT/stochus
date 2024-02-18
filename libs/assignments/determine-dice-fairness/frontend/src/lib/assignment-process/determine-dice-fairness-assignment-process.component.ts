@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common'
 import {
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   OnDestroy,
   OnInit,
@@ -50,6 +51,9 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     OnInit,
     OnDestroy
 {
+  @HostBinding('class')
+  readonly class = 'flex-1'
+
   @Input()
   config!: DetermineDiceFairnessAssignmentConfiguration
   @Output()

@@ -1,6 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  QueryList,
+  ViewChildren,
+} from '@angular/core'
 import { random } from 'lodash'
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, combineLatest } from 'rxjs'
 import { DieComponent } from '../die/die.component'
 
 @Component({
@@ -9,7 +18,7 @@ import { DieComponent } from '../die/die.component'
   templateUrl: './animated-dice.component.html',
   imports: [DieComponent],
 })
-export class AnimatedDiceComponent {
+export class AnimatedDiceComponent implements AfterViewInit {
   @Input()
   amountPreviouslyRolled = 0
   @Input()
@@ -24,6 +33,12 @@ export class AnimatedDiceComponent {
 
   @Output()
   roll = new EventEmitter<number[]>()
+
+  @ViewChildren('container')
+  diceContainerRef?: QueryList<ElementRef<HTMLDivElement>>
+
+  @ViewChildren('button')
+  buttonRef?: QueryList<ElementRef<HTMLButtonElement>>
 
   get count() {
     return this.values.length
@@ -80,7 +95,35 @@ export class AnimatedDiceComponent {
     return [...predeterminedRolls, ...randomRolls]
   }
 
-  get diceSize() {
-    return 100 / Math.log(0.6 * (this.values.length + 1))
+  diceSize = 0
+
+  reComputeDiceSize() {
+    const button = this.buttonRef?.first?.nativeElement
+    const diceContainer = this.diceContainerRef?.first?.nativeElement
+
+    if (!button || !diceContainer || this.count < 1) {
+      this.diceSize = 50
+      return
+    }
+
+    const availableWidth = diceContainer.offsetWidth
+    const availableHeight = diceContainer.offsetHeight - button.offsetHeight
+
+    this.diceSize = Math.floor(
+      (Math.sqrt(availableWidth) *
+        Math.sqrt(64 * this.count * availableHeight + availableWidth) -
+        availableWidth) /
+        (16 * this.count),
+    )
+  }
+
+  ngAfterViewInit() {
+    requestAnimationFrame(() => this.reComputeDiceSize())
+    if (this.buttonRef && this.diceContainerRef) {
+      combineLatest([
+        this.buttonRef.changes,
+        this.diceContainerRef.changes,
+      ]).subscribe(() => this.reComputeDiceSize())
+    }
   }
 }
