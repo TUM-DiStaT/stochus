@@ -1,8 +1,9 @@
 <div class="w-[100px] aspect-square shadow-2xl">
   <div
     class="w-full h-full transform-style-3d transition-transform duration-1000 show-{{
-      shownSide
+      shownSide$ | async
     }}"
+    [attr.data-testid]="'show-' + (shownSide$ | async)"
   >
     @for (side of sides; track side; let sideIndex = $index) {
     <div

@@ -1,4 +1,5 @@
 import { render, within } from '@testing-library/angular'
+import { BehaviorSubject } from 'rxjs'
 import { DieComponent } from './die.component'
 
 describe('DieComponent', () => {
@@ -18,6 +19,21 @@ describe('DieComponent', () => {
         await within(side).findByTestId(`side-${i}-dot-${j}`)
       }
     }
+  })
+
+  it('should render the correct side as per the input', async () => {
+    const valueSubject = new BehaviorSubject(3)
+    const renderResult = await render(DieComponent, {
+      componentProperties: {
+        value$: valueSubject.asObservable(),
+      },
+    })
+
+    await renderResult.findByTestId('show-3')
+
+    valueSubject.next(5)
+    await renderResult.findByTestId('show-5')
+    expect(renderResult.queryByTestId('show-3')).toBeNull()
   })
 
   describe('getDotGridPositionClassNames', () => {
@@ -72,6 +88,4 @@ describe('DieComponent', () => {
       },
     )
   })
-
-  it.todo("should display 1 while it's not told to display anything else")
 })

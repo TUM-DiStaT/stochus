@@ -1,18 +1,34 @@
-import { Component, Input } from '@angular/core'
-import { clamp } from 'lodash'
+import { AsyncPipe } from '@angular/common'
+import { Component, Input, OnDestroy } from '@angular/core'
+import { BehaviorSubject, Observable, Subscription, shareReplay } from 'rxjs'
 
 @Component({
   standalone: true,
   selector: 'stochus-die',
   templateUrl: './die.component.html',
   styleUrls: ['./die.component.scss'],
+  imports: [AsyncPipe],
 })
-export class DieComponent {
+export class DieComponent implements OnDestroy {
   sides: undefined[][] = Array.from({ length: 6 }, (_, i) =>
     Array.from({ length: i + 1 }),
   )
 
-  private _shownSide = 1
+  @Input()
+  set value$(value$: Observable<number>) {
+    this.value$Subscription?.unsubscribe()
+    this.value$Subscription = value$.subscribe((value) => {
+      this.shownSideSubject.next(value)
+    })
+  }
+  private value$Subscription?: Subscription
+
+  private shownSideSubject = new BehaviorSubject(1)
+  shownSide$ = this.shownSideSubject.asObservable().pipe(shareReplay())
+
+  ngOnDestroy() {
+    this.value$Subscription?.unsubscribe()
+  }
 
   getDotGridPositionClassNames(sideIndex: number, dotIndex: number) {
     // top left
@@ -102,14 +118,5 @@ export class DieComponent {
     }
 
     throw new Error(`Cannot render side ${sideIndex} dot ${dotIndex}`)
-  }
-
-  get shownSide(): number {
-    return this._shownSide
-  }
-
-  @Input()
-  set shownSide(value: number) {
-    this._shownSide = clamp(value, 1, 6)
   }
 }

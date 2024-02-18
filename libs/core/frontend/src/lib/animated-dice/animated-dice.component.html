@@ -1,10 +1,6 @@
 <div class="flex flex-wrap gap-24 place-content-between">
-  <stochus-die [shownSide]="1" />
-  <stochus-die [shownSide]="2" />
-  <stochus-die [shownSide]="3" />
-  <stochus-die [shownSide]="4" />
-  <stochus-die [shownSide]="5" />
-  <stochus-die [shownSide]="6" />
-
-  <button class="btn btn-primary" (click)="showNextSide()">Next</button>
+  @for(value$ of values; track value$) {
+  <stochus-die [value$]="value$" />
+  }
+  <button class="btn btn-primary" (click)="roll()">Roll now</button>
 </div>
