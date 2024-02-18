@@ -25,6 +25,7 @@ const baseRotations: Record<
   6: { x: 0, y: -90, z: 0 },
 }
 
+// Base design from https://codepen.io/lenasta92579651/pen/yLeVmdW
 @Component({
   standalone: true,
   selector: 'stochus-die',
@@ -36,6 +37,9 @@ export class DieComponent implements OnDestroy {
   sides: undefined[][] = Array.from({ length: 6 }, (_, i) =>
     Array.from({ length: i + 1 }),
   )
+
+  @Input()
+  size = 100
 
   @Input()
   set value$(value$: Observable<number>) {

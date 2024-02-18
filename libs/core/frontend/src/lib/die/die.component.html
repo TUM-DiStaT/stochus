@@ -1,4 +1,8 @@
-<div class="w-[100px] aspect-square shadow-2xl">
+<div
+  class="w-[--size] aspect-square shadow-2xl"
+  [style.--size]="size + 'px'"
+  [style.--half-size]="size / 2 + 'px'"
+>
   <div
     class="w-full h-full transform-style-3d transition-transform duration-1000"
     [style]="
