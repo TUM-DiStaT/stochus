@@ -7,23 +7,12 @@
     <stochus-die [value$]="value$" [size]="diceSize" />
     }
   </div>
-  <div class="flex gap-4">
-    <button
-      class="btn btn-primary"
-      [disabled]="!canRoll"
-      (click)="count = count - 1"
-    >
-      -
-    </button>
-    <button class="btn btn-primary" [disabled]="!canRoll" (click)="roll()">
-      Roll now
-    </button>
-    <button
-      class="btn btn-primary"
-      [disabled]="!canRoll"
-      (click)="count = count + 1"
-    >
-      +
-    </button>
-  </div>
+  <button
+    [attr.data-testid]="'roll-dice-button'"
+    class="btn btn-primary"
+    [disabled]="!canRoll"
+    (click)="doRoll()"
+  >
+    {{ count }} mal würfeln
+  </button>
 </div>

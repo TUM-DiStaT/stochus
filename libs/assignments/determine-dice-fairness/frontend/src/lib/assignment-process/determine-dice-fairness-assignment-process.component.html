@@ -1,5 +1,12 @@
-<div class="grid grid-cols-2 grid-rows-2 gap-4">
-  <stochus-animated-dice class="row-start-1 col-start-1" />
+<div class="grid grid-cols-2 grid-rows-2 gap-6">
+  <stochus-animated-dice
+    class="row-start-1 col-start-1"
+    (roll)="onNewRolls($event)"
+    [amountPreviouslyRolled]="totalRollsCount"
+    [count]="config.dicePerRoll"
+    [initialRolls]="config.initialRolls"
+    [proportions]="config.proportions"
+  />
   <div
     class="self-start flex flex-wrap gap-4 items-center row-start-2 col-start-1 col-span-2"
   >

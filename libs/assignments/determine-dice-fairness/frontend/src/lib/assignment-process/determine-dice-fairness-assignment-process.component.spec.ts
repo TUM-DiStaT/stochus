@@ -44,49 +44,4 @@ describe('DetermineDiceFairnessAssignmentProcessComponent', () => {
   it('should create', () => {
     expect(fixture?.componentInstance).toBeTruthy()
   })
-
-  it('should return a subsection of initial rolls if applicable', () => {
-    const component = fixture?.componentInstance
-
-    expect(component).toBeDefined()
-    if (!component) {
-      throw new Error('just here to tell TS that component exists.')
-    }
-
-    const n = 100
-    const initialRolls = Array.from({ length: 2 * n }, () => 7)
-
-    component.config.initialRolls = initialRolls
-    component.config.dicePerRoll = n
-
-    const actual = component.getNextRolls()
-
-    expect(actual).toEqual(initialRolls.slice(0, n))
-  })
-
-  it('should return remaining initial rolls + random ones if applicable', () => {
-    const component = fixture?.componentInstance
-
-    expect(component).toBeDefined()
-    if (!component) {
-      throw new Error('just here to tell TS that component exists.')
-    }
-
-    // Setup: we already rolled n times and have 2n initial rolls. We roll 2n times per click.
-    // -> next click should contain n of the initial rolls and n other rolls
-    // we abuse the fact that actual rolls are only between 1 and 6. initial rolls are 7
-    // so we can easily distinguish them
-    const n = 100
-    const initialRolls = Array.from({ length: 2 * n }, () => 7)
-
-    component.config.initialRolls = initialRolls
-    component.config.dicePerRoll = 2 * n
-    component.completionData.resultFrequencies = [0, 0, 0, 0, 0, n]
-
-    const actual = component.getNextRolls()
-
-    expect(actual).toHaveLength(2 * n)
-    expect(actual.slice(0, n)).toEqual(initialRolls.slice(n))
-    expect(actual.slice(n)).not.toContain(7)
-  })
 })

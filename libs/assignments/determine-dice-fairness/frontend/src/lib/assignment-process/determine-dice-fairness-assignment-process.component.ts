@@ -9,7 +9,7 @@ import {
 } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { ActiveElement, ChartData, ChartEvent, ChartOptions } from 'chart.js'
-import { isEqual, random } from 'lodash'
+import { isEqual } from 'lodash'
 import { NgChartsModule } from 'ng2-charts'
 import {
   BehaviorSubject,
@@ -164,50 +164,7 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     distinctUntilChanged((last, curr) => isEqual(last, curr)),
   )
 
-  getNextRolls() {
-    const amountPreviouslyRolled =
-      this._completionData.resultFrequencies.reduce(
-        (acc, curr) => acc + curr,
-        0,
-      )
-    const predeterminedRolls = this.config.initialRolls.slice(
-      amountPreviouslyRolled,
-      amountPreviouslyRolled + this.config.dicePerRoll,
-    )
-
-    if (predeterminedRolls.length === this.config.dicePerRoll) {
-      return predeterminedRolls
-    }
-
-    const proportionSum = this.config.proportions.reduce(
-      (acc, curr) => acc + curr,
-      0,
-    )
-
-    const randomRolls = Array.from(
-      { length: this.config.dicePerRoll - predeterminedRolls.length },
-      () => {
-        let valWithinProportionRange = random(1, proportionSum)
-
-        // iterate over proportions finding the first one that is greater than the random value
-        for (let i = 0; i < this.config.proportions.length; i++) {
-          if (valWithinProportionRange <= this.config.proportions[i]) {
-            return i + 1
-          } else {
-            valWithinProportionRange -= this.config.proportions[i]
-          }
-        }
-
-        return 6
-      },
-    )
-
-    return [...predeterminedRolls, ...randomRolls]
-  }
-
-  rollDice() {
-    const nextRolls = this.getNextRolls()
-
+  onNewRolls(nextRolls: number[]) {
     const newFrequencies = nextRolls.reduce(
       (acc, curr) => {
         acc[curr - 1]++
@@ -280,6 +237,13 @@ export class DetermineDiceFairnessAssignmentProcessComponent
 
   get completionData(): DetermineDiceFairnessAssignmentCompletionData {
     return this._completionData
+  }
+
+  get totalRollsCount() {
+    return (this._completionData?.resultFrequencies ?? []).reduce(
+      (acc, curr) => acc + curr,
+      0,
+    )
   }
 
   @Input()
