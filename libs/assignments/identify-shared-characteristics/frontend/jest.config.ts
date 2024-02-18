@@ -1,10 +1,10 @@
 /* eslint-disable */
 export default {
   displayName: 'identify-shared-characteristics-frontend',
-  preset: '../../../jest.preset.js',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory:
-    '../../../coverage/libs/identify-shared-characteristics/frontend',
+    '../../../../coverage/libs/assignments/identify-shared-characteristics/frontend',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
