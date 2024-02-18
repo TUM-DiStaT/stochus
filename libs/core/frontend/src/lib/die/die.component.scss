@@ -1,3 +1,7 @@
+.die {
+  transform-style: preserve-3d;
+}
+
 .side:nth-child(1) {
   transform: translateZ(var(--half-size, 50px));
 }
