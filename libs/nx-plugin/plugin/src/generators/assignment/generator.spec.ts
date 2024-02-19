@@ -10,6 +10,7 @@ describe('assignment generator', () => {
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace()
+    expect(tree.exists('project.json')).toBe(true)
   })
 
   it('should create shared project', async () => {
