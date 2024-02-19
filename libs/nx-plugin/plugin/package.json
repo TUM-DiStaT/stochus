@@ -1,5 +1,5 @@
 {
-  "name": "@stochus-dev-utils",
+  "name": "@stochus/nx",
   "version": "0.0.1",
   "dependencies": {
     "@nx/devkit": "18.0.4",

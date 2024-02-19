@@ -21,9 +21,7 @@
     "types": ["jest", "node", "@testing-library/jest-dom"],
     "typeRoots": ["./node_modules/@types", "./node_modules/@testing-library"],
     "paths": {
-      "@stochus-dev-utils/nx-plugin/plugin": [
-        "libs/nx-plugin/plugin/src/index.ts"
-      ],
+      "@stochus/nx": ["libs/nx-plugin/plugin/src/index.ts"],
       "@stochus/assignment/core/frontend": [
         "libs/assignments/core/frontend/src/index.ts"
       ],
