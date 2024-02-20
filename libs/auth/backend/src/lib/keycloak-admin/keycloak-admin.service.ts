@@ -15,7 +15,7 @@ import { StudentMetadata } from './student-metadata'
 @Injectable()
 export class KeycloakAdminService implements OnModuleInit, OnModuleDestroy {
   private logger = new Logger(KeycloakAdminService.name)
-  private tokenRefreshInterval?: NodeJS.Timer
+  private tokenRefreshInterval?: NodeJS.Timeout
   private keycloakAdminClient = new KeycloakAdminClient({
     baseUrl: keycloakUrl,
     realmName: realm,
