@@ -1,0 +1,43 @@
+import { Expose } from 'class-transformer'
+import { IsNumber, IsOptional } from 'class-validator'
+import { random } from 'lodash'
+import {
+  BaseAssignment,
+  BaseCompletionData,
+  emptyBaseCompletionData,
+} from '@stochus/assignments/model/shared'
+
+export class <%= camelCasedName %>AssignmentConfiguration {
+  @Expose()
+  @IsNumber()
+  someConfigProperty!: number
+}
+
+export class <%= camelCasedName %>AssignmentCompletionData extends BaseCompletionData {
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  result?: number
+}
+
+export const initial<%= camelCasedName %>AssignmentCompletionData = {
+  ...emptyBaseCompletionData,
+  result: 0,
+} satisfies <%= camelCasedName %>AssignmentCompletionData
+
+export const <%= camelCasedName %>Assignment: BaseAssignment<
+  <%= camelCasedName %>AssignmentConfiguration,
+  <%= camelCasedName %>AssignmentCompletionData
+> = {
+  id: '<%= camelCasedName %>Assignment',
+  name: 'Meine tolle Aufgabe',
+  version: 0,
+  description: 'Coole Beschreibung',
+  getInitialCompletionData: () =>
+    initial<%= camelCasedName %>AssignmentCompletionData,
+  getRandomConfig: () => ({
+    someConfigProperty: random(42, 42),
+  }),
+  configurationClass: <%= camelCasedName %>AssignmentConfiguration,
+  completionDataClass: <%= camelCasedName %>AssignmentCompletionData,
+}

@@ -1,0 +1,86 @@
+import { validate } from 'class-validator'
+import { emptyBaseCompletionData } from '@stochus/assignments/model/shared'
+import { plainToInstance } from '@stochus/core/shared'
+import {
+  <%= camelCasedName %>AssignmentCompletionData,
+  <%= camelCasedName %>AssignmentConfiguration,
+} from './<%= name %>-assignment'
+
+describe('configuration linting & transformation', () => {
+  it.each([-1, 42, 4.2])(
+    'should transform someConfigProperty %p correctly and verify as correct',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(
+        <%= camelCasedName %>AssignmentConfiguration,
+        {
+          someConfigProperty,
+        },
+      )
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(
+        <%= camelCasedName %>AssignmentConfiguration,
+        {
+          someConfigProperty,
+        },
+      )
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})
+
+describe('completion data linting & transformation', () => {
+  it('should fail validation if base data is missing', async () => {
+    const transformed = plainToInstance(
+      <%= camelCasedName %>AssignmentCompletionData,
+      {
+        // no BaseCompletionData!
+        result: 1,
+      },
+    )
+
+    const errors = await validate(transformed)
+    expect(errors.length).toBeGreaterThan(0)
+  })
+
+  it.each([undefined, null, 1])(
+    'should transform correctly and verify as correct',
+    async (result: unknown) => {
+      const transformed = plainToInstance(
+        <%= camelCasedName %>AssignmentCompletionData,
+        {
+          ...emptyBaseCompletionData,
+          result,
+        },
+      )
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (result: unknown) => {
+      const transformed = plainToInstance(
+        <%= camelCasedName %>AssignmentCompletionData,
+        {
+          ...emptyBaseCompletionData,
+          result,
+        },
+      )
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})

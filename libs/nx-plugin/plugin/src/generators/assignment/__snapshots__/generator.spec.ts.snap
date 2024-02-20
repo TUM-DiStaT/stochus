@@ -1,11 +1,132 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/index.ts" with the correct contents 1`] = `
-"export * from './lib/do-a-backflip-assignment-for-frontend';
+"export * from './lib/do-a-backflip-assignment-for-frontend'
 "
 `;
 
 exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/index.ts" with the correct contents 1`] = `
-"export * from './lib/do-a-backflip-assignment';
+"export * from './lib/do-a-backflip-assignment'
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/lib/do-a-backflip-assignment.spec.ts" with the correct contents 1`] = `
+"import { validate } from 'class-validator'
+import { emptyBaseCompletionData } from '@stochus/assignments/model/shared'
+import { plainToInstance } from '@stochus/core/shared'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from './do-a-backflip-assignment'
+
+describe('configuration linting & transformation', () => {
+  it.each([-1, 42, 4.2])(
+    'should transform someConfigProperty %p correctly and verify as correct',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentConfiguration, {
+        someConfigProperty,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentConfiguration, {
+        someConfigProperty,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})
+
+describe('completion data linting & transformation', () => {
+  it('should fail validation if base data is missing', async () => {
+    const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+      // no BaseCompletionData!
+      result: 1,
+    })
+
+    const errors = await validate(transformed)
+    expect(errors.length).toBeGreaterThan(0)
+  })
+
+  it.each([undefined, null, 1])(
+    'should transform correctly and verify as correct',
+    async (result: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+        ...emptyBaseCompletionData,
+        result,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (result: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+        ...emptyBaseCompletionData,
+        result,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/lib/do-a-backflip-assignment.ts" with the correct contents 1`] = `
+"import { Expose } from 'class-transformer'
+import { IsNumber, IsOptional } from 'class-validator'
+import { random } from 'lodash'
+import {
+  BaseAssignment,
+  BaseCompletionData,
+  emptyBaseCompletionData,
+} from '@stochus/assignments/model/shared'
+
+export class DoABackflipAssignmentConfiguration {
+  @Expose()
+  @IsNumber()
+  someConfigProperty!: number
+}
+
+export class DoABackflipAssignmentCompletionData extends BaseCompletionData {
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  result?: number
+}
+
+export const initialDoABackflipAssignmentCompletionData = {
+  ...emptyBaseCompletionData,
+  result: 0,
+} satisfies DoABackflipAssignmentCompletionData
+
+export const DoABackflipAssignment: BaseAssignment<
+  DoABackflipAssignmentConfiguration,
+  DoABackflipAssignmentCompletionData
+> = {
+  id: 'DoABackflipAssignment',
+  name: 'Meine tolle Aufgabe',
+  version: 0,
+  description: 'Coole Beschreibung',
+  getInitialCompletionData: () => initialDoABackflipAssignmentCompletionData,
+  getRandomConfig: () => ({
+    someConfigProperty: random(42, 42),
+  }),
+  configurationClass: DoABackflipAssignmentConfiguration,
+  completionDataClass: DoABackflipAssignmentCompletionData,
+}
 "
 `;

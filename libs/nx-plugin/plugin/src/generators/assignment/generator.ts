@@ -5,6 +5,7 @@ import {
 import { Tree, formatFiles, generateFiles } from '@nx/devkit'
 import { Linter } from '@nx/eslint'
 import { libraryGenerator } from '@nx/js'
+import { camelCase, kebabCase, upperFirst } from 'lodash'
 import * as path from 'path'
 import { AssignmentGeneratorSchema } from './schema'
 
@@ -55,7 +56,11 @@ export async function assignmentGenerator(
     tree.delete(`${projectRoot}/shared/${file}`)
   }
 
-  generateFiles(tree, path.join(__dirname, 'files'), projectRoot, options)
+  generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
+    ...options,
+    name: kebabCase(options.name),
+    camelCasedName: upperFirst(camelCase(options.name)),
+  })
   await formatFiles(tree)
 }
 

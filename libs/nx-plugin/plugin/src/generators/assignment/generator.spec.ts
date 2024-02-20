@@ -1,15 +1,33 @@
-import { Tree, readProjectConfiguration } from '@nx/devkit'
+import { Tree, readProjectConfiguration, updateJson } from '@nx/devkit'
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing'
+import * as fs from 'fs/promises'
+import * as path from 'path'
 import { assignmentGenerator } from './generator'
 import { AssignmentGeneratorSchema } from './schema'
+
+const getActualPrettierConfig = async () => {
+  const filePath = path.join(__dirname, '../../../../../../.prettierrc')
+  const fileContent = await fs.readFile(filePath, 'utf-8')
+  return JSON.parse(fileContent)
+}
 
 describe('assignment generator', () => {
   let tree: Tree
   const options: AssignmentGeneratorSchema = { name: 'do-a-backflip' }
   const assignmentBaseDir = `libs/assignments/${options.name}`
+  let actualPrettierConfig: object
+
+  beforeAll(async () => {
+    actualPrettierConfig = await getActualPrettierConfig()
+  })
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace()
+    expect(tree.exists('.prettierrc')).toBe(true)
+    updateJson(tree, '.prettierrc', (json) => ({
+      ...json,
+      ...actualPrettierConfig,
+    }))
 
     // Tell the library generator where to create the new project
     process.env.INIT_CWD = tree.root
@@ -77,8 +95,8 @@ describe('assignment generator', () => {
 
   it.each([
     `${assignmentBaseDir}/shared/src/index.ts`,
-    // `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.ts`,
-    // `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.spec.ts`,
+    `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.ts`,
+    `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.spec.ts`,
 
     `${assignmentBaseDir}/frontend/src/index.ts`,
     // `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-for-frontend.ts`,
