@@ -31,6 +31,10 @@ export class AnimatedDiceComponent implements AfterViewInit {
     this.values = Array.from({ length: count }, () => new BehaviorSubject(1))
   }
 
+  get count() {
+    return this.values.length
+  }
+
   @Output()
   roll = new EventEmitter<number[]>()
 
@@ -39,10 +43,6 @@ export class AnimatedDiceComponent implements AfterViewInit {
 
   @ViewChildren('button')
   buttonRef?: QueryList<ElementRef<HTMLButtonElement>>
-
-  get count() {
-    return this.values.length
-  }
 
   values = Array.from({ length: 10 }, () => new BehaviorSubject(1))
 
