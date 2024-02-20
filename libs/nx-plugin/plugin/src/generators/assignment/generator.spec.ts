@@ -74,4 +74,26 @@ describe('assignment generator', () => {
     expect(tree.exists(fileName)).toBe(true)
     // expect(tree.read(fileName)).toMatchSnapshot()
   })
+
+  it.each([
+    `${assignmentBaseDir}/shared/src/index.ts`,
+    // `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.ts`,
+    // `${assignmentBaseDir}/shared/src/lib/${options.name}-assignment.spec.ts`,
+
+    `${assignmentBaseDir}/frontend/src/index.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-for-frontend.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.html`,
+    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.spec.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.html`,
+    // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.spec.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.html`,
+    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.ts`,
+    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.spec.ts`,
+  ])('should create %p with the correct contents', async (fileName) => {
+    await assignmentGenerator(tree, options)
+    expect(tree.exists(fileName)).toBe(true)
+    expect(tree.read(fileName)?.toString()).toMatchSnapshot()
+  })
 })
