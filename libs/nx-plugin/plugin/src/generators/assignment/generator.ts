@@ -1,4 +1,9 @@
+import {
+  UnitTestRunner,
+  libraryGenerator as angularLibraryGenerator,
+} from '@nx/angular/generators'
 import { Tree, formatFiles, generateFiles } from '@nx/devkit'
+import { Linter } from '@nx/eslint'
 import { libraryGenerator } from '@nx/js'
 import * as path from 'path'
 import { AssignmentGeneratorSchema } from './schema'
@@ -22,6 +27,23 @@ export async function assignmentGenerator(
     projectNameAndRootFormat: 'as-provided',
     config: 'project',
     compiler: 'tsc',
+  })
+  await angularLibraryGenerator(tree, {
+    name: `${options.name}-assignment-frontend`,
+    tags: 'scope:frontend',
+    buildable: false,
+    linter: Linter.EsLint,
+    strict: true,
+    publishable: false,
+    directory: projectRoot + '/frontend',
+    importPath: `@stochus/assignments/${options.name}/frontend`,
+    unitTestRunner: UnitTestRunner.Jest,
+    projectNameAndRootFormat: 'as-provided',
+    prefix: 'stochus',
+    standalone: false,
+    skipModule: true,
+    skipSelector: true,
+    standaloneConfig: true,
   })
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, options)
   await formatFiles(tree)

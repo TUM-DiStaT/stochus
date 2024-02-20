@@ -10,7 +10,9 @@ describe('assignment generator', () => {
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace()
-    expect(tree.exists('project.json')).toBe(true)
+
+    // Avoid warning messages from angular generator that no .gitignore can be found
+    tree.write('.gitignore', '')
   })
 
   it('should create shared project', async () => {
@@ -22,6 +24,41 @@ describe('assignment generator', () => {
     expect(config).toBeDefined()
     expect(config.tags).toContain('scope:shared')
     expect(config.projectType).toBe('library')
+  })
+
+  it('should create frontend project', async () => {
+    await assignmentGenerator(tree, options)
+    const config = readProjectConfiguration(
+      tree,
+      `${options.name}-assignment-frontend`,
+    )
+    expect(config).toBeDefined()
+    expect(config.tags).toContain('scope:frontend')
+    expect(config.projectType).toBe('library')
+  })
+
+  it('should delete the standard angular library component files', async () => {
+    await assignmentGenerator(tree, options)
+    expect(
+      tree.exists(
+        `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-frontend.component.ts`,
+      ),
+    ).toBe(false)
+    expect(
+      tree.exists(
+        `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-frontend.component.spec.ts`,
+      ),
+    ).toBe(false)
+    expect(
+      tree.exists(
+        `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-frontend.component.html`,
+      ),
+    ).toBe(false)
+    expect(
+      tree.exists(
+        `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-frontend.component.css`,
+      ),
+    ).toBe(false)
   })
 
   it.each([
