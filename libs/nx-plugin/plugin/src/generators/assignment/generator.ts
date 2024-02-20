@@ -45,6 +45,16 @@ export async function assignmentGenerator(
     skipSelector: true,
     standaloneConfig: true,
   })
+
+  // Remove certain generated files that won't be needed
+  const sharedFilesToDelete = [
+    `src/lib/${options.name}-assignment-shared.ts`,
+    `src/lib/${options.name}-assignment-shared.spec.ts`,
+  ]
+  for (const file of sharedFilesToDelete) {
+    tree.delete(`${projectRoot}/shared/${file}`)
+  }
+
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, options)
   await formatFiles(tree)
 }
