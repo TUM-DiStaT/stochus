@@ -239,15 +239,15 @@ export class DetermineDiceFairnessAssignmentProcessComponent
     })
   }
 
-  get completionData(): DetermineDiceFairnessAssignmentCompletionData {
-    return this._completionData
-  }
-
   get totalRollsCount() {
     return (this._completionData?.resultFrequencies ?? []).reduce(
       (acc, curr) => acc + curr,
       0,
     )
+  }
+
+  get completionData(): DetermineDiceFairnessAssignmentCompletionData {
+    return this._completionData
   }
 
   @Input()
