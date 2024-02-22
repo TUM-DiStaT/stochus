@@ -1,14 +1,23 @@
 import { Tree, readProjectConfiguration, updateJson } from '@nx/devkit'
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing'
+import { tsquery } from '@phenomnomnominal/tsquery'
 import * as fs from 'fs/promises'
+import { camelCase, upperFirst } from 'lodash'
 import * as path from 'path'
+import { frontendAssignmentsServicePath } from './file-paths'
 import { assignmentGenerator } from './generator'
 import { AssignmentGeneratorSchema } from './schema'
 
+const getActualFileContentFromWorkspaceRootPath = async (filePath: string) =>
+  await fs.readFile(
+    path.join(__dirname, '../../../../../../', filePath),
+    'utf-8',
+  )
+
 const getActualPrettierConfig = async () => {
-  const filePath = path.join(__dirname, '../../../../../../.prettierrc')
-  const fileContent = await fs.readFile(filePath, 'utf-8')
-  return JSON.parse(fileContent)
+  return JSON.parse(
+    await getActualFileContentFromWorkspaceRootPath('.prettierrc'),
+  )
 }
 
 describe('assignment generator', () => {
@@ -21,7 +30,7 @@ describe('assignment generator', () => {
     actualPrettierConfig = await getActualPrettierConfig()
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     tree = createTreeWithEmptyWorkspace()
     expect(tree.exists('.prettierrc')).toBe(true)
     updateJson(tree, '.prettierrc', (json) => ({
@@ -35,6 +44,16 @@ describe('assignment generator', () => {
 
     // Avoid warning messages from angular generator that no .gitignore can be found
     tree.write('.gitignore', '')
+
+    // Add current assignment services
+    const frontendAssignmentsServiceContent =
+      await getActualFileContentFromWorkspaceRootPath(
+        frontendAssignmentsServicePath,
+      )
+    tree.write(
+      frontendAssignmentsServicePath,
+      frontendAssignmentsServiceContent,
+    )
   })
 
   it('should create shared project', async () => {
@@ -114,4 +133,45 @@ describe('assignment generator', () => {
     expect(tree.exists(fileName)).toBe(true)
     expect(tree.read(fileName)?.toString()).toMatchSnapshot()
   })
+
+  it('should add the asssignment to the frontend service', async () => {
+    await assignmentGenerator(tree, options)
+    const assignmentServiceCode =
+      tree.read(frontendAssignmentsServicePath)?.toString() ?? ''
+    expect(assignmentServiceCode).not.toBe('')
+
+    const serviceName =
+      upperFirst(camelCase(options.name)) + 'AssignmentForFrontend'
+
+    // Import should exist
+    const importLiteralNodes = tsquery.query(
+      assignmentServiceCode,
+      `ImportDeclaration:has(Identifier[name="${serviceName}"]):has(StringLiteral[value="@stochus/assignments/${options.name}/frontend"])`,
+    )
+    expect(importLiteralNodes).toHaveLength(1)
+
+    // Assignment should be added to the array
+    const assignmentsArrayLiteralNodes = tsquery.query(
+      assignmentServiceCode,
+      'ClassDeclaration:has(Identifier[name="AssignmentsService"]) ' +
+        '> PropertyDeclaration:has(Identifier[name="assignments"]) ' +
+        `> ArrayLiteralExpression`,
+    )
+    expect(assignmentsArrayLiteralNodes).toHaveLength(1)
+    const assignmentsArrayLiteral = assignmentsArrayLiteralNodes[0]
+    expect(assignmentsArrayLiteral.getFullText()).toMatch(
+      serviceName + ' as any',
+    )
+    // It should be added with the eslint-disable-next-line comment
+    expect(assignmentsArrayLiteral.getFullText()).toMatch(
+      /\/\/ eslint-disable-next-line @typescript-eslint\/no-explicit-any\n\s*DoABackflipAssignmentForFrontend as any/,
+    )
+
+    // This final assertion is just meant for manual review of the final file.
+    // If it ever fails, the assertions above *should* be enough to ensure functionality.
+    // Still, take a second to look at the changes and see if this code would still work.
+    expect(assignmentServiceCode).toMatchSnapshot()
+  })
+
+  it.todo('should add the asssignment to the backend service')
 })

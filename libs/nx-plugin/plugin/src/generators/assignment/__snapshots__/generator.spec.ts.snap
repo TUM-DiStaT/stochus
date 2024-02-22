@@ -1,5 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`assignment generator should add the asssignment to the frontend service 1`] = `
+"import { Injectable } from '@angular/core'
+import { DetermineDiceFairnessAssignmentForFrontend } from '@stochus/assignments/determine-dice-fairness/frontend'
+import { DoABackflipAssignmentForFrontend } from '@stochus/assignments/do-a-backflip/frontend'
+import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
+import { IdentifySharedCharacteristicsAssignmentForFrontend } from '@stochus/assignments/identify-shared-characteristics/frontend'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AssignmentsService {
+  // Allow explicit any here to avoid subtyping issues due to
+  // possible mixing of different assignment callbacks (just try removing it
+  // and check out the error message). The service should still
+  // expose the correct types to the outside. Type-safety should be "guaranteed"
+  // at runtime using the id as a discriminator. Not nice, but it should work
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static readonly assignments: AssignmentForFrontend<any, any>[] = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ExtractFromHistogramAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    IdentifySharedCharacteristicsAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DetermineDiceFairnessAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DoABackflipAssignmentForFrontend as any,
+  ]
+  static getById(assignmentId?: string | null) {
+    return AssignmentsService.assignments.find(
+      (assignment) => assignment.id === assignmentId,
+    )
+  }
+  static getByIdOrError(assignmentId?: string | null, message?: string) {
+    const result = AssignmentsService.getById(assignmentId)
+    const errorMessage =
+      message ?? \`Couldn't find assignment with ID \${assignmentId}\`
+    if (!result) {
+      throw new Error(errorMessage)
+    }
+    return result
+  }
+  getAllAssignments() {
+    return [...AssignmentsService.assignments]
+  }
+}
+"
+`;
+
 exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/index.ts" with the correct contents 1`] = `
 "export * from './lib/do-a-backflip-assignment-for-frontend'
 "

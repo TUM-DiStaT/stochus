@@ -5,15 +5,53 @@ import {
 import { Tree, formatFiles, generateFiles } from '@nx/devkit'
 import { Linter } from '@nx/eslint'
 import { libraryGenerator } from '@nx/js'
+import { tsquery } from '@phenomnomnominal/tsquery'
 import { camelCase, kebabCase, upperFirst } from 'lodash'
 import * as path from 'path'
+import { frontendAssignmentsServicePath } from './file-paths'
 import { AssignmentGeneratorSchema } from './schema'
+
+function addToFrontendService(
+  tree: Tree,
+  camelCasedName: string,
+  options: AssignmentGeneratorSchema,
+) {
+  const frontendAssignmentService =
+    tree.read(frontendAssignmentsServicePath)?.toString() ?? ''
+  const withImport = tsquery.replace(
+    frontendAssignmentService,
+    // last-child doesn't seem to work and the order will be fixed by prettier
+    'ImportDeclaration:first-child',
+    (node) => {
+      return (
+        node.getText() +
+        '\n' +
+        `import { ${camelCasedName}AssignmentForFrontend } from '@stochus/assignments/${options.name}/frontend'`
+      )
+    },
+  )
+  const withAddedAssignment = tsquery.replace(
+    withImport,
+    'ClassDeclaration:has(Identifier[name="AssignmentsService"]) > PropertyDeclaration:has(Identifier[name="assignments"]) > ArrayLiteralExpression AsExpression:last-child',
+    (node) => {
+      return (
+        node.getText() +
+        `,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ${camelCasedName}AssignmentForFrontend as any`
+      )
+    },
+  )
+  tree.write(frontendAssignmentsServicePath, withAddedAssignment)
+}
 
 export async function assignmentGenerator(
   tree: Tree,
   options: AssignmentGeneratorSchema,
 ) {
   const projectRoot = `libs/assignments/${options.name}`
+  const camelCasedName = upperFirst(camelCase(options.name))
+
   await libraryGenerator(tree, {
     name: `${options.name}-assignment-shared`,
     tags: 'scope:shared',
@@ -56,10 +94,12 @@ export async function assignmentGenerator(
     tree.delete(`${projectRoot}/shared/${file}`)
   }
 
+  addToFrontendService(tree, camelCasedName, options)
+
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
     ...options,
     name: kebabCase(options.name),
-    camelCasedName: upperFirst(camelCase(options.name)),
+    camelCasedName,
   })
   await formatFiles(tree)
 }
