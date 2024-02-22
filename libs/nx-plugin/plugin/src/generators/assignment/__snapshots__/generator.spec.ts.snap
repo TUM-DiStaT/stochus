@@ -27,14 +27,17 @@ export class AssignmentsCoreBackendService {
       ? [GuessRandomNumberAssignment]
       : []),
   ]
+
   static getAllAssignments() {
     return [...AssignmentsCoreBackendService.assignments]
   }
+
   static getById(assignmentId: string) {
     return this.getAllAssignments().find(
       (assignment) => assignment.id === assignmentId,
     )
   }
+
   static getByIdOrError(assignmentId: string) {
     const assignment = this.getById(assignmentId)
     if (!assignment) {
@@ -76,11 +79,13 @@ export class AssignmentsService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     DoABackflipAssignmentForFrontend as any,
   ]
+
   static getById(assignmentId?: string | null) {
     return AssignmentsService.assignments.find(
       (assignment) => assignment.id === assignmentId,
     )
   }
+
   static getByIdOrError(assignmentId?: string | null, message?: string) {
     const result = AssignmentsService.getById(assignmentId)
     const errorMessage =
@@ -90,6 +95,7 @@ export class AssignmentsService {
     }
     return result
   }
+
   getAllAssignments() {
     return [...AssignmentsService.assignments]
   }
