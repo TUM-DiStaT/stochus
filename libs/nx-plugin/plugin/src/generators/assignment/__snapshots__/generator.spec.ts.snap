@@ -216,7 +216,6 @@ exports[`assignment generator should create "libs/assignments/do-a-backflip/fron
 exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.spec.ts" with the correct contents 1`] = `
 "import { FormBuilder } from '@angular/forms'
 import { render } from '@testing-library/angular'
-
 import { DoABackflipAssignmentForFrontend } from '../do-a-backflip-assignment-for-frontend'
 import { DoABackflipConfigFormComponent } from './do-a-backflip-config-form.component'
 
@@ -275,6 +274,34 @@ export class DoABackflipConfigFormComponent
 {
   @Input()
   formControl!: FormModel<DoABackflipAssignmentConfiguration>
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/do-a-backflip-assignment-for-frontend.ts" with the correct contents 1`] = `
+"import { Validators } from '@angular/forms'
+import {
+  DoABackflipAssignment,
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
+import { DoABackflipAssignmentProcessComponent } from './assignment-process/do-a-backflip-assignment-process.component'
+import { DoABackflipConfigFormComponent } from './config-form/do-a-backflip-config-form.component'
+import { DoABackflipFeedbackComponent } from './feedback/do-a-backflip-feedback.component'
+
+export const DoABackflipAssignmentForFrontend: AssignmentForFrontend<
+  DoABackflipAssignmentConfiguration,
+  DoABackflipAssignmentCompletionData
+> = {
+  ...DoABackflipAssignment,
+  completionProcessComponent: DoABackflipAssignmentProcessComponent,
+  configurationInputFormComponent: DoABackflipConfigFormComponent,
+  feedbackComponent: DoABackflipFeedbackComponent,
+  generateConfigFormControl: (fb, { someConfigProperty }) =>
+    fb.group({
+      someConfigProperty: [someConfigProperty, [Validators.min(0)]],
+    }),
 }
 "
 `;

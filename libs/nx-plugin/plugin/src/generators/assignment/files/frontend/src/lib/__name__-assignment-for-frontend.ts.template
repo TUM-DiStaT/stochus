@@ -1,0 +1,24 @@
+import { Validators } from '@angular/forms'
+import {
+  <%= camelCasedName %>Assignment,
+  <%= camelCasedName %>AssignmentCompletionData,
+  <%= camelCasedName %>AssignmentConfiguration,
+} from '@stochus/assignments/<%= name %>/shared'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
+import { <%= camelCasedName %>AssignmentProcessComponent } from './assignment-process/<%= name %>-assignment-process.component'
+import { <%= camelCasedName %>ConfigFormComponent } from './config-form/<%= name %>-config-form.component'
+import { <%= camelCasedName %>FeedbackComponent } from './feedback/<%= name %>-feedback.component'
+
+export const <%= camelCasedName %>AssignmentForFrontend: AssignmentForFrontend<
+  <%= camelCasedName %>AssignmentConfiguration,
+  <%= camelCasedName %>AssignmentCompletionData
+> = {
+  ...<%= camelCasedName %>Assignment,
+  completionProcessComponent: <%= camelCasedName %>AssignmentProcessComponent,
+  configurationInputFormComponent: <%= camelCasedName %>ConfigFormComponent,
+  feedbackComponent: <%= camelCasedName %>FeedbackComponent,
+  generateConfigFormControl: (fb, { someConfigProperty }) =>
+    fb.group({
+      someConfigProperty: [someConfigProperty, [Validators.min(0)]],
+    }),
+}
