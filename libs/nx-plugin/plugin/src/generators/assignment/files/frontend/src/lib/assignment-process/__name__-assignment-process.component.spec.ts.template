@@ -1,0 +1,32 @@
+import { fireEvent, render } from '@testing-library/angular'
+import { <%= camelCasedName %>AssignmentProcessComponent } from './<%= name %>-assignment-process.component'
+
+describe('<%= camelCasedName %>AssignmentProcessComponent', () => {
+  it('should submit 42', async () => {
+    const renderResult = await render(<%= camelCasedName %>AssignmentProcessComponent, {
+      componentProperties: {
+        config: {
+          someConfigProperty: 42,
+        },
+        completionData: {
+          progress: 0,
+          result: 0,
+        },
+      },
+    })
+
+    const completionUpdateSpy = jest.spyOn(
+      renderResult.fixture.componentRef.instance.updateCompletionData,
+      'emit',
+    )
+    expect(completionUpdateSpy).not.toHaveBeenCalled()
+
+    fireEvent.click(renderResult.getByRole('button'))
+
+    expect(completionUpdateSpy).toHaveBeenCalledTimes(1)
+    expect(completionUpdateSpy).toHaveBeenCalledWith({
+      progress: 1,
+      result: 42,
+    })
+  })
+})

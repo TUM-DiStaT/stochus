@@ -1,1 +1,2 @@
 <p><%= name %> assignment process!</p>
+<button class="btn btn-primary" (click)="submit()">Abgeben</button>

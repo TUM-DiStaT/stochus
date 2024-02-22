@@ -108,6 +108,88 @@ exports[`assignment generator should create "libs/assignments/do-a-backflip/fron
 "
 `;
 
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.html" with the correct contents 1`] = `
+"<p>do-a-backflip assignment process!</p>
+<button class="btn btn-primary" (click)="submit()">Abgeben</button>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.spec.ts" with the correct contents 1`] = `
+"import { fireEvent, render } from '@testing-library/angular'
+import { DoABackflipAssignmentProcessComponent } from './do-a-backflip-assignment-process.component'
+
+describe('DoABackflipAssignmentProcessComponent', () => {
+  it('should submit 42', async () => {
+    const renderResult = await render(DoABackflipAssignmentProcessComponent, {
+      componentProperties: {
+        config: {
+          someConfigProperty: 42,
+        },
+        completionData: {
+          progress: 0,
+          result: 0,
+        },
+      },
+    })
+
+    const completionUpdateSpy = jest.spyOn(
+      renderResult.fixture.componentRef.instance.updateCompletionData,
+      'emit',
+    )
+    expect(completionUpdateSpy).not.toHaveBeenCalled()
+
+    fireEvent.click(renderResult.getByRole('button'))
+
+    expect(completionUpdateSpy).toHaveBeenCalledTimes(1)
+    expect(completionUpdateSpy).toHaveBeenCalledWith({
+      progress: 1,
+      result: 42,
+    })
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.ts" with the correct contents 1`] = `
+"import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-assignment-process.component.html',
+})
+export class DoABackflipAssignmentProcessComponent
+  implements
+    AssignmentProcessProps<
+      DoABackflipAssignmentConfiguration,
+      DoABackflipAssignmentCompletionData
+    >
+{
+  @Input()
+  config!: DoABackflipAssignmentConfiguration
+  @Input()
+  completionData!: DoABackflipAssignmentCompletionData
+  @Output()
+  createInteractionLog = new EventEmitter<unknown>()
+  @Output()
+  updateCompletionData = new EventEmitter<
+    Partial<DoABackflipAssignmentCompletionData>
+  >()
+
+  submit() {
+    this.updateCompletionData.emit({
+      result: 42,
+      progress: 1,
+    })
+  }
+}
+"
+`;
+
 exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/index.ts" with the correct contents 1`] = `
 "export * from './lib/do-a-backflip-assignment'
 "

@@ -127,9 +127,9 @@ describe('assignment generator', () => {
 
     `${assignmentBaseDir}/frontend/src/index.ts`,
     // `${assignmentBaseDir}/frontend/src/lib/${options.name}-assignment-for-frontend.ts`,
-    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.html`,
-    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.ts`,
-    // `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.spec.ts`,
+    `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.html`,
+    `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.ts`,
+    `${assignmentBaseDir}/frontend/src/lib/assignment-process/${options.name}-assignment-process.component.spec.ts`,
     // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.html`,
     // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.ts`,
     // `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.spec.ts`,
