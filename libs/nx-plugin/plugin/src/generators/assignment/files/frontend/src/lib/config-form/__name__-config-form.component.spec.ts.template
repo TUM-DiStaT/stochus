@@ -1,0 +1,40 @@
+import { FormBuilder } from '@angular/forms'
+import { render } from '@testing-library/angular'
+import { <%= camelCasedName %>AssignmentForFrontend } from '../<%= name %>-assignment-for-frontend'
+import { <%= camelCasedName %>ConfigFormComponent } from './<%= name %>-config-form.component'
+
+describe('<%= camelCasedName %>ConfigFormComponent', () => {
+  it('should show no error for valid config', async () => {
+    const renderResult = await render(<%= camelCasedName %>ConfigFormComponent, {
+      componentProperties: {
+        formControl: <%= camelCasedName %>AssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: 42,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should show error for invalid config', async () => {
+    const renderResult = await render(<%= camelCasedName %>ConfigFormComponent, {
+      componentProperties: {
+        formControl: <%= camelCasedName %>AssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: -1,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).toBeInTheDocument()
+  })
+})

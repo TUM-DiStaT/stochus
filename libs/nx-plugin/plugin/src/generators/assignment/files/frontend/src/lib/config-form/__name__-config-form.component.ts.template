@@ -1,0 +1,17 @@
+import { Component, Input } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { FormModel } from 'ngx-mf'
+import { <%= camelCasedName %>AssignmentConfiguration } from '@stochus/assignments/<%= name %>/shared'
+import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './<%= name %>-config-form.component.html',
+  imports: [ReactiveFormsModule],
+})
+export class <%= camelCasedName %>ConfigFormComponent
+  implements AssignmentConfigFormProps<<%= camelCasedName %>AssignmentConfiguration>
+{
+  @Input()
+  formControl!: FormModel<<%= camelCasedName %>AssignmentConfiguration>
+}

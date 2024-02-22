@@ -190,6 +190,95 @@ export class DoABackflipAssignmentProcessComponent
 "
 `;
 
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.html" with the correct contents 1`] = `
+"<label class="form-control">
+  <span class="label">Lustige Konfiguration</span>
+  <input
+    class="input input-bordered"
+    data-testid="some-config-input"
+    [formControl]="formControl.controls.someConfigProperty"
+    [class.select-error]="formControl.controls.someConfigProperty.errors"
+  />
+  @if (formControl.controls.someConfigProperty.invalid) {
+  <div class="text-error">
+    <span
+      class="label-text-alt text-error"
+      data-testid="some-config-input-error-message"
+    >
+      Bitte eine positive Zahl eingeben
+    </span>
+  </div>
+  }
+</label>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.spec.ts" with the correct contents 1`] = `
+"import { FormBuilder } from '@angular/forms'
+import { render } from '@testing-library/angular'
+
+import { DoABackflipAssignmentForFrontend } from '../do-a-backflip-assignment-for-frontend'
+import { DoABackflipConfigFormComponent } from './do-a-backflip-config-form.component'
+
+describe('DoABackflipConfigFormComponent', () => {
+  it('should show no error for valid config', async () => {
+    const renderResult = await render(DoABackflipConfigFormComponent, {
+      componentProperties: {
+        formControl: DoABackflipAssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: 42,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should show error for invalid config', async () => {
+    const renderResult = await render(DoABackflipConfigFormComponent, {
+      componentProperties: {
+        formControl: DoABackflipAssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: -1,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).toBeInTheDocument()
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.ts" with the correct contents 1`] = `
+"import { Component, Input } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { FormModel } from 'ngx-mf'
+import { DoABackflipAssignmentConfiguration } from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-config-form.component.html',
+  imports: [ReactiveFormsModule],
+})
+export class DoABackflipConfigFormComponent
+  implements AssignmentConfigFormProps<DoABackflipAssignmentConfiguration>
+{
+  @Input()
+  formControl!: FormModel<DoABackflipAssignmentConfiguration>
+}
+"
+`;
+
 exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/index.ts" with the correct contents 1`] = `
 "export * from './lib/do-a-backflip-assignment'
 "
