@@ -4,7 +4,10 @@ import { tsquery } from '@phenomnomnominal/tsquery'
 import * as fs from 'fs/promises'
 import { camelCase, upperFirst } from 'lodash'
 import * as path from 'path'
-import { frontendAssignmentsServicePath } from './file-paths'
+import {
+  backendAssignmentsServicePath,
+  frontendAssignmentsServicePath,
+} from './file-paths'
 import { assignmentGenerator } from './generator'
 import { AssignmentGeneratorSchema } from './schema'
 
@@ -54,6 +57,11 @@ describe('assignment generator', () => {
       frontendAssignmentsServicePath,
       frontendAssignmentsServiceContent,
     )
+    const backendAssignmentsServiceContent =
+      await getActualFileContentFromWorkspaceRootPath(
+        backendAssignmentsServicePath,
+      )
+    tree.write(backendAssignmentsServicePath, backendAssignmentsServiceContent)
   })
 
   it('should create shared project', async () => {
@@ -140,13 +148,13 @@ describe('assignment generator', () => {
       tree.read(frontendAssignmentsServicePath)?.toString() ?? ''
     expect(assignmentServiceCode).not.toBe('')
 
-    const serviceName =
+    const assignmentForFrontendDefinitionName =
       upperFirst(camelCase(options.name)) + 'AssignmentForFrontend'
 
     // Import should exist
     const importLiteralNodes = tsquery.query(
       assignmentServiceCode,
-      `ImportDeclaration:has(Identifier[name="${serviceName}"]):has(StringLiteral[value="@stochus/assignments/${options.name}/frontend"])`,
+      `ImportDeclaration:has(Identifier[name="${assignmentForFrontendDefinitionName}"]):has(StringLiteral[value="@stochus/assignments/${options.name}/frontend"])`,
     )
     expect(importLiteralNodes).toHaveLength(1)
 
@@ -160,7 +168,7 @@ describe('assignment generator', () => {
     expect(assignmentsArrayLiteralNodes).toHaveLength(1)
     const assignmentsArrayLiteral = assignmentsArrayLiteralNodes[0]
     expect(assignmentsArrayLiteral.getFullText()).toMatch(
-      serviceName + ' as any',
+      assignmentForFrontendDefinitionName + ' as any',
     )
     // It should be added with the eslint-disable-next-line comment
     expect(assignmentsArrayLiteral.getFullText()).toMatch(
@@ -173,5 +181,36 @@ describe('assignment generator', () => {
     expect(assignmentServiceCode).toMatchSnapshot()
   })
 
-  it.todo('should add the asssignment to the backend service')
+  it('should add the asssignment to the backend service', async () => {
+    await assignmentGenerator(tree, options)
+    const assignmentServiceCode =
+      tree.read(backendAssignmentsServicePath)?.toString() ?? ''
+    expect(assignmentServiceCode).not.toBe('')
+
+    const assignmentDefinitionName =
+      upperFirst(camelCase(options.name)) + 'Assignment'
+
+    // Import should exist
+    const importLiteralNodes = tsquery.query(
+      assignmentServiceCode,
+      `ImportDeclaration:has(Identifier[name="${assignmentDefinitionName}"]):has(StringLiteral[value="@stochus/assignments/${options.name}/shared"])`,
+    )
+    expect(importLiteralNodes).toHaveLength(1)
+
+    // Assignment should be added to the array
+    const assignmentsArrayLiteralNodes = tsquery.query(
+      assignmentServiceCode,
+      'ClassDeclaration:has(Identifier[name="AssignmentsCoreBackendService"]) > PropertyDeclaration:has(Identifier[name="assignments"]) > ArrayLiteralExpression Identifier:nth-last-child(2)',
+    )
+    expect(assignmentsArrayLiteralNodes).toHaveLength(1)
+    const assignmentsArrayLiteral = assignmentsArrayLiteralNodes[0]
+    expect(assignmentsArrayLiteral.getFullText()).toMatch(
+      assignmentDefinitionName,
+    )
+
+    // This final assertion is just meant for manual review of the final file.
+    // If it ever fails, the assertions above *should* be enough to ensure functionality.
+    // Still, take a second to look at the changes and see if this code would still work.
+    expect(assignmentServiceCode).toMatchSnapshot()
+  })
 })
