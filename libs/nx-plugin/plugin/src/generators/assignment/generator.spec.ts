@@ -133,9 +133,9 @@ describe('assignment generator', () => {
     `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.html`,
     `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.ts`,
     `${assignmentBaseDir}/frontend/src/lib/config-form/${options.name}-config-form.component.spec.ts`,
-    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.html`,
-    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.ts`,
-    // `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.spec.ts`,
+    `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.html`,
+    `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.ts`,
+    `${assignmentBaseDir}/frontend/src/lib/feedback/${options.name}-feedback.component.spec.ts`,
   ])('should create %p with the correct contents', async (fileName) => {
     await assignmentGenerator(tree, options)
     expect(tree.exists(fileName)).toBe(true)

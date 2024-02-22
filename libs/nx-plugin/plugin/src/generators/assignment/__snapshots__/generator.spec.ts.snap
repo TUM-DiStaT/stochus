@@ -279,6 +279,69 @@ export class DoABackflipConfigFormComponent
 "
 `;
 
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.html" with the correct contents 1`] = `
+"<div class="flex flex-col">
+  <h2>Konfiguration</h2>
+  <code>{{ config | json }}</code>
+  <h2>Daten</h2>
+  <code>{{ completionData | json }}</code>
+</div>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.spec.ts" with the correct contents 1`] = `
+"import { render } from '@testing-library/angular'
+import { DoABackflipFeedbackComponent } from './do-a-backflip-feedback.component'
+
+describe('DoABackflipFeedbackComponent', () => {
+  it('should create', async () => {
+    const renderResult = await render(DoABackflipFeedbackComponent, {
+      componentProperties: {
+        config: {
+          someConfigProperty: 42,
+        },
+        completionData: {
+          progress: 1,
+          result: 24,
+        },
+      },
+    })
+
+    expect(renderResult).toBeTruthy()
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.ts" with the correct contents 1`] = `
+"import { JsonPipe } from '@angular/common'
+import { Component, Input } from '@angular/core'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentFeedbackProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-feedback.component.html',
+  imports: [JsonPipe],
+})
+export class DoABackflipFeedbackComponent
+  implements
+    AssignmentFeedbackProps<
+      DoABackflipAssignmentConfiguration,
+      DoABackflipAssignmentCompletionData
+    >
+{
+  @Input()
+  completionData!: DoABackflipAssignmentCompletionData
+  @Input()
+  config!: DoABackflipAssignmentConfiguration
+}
+"
+`;
+
 exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/index.ts" with the correct contents 1`] = `
 "export * from './lib/do-a-backflip-assignment'
 "

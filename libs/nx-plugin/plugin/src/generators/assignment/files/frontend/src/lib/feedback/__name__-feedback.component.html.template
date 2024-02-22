@@ -1,1 +1,6 @@
-<p><%= name %> assignment process!</p>
+<div class="flex flex-col">
+  <h2>Konfiguration</h2>
+  <code>{{ config | json }}</code>
+  <h2>Daten</h2>
+  <code>{{ completionData | json }}</code>
+</div>
