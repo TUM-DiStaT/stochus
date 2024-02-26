@@ -38,6 +38,7 @@ export const computeChartOptions = (data: number[]) => {
         ticks: {
           stepSize: 1,
         },
+        grace: '10%',
       },
       boxplotY: {
         type: 'category',
