@@ -33,13 +33,13 @@ const addImport = (original: string, newImport: string): string => {
 function addToFrontendService(
   tree: Tree,
   camelCasedName: string,
-  options: AssignmentGeneratorSchema,
+  kebabCasedName: string,
 ) {
   const frontendAssignmentService =
     tree.read(frontendAssignmentsServicePath)?.toString() ?? ''
   const withImport = addImport(
     frontendAssignmentService,
-    `import { ${camelCasedName}AssignmentForFrontend } from '@stochus/assignments/${options.name}/frontend'`,
+    `import { ${camelCasedName}AssignmentForFrontend } from '@stochus/assignments/${kebabCasedName}/frontend'`,
   )
 
   const assignmentsArrayNode = tsquery.query(
@@ -72,13 +72,13 @@ function addToFrontendService(
 async function addToBackendService(
   tree: Tree,
   camelCasedName: string,
-  options: AssignmentGeneratorSchema,
+  kebabCasedName: string,
 ) {
   const backendAssignmentService =
     tree.read(backendAssignmentsServicePath)?.toString() ?? ''
   const withImport = addImport(
     backendAssignmentService,
-    `import { ${camelCasedName}Assignment } from '@stochus/assignments/${options.name}/shared'`,
+    `import { ${camelCasedName}Assignment } from '@stochus/assignments/${kebabCasedName}/shared'`,
   )
   const assignmentsArrayNode = tsquery.query(
     withImport,
@@ -114,14 +114,15 @@ export async function assignmentGenerator(
   tree: Tree,
   options: AssignmentGeneratorSchema,
 ) {
-  const projectRoot = `libs/assignments/${options.name}`
+  const kebabCasedName = kebabCase(options.name)
+  const projectRoot = `libs/assignments/${kebabCasedName}`
   const frontendRoot = projectRoot + '/frontend'
-  const camelCasedName = upperFirst(camelCase(options.name))
+  const camelCasedName = upperFirst(camelCase(kebabCasedName))
 
   await libraryGenerator(tree, {
-    name: `${options.name}-assignment-shared`,
+    name: `${kebabCasedName}-assignment-shared`,
     tags: 'scope:shared',
-    importPath: `@stochus/assignments/${options.name}/shared`,
+    importPath: `@stochus/assignments/${kebabCasedName}/shared`,
     minimal: true,
     publishable: false,
     linter: 'eslint',
@@ -134,14 +135,14 @@ export async function assignmentGenerator(
     compiler: 'tsc',
   })
   await angularLibraryGenerator(tree, {
-    name: `${options.name}-assignment-frontend`,
+    name: `${kebabCasedName}-assignment-frontend`,
     tags: 'scope:frontend',
     buildable: false,
     linter: Linter.EsLint,
     strict: true,
     publishable: false,
     directory: frontendRoot,
-    importPath: `@stochus/assignments/${options.name}/frontend`,
+    importPath: `@stochus/assignments/${kebabCasedName}/frontend`,
     unitTestRunner: UnitTestRunner.Jest,
     projectNameAndRootFormat: 'as-provided',
     prefix: 'stochus',
@@ -153,20 +154,20 @@ export async function assignmentGenerator(
 
   // Remove certain generated files that won't be needed
   const sharedFilesToDelete = [
-    `src/lib/${options.name}-assignment-shared.ts`,
-    `src/lib/${options.name}-assignment-shared.spec.ts`,
+    `src/lib/${kebabCasedName}-assignment-shared.ts`,
+    `src/lib/${kebabCasedName}-assignment-shared.spec.ts`,
   ]
   for (const file of sharedFilesToDelete) {
     tree.delete(`${projectRoot}/shared/${file}`)
   }
 
-  addToFrontendService(tree, camelCasedName, options)
-  await addToBackendService(tree, camelCasedName, options)
+  addToFrontendService(tree, camelCasedName, kebabCasedName)
+  await addToBackendService(tree, camelCasedName, kebabCasedName)
   addTestingLibraryToFrontendTestSetup(tree, frontendRoot)
 
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
     ...options,
-    name: kebabCase(options.name),
+    name: kebabCasedName,
     camelCasedName,
   })
   await formatFiles(tree)

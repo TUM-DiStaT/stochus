@@ -52,6 +52,15 @@ describe('assignment generator', () => {
     tree.write(backendAssignmentsServicePath, backendAssignmentsServiceContent)
   })
 
+  it('should derive kebab-cased name from camelCased input', async () => {
+    await assignmentGenerator(tree, { ...options, name: 'doABackflip' })
+    const config = readProjectConfiguration(
+      tree,
+      `${options.name}-assignment-shared`,
+    )
+    expect(config).toBeDefined()
+  })
+
   it('should create shared project', async () => {
     await assignmentGenerator(tree, options)
     const config = readProjectConfiguration(
