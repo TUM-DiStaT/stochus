@@ -1,7 +1,8 @@
 import { KeycloakEventType, KeycloakService } from 'keycloak-angular'
-import { frontendEnvironment } from '@stochus/core/frontend'
+import { getFrontendEnvironment } from '@stochus/core/frontend'
 
 export const initKeycloak = (keycloak: KeycloakService) => () => {
+  const frontendEnvironment = getFrontendEnvironment()
   const result = keycloak.init({
     config: {
       url: frontendEnvironment.keycloakUrl,
