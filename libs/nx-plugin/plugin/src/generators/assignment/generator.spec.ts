@@ -19,6 +19,14 @@ describe('assignment generator', () => {
 
   beforeAll(async () => {
     actualPrettierConfig = await getActualPrettierConfig()
+
+    // Apparently required for CI
+    performance.mark = jest.fn()
+    performance.measure = jest.fn()
+  })
+
+  afterAll(() => {
+    jest.restoreAllMocks()
   })
 
   beforeEach(async () => {
