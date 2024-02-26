@@ -6,7 +6,7 @@
   "prefix": "stochus",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@ngx-env/builder:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/frontend",
@@ -55,7 +55,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@ngx-env/builder:dev-server",
       "configurations": {
         "production": {
           "buildTarget": "frontend:build:production"
@@ -70,7 +70,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@ngx-env/builder:extract-i18n",
       "options": {
         "buildTarget": "frontend:build"
       }

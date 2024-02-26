@@ -1,11 +1,12 @@
 import { KeycloakEventType, KeycloakService } from 'keycloak-angular'
+import { frontendEnvironment } from '@stochus/core/frontend'
 
 export const initKeycloak = (keycloak: KeycloakService) => () => {
   const result = keycloak.init({
     config: {
-      url: 'http://localhost:8080/',
-      realm: 'stochus',
-      clientId: 'stochus-frontend',
+      url: frontendEnvironment.keycloakUrl,
+      realm: frontendEnvironment.keycloakRealm,
+      clientId: frontendEnvironment.keycloakClientId,
     },
     initOptions: {
       onLoad: 'check-sso',
