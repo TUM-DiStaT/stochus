@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-8">
-  <div class="prose">
+  <div class="prose prose-em:font-bold prose-em:not-italic">
     @if (!result) { } @else if (result.correct) {
     <p>
-      Das ist richtig! Du hast den {{ targetValueTypeName }} richtig abgelesen
-      bzw. berechnet. Sehr gut!
+      Das ist <em>richtig</em>! Du hast den {{ targetValueTypeName }} richtig
+      abgelesen bzw. berechnet. Sehr gut!
     </p>
     <aside>
       Da du richtig gelegen hast, liegen die tatsächliche Linie und deine Linie
@@ -11,9 +11,9 @@
     </aside>
     } @else {
     <p>
-      Das ist leider falsch. Der tatsächliche {{ targetValueTypeName }} ist
-      {{ result.actualValue }}. Um ihn aus dem Histogramm zu bestimmen, musst
-      du:
+      Das ist leider <em>falsch</em>. Der tatsächliche
+      {{ targetValueTypeName }} ist {{ result.actualValue }}. Um ihn aus dem
+      Histogramm zu bestimmen, musst du:
     </p>
     @if (config?.targetProperty === 'mean') {
     <ol>
