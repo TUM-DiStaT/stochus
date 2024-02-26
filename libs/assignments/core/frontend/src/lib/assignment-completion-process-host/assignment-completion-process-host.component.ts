@@ -33,7 +33,7 @@ import { CompletionsService } from '../completions.service'
 })
 export class AssignmentCompletionProcessHostComponent implements OnInit {
   @HostBinding('class')
-  hostClass = 'flex-1 flex items-stretch'
+  hostClass = 'flex-1 flex flex-col items-stretch'
 
   @Input()
   assignment$ = this.activatedRoute.paramMap.pipe(
