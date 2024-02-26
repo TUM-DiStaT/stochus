@@ -34,6 +34,9 @@ jobs:
           targets: lint
           all: ${{github.event_name == 'push'}}
 
+      - name: Create dummy .env file
+        run: cp .env.template .env
+
       - name: Build
         uses: mansagroup/nrwl-nx-action@v3
         with:

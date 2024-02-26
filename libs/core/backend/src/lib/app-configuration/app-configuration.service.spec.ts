@@ -9,6 +9,10 @@ const expectedConfigKeys = [
   'MONGO_DB_USERNAME',
   'MONGO_DB_PASSWORD',
   'MONGO_DB_DB_NAME',
+  'KEYCLOAK_REALM',
+  'KEYCLOAK_ORIGIN',
+  'KEYCLOAK_BACKEND_CLIENT_ID',
+  'KEYCLOAK_BACKEND_CLIENT_SECRET',
 ] as const
 
 describe('AppConfigurationService', () => {
