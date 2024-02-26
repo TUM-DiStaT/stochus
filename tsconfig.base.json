@@ -76,6 +76,7 @@
       "@stochus/interaction-logs/frontend": [
         "libs/interaction-logs/frontend/src/index.ts"
       ],
+      "@stochus/nx": ["libs/nx-plugin/plugin/src/index.ts"],
       "@stochus/studies/backend": ["libs/studies/backend/src/index.ts"],
       "@stochus/studies/frontend": ["libs/studies/frontend/src/index.ts"],
       "@stochus/studies/frontend-static": [

@@ -1,0 +1,36 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  <%= camelCasedName %>AssignmentCompletionData,
+  <%= camelCasedName %>AssignmentConfiguration,
+} from '@stochus/assignments/<%= name %>/shared'
+import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './<%= name %>-assignment-process.component.html',
+})
+export class <%= camelCasedName %>AssignmentProcessComponent
+  implements
+    AssignmentProcessProps<
+      <%= camelCasedName %>AssignmentConfiguration,
+      <%= camelCasedName %>AssignmentCompletionData
+    >
+{
+  @Input()
+  config!: <%= camelCasedName %>AssignmentConfiguration
+  @Input()
+  completionData!: <%= camelCasedName %>AssignmentCompletionData
+  @Output()
+  createInteractionLog = new EventEmitter<unknown>()
+  @Output()
+  updateCompletionData = new EventEmitter<
+    Partial<<%= camelCasedName %>AssignmentCompletionData>
+  >()
+
+  submit() {
+    this.updateCompletionData.emit({
+      result: 42,
+      progress: 1,
+    })
+  }
+}

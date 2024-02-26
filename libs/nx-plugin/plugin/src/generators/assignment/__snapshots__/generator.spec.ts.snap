@@ -1,0 +1,510 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assignment generator should add the asssignment to the backend service 1`] = `
+"import { Injectable, NotFoundException } from '@nestjs/common'
+import { GuessRandomNumberAssignment } from '@stochus/assignments/demos/guess-random-number/shared'
+import { DetermineDiceFairnessAssignment } from '@stochus/assignments/determine-dice-fairness/shared'
+import { DoABackflipAssignment } from '@stochus/assignments/do-a-backflip/shared'
+import { ExtractFromHistogramAssignment } from '@stochus/assignments/extract-from-histogram-assignment/shared'
+import { IdentifySharedCharacteristicsAssignment } from '@stochus/assignments/identify-shared-characteristics/shared'
+import { BaseAssignment } from '@stochus/assignments/model/shared'
+
+@Injectable()
+export class AssignmentsCoreBackendService {
+  // Allow explicit any here to avoid subtyping issues due to
+  // possible mixing of different assignment callbacks (just try removing it
+  // and check out the error message). The service should still
+  // expose the correct types to the outside. Type-safety should be "guaranteed"
+  // at runtime using the id as a discriminator. Not nice, but it should work
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static readonly assignments: BaseAssignment<any, any>[] = [
+    ExtractFromHistogramAssignment,
+    IdentifySharedCharacteristicsAssignment,
+    DetermineDiceFairnessAssignment,
+    DoABackflipAssignment,
+    // we want to be able to use this assignment for testing but not in production
+    ...(process.env['NODE_ENV'] === 'test'
+      ? [GuessRandomNumberAssignment]
+      : []),
+  ]
+
+  static getAllAssignments() {
+    return [...AssignmentsCoreBackendService.assignments]
+  }
+
+  static getById(assignmentId: string) {
+    return this.getAllAssignments().find(
+      (assignment) => assignment.id === assignmentId,
+    )
+  }
+
+  static getByIdOrError(assignmentId: string) {
+    const assignment = this.getById(assignmentId)
+    if (!assignment) {
+      throw new NotFoundException(
+        \`Assignment with ID \${assignmentId} not found\`,
+      )
+    }
+    return assignment
+  }
+}
+"
+`;
+
+exports[`assignment generator should add the asssignment to the frontend service 1`] = `
+"import { Injectable } from '@angular/core'
+import { DetermineDiceFairnessAssignmentForFrontend } from '@stochus/assignments/determine-dice-fairness/frontend'
+import { DoABackflipAssignmentForFrontend } from '@stochus/assignments/do-a-backflip/frontend'
+import { ExtractFromHistogramAssignmentForFrontend } from '@stochus/assignments/extract-from-assignment/frontend'
+import { IdentifySharedCharacteristicsAssignmentForFrontend } from '@stochus/assignments/identify-shared-characteristics/frontend'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AssignmentsService {
+  // Allow explicit any here to avoid subtyping issues due to
+  // possible mixing of different assignment callbacks (just try removing it
+  // and check out the error message). The service should still
+  // expose the correct types to the outside. Type-safety should be "guaranteed"
+  // at runtime using the id as a discriminator. Not nice, but it should work
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static readonly assignments: AssignmentForFrontend<any, any>[] = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ExtractFromHistogramAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    IdentifySharedCharacteristicsAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DetermineDiceFairnessAssignmentForFrontend as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DoABackflipAssignmentForFrontend as any,
+  ]
+
+  static getById(assignmentId?: string | null) {
+    return AssignmentsService.assignments.find(
+      (assignment) => assignment.id === assignmentId,
+    )
+  }
+
+  static getByIdOrError(assignmentId?: string | null, message?: string) {
+    const result = AssignmentsService.getById(assignmentId)
+    const errorMessage =
+      message ?? \`Couldn't find assignment with ID \${assignmentId}\`
+    if (!result) {
+      throw new Error(errorMessage)
+    }
+    return result
+  }
+
+  getAllAssignments() {
+    return [...AssignmentsService.assignments]
+  }
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/index.ts" with the correct contents 1`] = `
+"export * from './lib/do-a-backflip-assignment-for-frontend'
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.html" with the correct contents 1`] = `
+"<p>do-a-backflip assignment process!</p>
+<button class="btn btn-primary" (click)="submit()">Abgeben</button>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.spec.ts" with the correct contents 1`] = `
+"import { fireEvent, render } from '@testing-library/angular'
+import { DoABackflipAssignmentProcessComponent } from './do-a-backflip-assignment-process.component'
+
+describe('DoABackflipAssignmentProcessComponent', () => {
+  it('should submit 42', async () => {
+    const renderResult = await render(DoABackflipAssignmentProcessComponent, {
+      componentProperties: {
+        config: {
+          someConfigProperty: 42,
+        },
+        completionData: {
+          progress: 0,
+          result: 0,
+        },
+      },
+    })
+
+    const completionUpdateSpy = jest.spyOn(
+      renderResult.fixture.componentRef.instance.updateCompletionData,
+      'emit',
+    )
+    expect(completionUpdateSpy).not.toHaveBeenCalled()
+
+    fireEvent.click(renderResult.getByRole('button'))
+
+    expect(completionUpdateSpy).toHaveBeenCalledTimes(1)
+    expect(completionUpdateSpy).toHaveBeenCalledWith({
+      progress: 1,
+      result: 42,
+    })
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/assignment-process/do-a-backflip-assignment-process.component.ts" with the correct contents 1`] = `
+"import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentProcessProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-assignment-process.component.html',
+})
+export class DoABackflipAssignmentProcessComponent
+  implements
+    AssignmentProcessProps<
+      DoABackflipAssignmentConfiguration,
+      DoABackflipAssignmentCompletionData
+    >
+{
+  @Input()
+  config!: DoABackflipAssignmentConfiguration
+  @Input()
+  completionData!: DoABackflipAssignmentCompletionData
+  @Output()
+  createInteractionLog = new EventEmitter<unknown>()
+  @Output()
+  updateCompletionData = new EventEmitter<
+    Partial<DoABackflipAssignmentCompletionData>
+  >()
+
+  submit() {
+    this.updateCompletionData.emit({
+      result: 42,
+      progress: 1,
+    })
+  }
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.html" with the correct contents 1`] = `
+"<label class="form-control">
+  <span class="label">Lustige Konfiguration</span>
+  <input
+    class="input input-bordered"
+    data-testid="some-config-input"
+    [formControl]="formControl.controls.someConfigProperty"
+    [class.select-error]="formControl.controls.someConfigProperty.errors"
+  />
+  @if (formControl.controls.someConfigProperty.invalid) {
+  <div class="text-error">
+    <span
+      class="label-text-alt text-error"
+      data-testid="some-config-input-error-message"
+    >
+      Bitte eine positive Zahl eingeben
+    </span>
+  </div>
+  }
+</label>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.spec.ts" with the correct contents 1`] = `
+"import { FormBuilder } from '@angular/forms'
+import { render } from '@testing-library/angular'
+import { DoABackflipAssignmentForFrontend } from '../do-a-backflip-assignment-for-frontend'
+import { DoABackflipConfigFormComponent } from './do-a-backflip-config-form.component'
+
+describe('DoABackflipConfigFormComponent', () => {
+  it('should show no error for valid config', async () => {
+    const renderResult = await render(DoABackflipConfigFormComponent, {
+      componentProperties: {
+        formControl: DoABackflipAssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: 42,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should show error for invalid config', async () => {
+    const renderResult = await render(DoABackflipConfigFormComponent, {
+      componentProperties: {
+        formControl: DoABackflipAssignmentForFrontend.generateConfigFormControl(
+          new FormBuilder(),
+          {
+            someConfigProperty: -1,
+          },
+        ),
+      },
+    })
+
+    expect(
+      renderResult.queryByTestId('some-config-input-error-message'),
+    ).toBeInTheDocument()
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/config-form/do-a-backflip-config-form.component.ts" with the correct contents 1`] = `
+"import { Component, Input } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { FormModel } from 'ngx-mf'
+import { DoABackflipAssignmentConfiguration } from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentConfigFormProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-config-form.component.html',
+  imports: [ReactiveFormsModule],
+})
+export class DoABackflipConfigFormComponent
+  implements AssignmentConfigFormProps<DoABackflipAssignmentConfiguration>
+{
+  @Input()
+  formControl!: FormModel<DoABackflipAssignmentConfiguration>
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/do-a-backflip-assignment-for-frontend.ts" with the correct contents 1`] = `
+"import { Validators } from '@angular/forms'
+import {
+  DoABackflipAssignment,
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentForFrontend } from '@stochus/assignments/model/frontend'
+import { DoABackflipAssignmentProcessComponent } from './assignment-process/do-a-backflip-assignment-process.component'
+import { DoABackflipConfigFormComponent } from './config-form/do-a-backflip-config-form.component'
+import { DoABackflipFeedbackComponent } from './feedback/do-a-backflip-feedback.component'
+
+export const DoABackflipAssignmentForFrontend: AssignmentForFrontend<
+  DoABackflipAssignmentConfiguration,
+  DoABackflipAssignmentCompletionData
+> = {
+  ...DoABackflipAssignment,
+  completionProcessComponent: DoABackflipAssignmentProcessComponent,
+  configurationInputFormComponent: DoABackflipConfigFormComponent,
+  feedbackComponent: DoABackflipFeedbackComponent,
+  generateConfigFormControl: (fb, { someConfigProperty }) =>
+    fb.group({
+      someConfigProperty: [someConfigProperty, [Validators.min(0)]],
+    }),
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.html" with the correct contents 1`] = `
+"<div class="flex flex-col">
+  <h2>Konfiguration</h2>
+  <code>{{ config | json }}</code>
+  <h2>Daten</h2>
+  <code>{{ completionData | json }}</code>
+</div>
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.spec.ts" with the correct contents 1`] = `
+"import { render } from '@testing-library/angular'
+import { DoABackflipFeedbackComponent } from './do-a-backflip-feedback.component'
+
+describe('DoABackflipFeedbackComponent', () => {
+  it('should create', async () => {
+    const renderResult = await render(DoABackflipFeedbackComponent, {
+      componentProperties: {
+        config: {
+          someConfigProperty: 42,
+        },
+        completionData: {
+          progress: 1,
+          result: 24,
+        },
+      },
+    })
+
+    expect(renderResult).toBeTruthy()
+  })
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/frontend/src/lib/feedback/do-a-backflip-feedback.component.ts" with the correct contents 1`] = `
+"import { JsonPipe } from '@angular/common'
+import { Component, Input } from '@angular/core'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from '@stochus/assignments/do-a-backflip/shared'
+import { AssignmentFeedbackProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './do-a-backflip-feedback.component.html',
+  imports: [JsonPipe],
+})
+export class DoABackflipFeedbackComponent
+  implements
+    AssignmentFeedbackProps<
+      DoABackflipAssignmentConfiguration,
+      DoABackflipAssignmentCompletionData
+    >
+{
+  @Input()
+  completionData!: DoABackflipAssignmentCompletionData
+  @Input()
+  config!: DoABackflipAssignmentConfiguration
+}
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/index.ts" with the correct contents 1`] = `
+"export * from './lib/do-a-backflip-assignment'
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/lib/do-a-backflip-assignment.spec.ts" with the correct contents 1`] = `
+"import { validate } from 'class-validator'
+import { emptyBaseCompletionData } from '@stochus/assignments/model/shared'
+import { plainToInstance } from '@stochus/core/shared'
+import {
+  DoABackflipAssignmentCompletionData,
+  DoABackflipAssignmentConfiguration,
+} from './do-a-backflip-assignment'
+
+describe('configuration linting & transformation', () => {
+  it.each([-1, 42, 4.2])(
+    'should transform someConfigProperty %p correctly and verify as correct',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentConfiguration, {
+        someConfigProperty,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (someConfigProperty: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentConfiguration, {
+        someConfigProperty,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})
+
+describe('completion data linting & transformation', () => {
+  it('should fail validation if base data is missing', async () => {
+    const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+      // no BaseCompletionData!
+      result: 1,
+    })
+
+    const errors = await validate(transformed)
+    expect(errors.length).toBeGreaterThan(0)
+  })
+
+  it.each([undefined, null, 1])(
+    'should transform correctly and verify as correct',
+    async (result: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+        ...emptyBaseCompletionData,
+        result,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(0)
+    },
+  )
+
+  it.each(['invalid'])(
+    'should fail with result %p',
+    async (result: unknown) => {
+      const transformed = plainToInstance(DoABackflipAssignmentCompletionData, {
+        ...emptyBaseCompletionData,
+        result,
+      })
+
+      const errors = await validate(transformed)
+      expect(errors).toHaveLength(1)
+    },
+  )
+})
+"
+`;
+
+exports[`assignment generator should create "libs/assignments/do-a-backflip/shared/src/lib/do-a-backflip-assignment.ts" with the correct contents 1`] = `
+"import { Expose } from 'class-transformer'
+import { IsNumber, IsOptional } from 'class-validator'
+import { random } from 'lodash'
+import {
+  BaseAssignment,
+  BaseCompletionData,
+  emptyBaseCompletionData,
+} from '@stochus/assignments/model/shared'
+
+export class DoABackflipAssignmentConfiguration {
+  @Expose()
+  @IsNumber()
+  someConfigProperty!: number
+}
+
+export class DoABackflipAssignmentCompletionData extends BaseCompletionData {
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  result?: number
+}
+
+export const initialDoABackflipAssignmentCompletionData = {
+  ...emptyBaseCompletionData,
+  result: 0,
+} satisfies DoABackflipAssignmentCompletionData
+
+export const DoABackflipAssignment: BaseAssignment<
+  DoABackflipAssignmentConfiguration,
+  DoABackflipAssignmentCompletionData
+> = {
+  id: 'DoABackflipAssignment',
+  name: 'Meine tolle Aufgabe',
+  version: 0,
+  description: 'Coole Beschreibung',
+  getInitialCompletionData: () => initialDoABackflipAssignmentCompletionData,
+  getRandomConfig: () => ({
+    someConfigProperty: random(42, 42),
+  }),
+  configurationClass: DoABackflipAssignmentConfiguration,
+  completionDataClass: DoABackflipAssignmentCompletionData,
+}
+"
+`;
+
+exports[`assignment generator should import @testing-library/jest-dom in frontend test setup 1`] = `
+"import '@testing-library/jest-dom'
+import 'jest-preset-angular/setup-jest'
+
+// @ts-expect-error https://thymikee.github.io/jest-preset-angular/docs/getting-started/test-environment
+globalThis.ngJest = {
+  testEnvironmentOptions: {
+    errorOnUnknownElements: true,
+    errorOnUnknownProperties: true,
+  },
+}
+"
+`;

@@ -1,0 +1,25 @@
+import { JsonPipe } from '@angular/common'
+import { Component, Input } from '@angular/core'
+import {
+  <%= camelCasedName %>AssignmentCompletionData,
+  <%= camelCasedName %>AssignmentConfiguration,
+} from '@stochus/assignments/<%= name %>/shared'
+import { AssignmentFeedbackProps } from '@stochus/assignments/model/frontend'
+
+@Component({
+  standalone: true,
+  templateUrl: './<%= name %>-feedback.component.html',
+  imports: [JsonPipe],
+})
+export class <%= camelCasedName %>FeedbackComponent
+  implements
+    AssignmentFeedbackProps<
+      <%= camelCasedName %>AssignmentConfiguration,
+      <%= camelCasedName %>AssignmentCompletionData
+    >
+{
+  @Input()
+  completionData!: <%= camelCasedName %>AssignmentCompletionData
+  @Input()
+  config!: <%= camelCasedName %>AssignmentConfiguration
+}

@@ -1,0 +1,19 @@
+<label class="form-control">
+  <span class="label">Lustige Konfiguration</span>
+  <input
+    class="input input-bordered"
+    data-testid="some-config-input"
+    [formControl]="formControl.controls.someConfigProperty"
+    [class.select-error]="formControl.controls.someConfigProperty.errors"
+  />
+  @if (formControl.controls.someConfigProperty.invalid) {
+  <div class="text-error">
+    <span
+      class="label-text-alt text-error"
+      data-testid="some-config-input-error-message"
+    >
+      Bitte eine positive Zahl eingeben
+    </span>
+  </div>
+  }
+</label>
