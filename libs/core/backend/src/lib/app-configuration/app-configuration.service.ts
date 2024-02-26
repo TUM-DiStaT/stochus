@@ -12,5 +12,16 @@ export class AppConfigurationService {
   public readonly mongoDbName =
     this.configService.getOrThrow<string>('MONGO_DB_DB_NAME')
 
+  public readonly keycloakOrigin =
+    this.configService.getOrThrow<string>('KEYCLOAK_ORIGIN')
+  public readonly keycloakRealm =
+    this.configService.getOrThrow<string>('KEYCLOAK_REALM')
+  public readonly keycloakClientId = this.configService.getOrThrow<string>(
+    'KEYCLOAK_BACKEND_CLIENT_ID',
+  )
+  public readonly keycloakClientSecret = this.configService.getOrThrow<string>(
+    'KEYCLOAK_BACKEND_CLIENT_SECRET',
+  )
+
   constructor(private readonly configService: ConfigService) {}
 }

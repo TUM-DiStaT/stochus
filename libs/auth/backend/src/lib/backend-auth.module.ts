@@ -8,21 +8,25 @@ import {
   RoleGuard,
   TokenValidation,
 } from 'nest-keycloak-connect'
+import {
+  AppConfigurationModule,
+  AppConfigurationService,
+} from '@stochus/core/backend'
 import { KeycloakAdminController } from './keycloak-admin/keycloak-admin.controller'
 import { KeycloakAdminService } from './keycloak-admin/keycloak-admin.service'
 
-const keycloakUrl = 'http://localhost:8080'
-const realm = 'stochus'
-const clientId = 'stochus-backend'
-const secret = 'LnhgXGiBrlvXbMWRNo8I6E4ha9u58yBv'
+const keycloakModule = KeycloakConnectModule.registerAsync({
+  imports: [AppConfigurationModule],
+  inject: [AppConfigurationService],
+  useFactory: (appConfigService: AppConfigurationService) => ({
+    authServerUrl: appConfigService.keycloakOrigin,
+    realm: appConfigService.keycloakRealm,
+    secret: appConfigService.keycloakClientSecret,
+    clientId: appConfigService.keycloakClientId,
 
-const keycloakModule = KeycloakConnectModule.register({
-  authServerUrl: keycloakUrl,
-  realm,
-  secret: secret,
-  clientId: clientId,
-  policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
-  tokenValidation: TokenValidation.ONLINE,
+    policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
+    tokenValidation: TokenValidation.ONLINE,
+  }),
 })
 
 @Global()
