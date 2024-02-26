@@ -1,27 +1,15 @@
 import { Tree, readProjectConfiguration, updateJson } from '@nx/devkit'
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing'
 import { tsquery } from '@phenomnomnominal/tsquery'
-import * as fs from 'fs/promises'
 import { camelCase, upperFirst } from 'lodash'
-import * as path from 'path'
 import {
   backendAssignmentsServicePath,
   frontendAssignmentsServicePath,
+  getActualFileContentFromWorkspaceRootPath,
+  getActualPrettierConfig,
 } from './file-paths'
 import { assignmentGenerator } from './generator'
 import { AssignmentGeneratorSchema } from './schema'
-
-const getActualFileContentFromWorkspaceRootPath = async (filePath: string) =>
-  await fs.readFile(
-    path.join(__dirname, '../../../../../../', filePath),
-    'utf-8',
-  )
-
-const getActualPrettierConfig = async () => {
-  return JSON.parse(
-    await getActualFileContentFromWorkspaceRootPath('.prettierrc'),
-  )
-}
 
 describe('assignment generator', () => {
   let tree: Tree
