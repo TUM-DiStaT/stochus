@@ -95,11 +95,22 @@ async function addToBackendService(
   tree.write(backendAssignmentsServicePath, withAddedAssignment)
 }
 
+const addTestingLibraryToFrontendTestSetup = (
+  tree: Tree,
+  frontendRoot: string,
+) => {
+  const testSetup =
+    tree.read(`${frontendRoot}/src/test-setup.ts`)?.toString() ?? ''
+  const withImport = addImport(testSetup, `import '@testing-library/jest-dom'`)
+  tree.write(`${frontendRoot}/src/test-setup.ts`, withImport)
+}
+
 export async function assignmentGenerator(
   tree: Tree,
   options: AssignmentGeneratorSchema,
 ) {
   const projectRoot = `libs/assignments/${options.name}`
+  const frontendRoot = projectRoot + '/frontend'
   const camelCasedName = upperFirst(camelCase(options.name))
 
   await libraryGenerator(tree, {
@@ -124,7 +135,7 @@ export async function assignmentGenerator(
     linter: Linter.EsLint,
     strict: true,
     publishable: false,
-    directory: projectRoot + '/frontend',
+    directory: frontendRoot,
     importPath: `@stochus/assignments/${options.name}/frontend`,
     unitTestRunner: UnitTestRunner.Jest,
     projectNameAndRootFormat: 'as-provided',
@@ -146,6 +157,7 @@ export async function assignmentGenerator(
 
   addToFrontendService(tree, camelCasedName, options)
   await addToBackendService(tree, camelCasedName, options)
+  addTestingLibraryToFrontendTestSetup(tree, frontendRoot)
 
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
     ...options,

@@ -179,4 +179,16 @@ describe('assignment generator', () => {
     // Still, take a second to look at the changes and see if this code would still work.
     expect(assignmentServiceCode).toMatchSnapshot()
   })
+
+  it('should import @testing-library/jest-dom in frontend test setup', async () => {
+    await assignmentGenerator(tree, options)
+    const testSetupContent = tree
+      .read(`${assignmentBaseDir}/frontend/src/test-setup.ts`)
+      ?.toString()
+    expect(testSetupContent).not.toBeUndefined()
+    expect(testSetupContent).toContain(`import '@testing-library/jest-dom'`)
+
+    // This may fail if the angular library generator changes. Don't bee hesitant to update this test.
+    expect(testSetupContent).toMatchSnapshot()
+  })
 })
