@@ -4,7 +4,7 @@
     <ul class="grid grid-cols-2 gap-4">
       <li
         *ngFor="let study of studies$ | async"
-        class="card card-bordered card-normal"
+        class="card card-bordered card-normal shadow-xl"
       >
         <div class="card-body">
           <div class="card-title">
@@ -117,7 +117,7 @@
           </div>
         </div>
       </li>
-      <li class="card card-bordered border-dashed text-gray-40">
+      <li class="card card-bordered border-dashed text-gray-40 shadow-xl">
         <a
           [routerLink]="['new']"
           class="w-full h-full flex place-content-center place-items-center"
