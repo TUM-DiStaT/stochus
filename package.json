@@ -25,6 +25,7 @@
     "@nestjs/swagger": "7.1.14",
     "@ng-icons/core": "^23.3.0",
     "@ng-icons/heroicons": "^23.3.0",
+    "@ng-icons/octicons": "^27.1.0",
     "@nx/devkit": "18.0.4",
     "@nx/plugin": "^18.0.4",
     "@sgratzl/chartjs-chart-boxplot": "^4.2.7",
