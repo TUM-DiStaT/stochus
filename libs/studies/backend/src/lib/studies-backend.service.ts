@@ -331,6 +331,20 @@ export class StudiesBackendService {
           },
         },
         {
+          $match: {
+            startDate: {
+              $lt: new Date(),
+            },
+          },
+        },
+        {
+          $match: {
+            endDate: {
+              $gt: new Date(),
+            },
+          },
+        },
+        {
           $lookup: {
             from: 'studyparticipations',
             localField: '_id' satisfies keyof Document,
