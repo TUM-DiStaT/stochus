@@ -1,8 +1,10 @@
 <footer class="footer p-10 bg-neutral text-neutral-content">
-  <aside class="text-4xl font-bold">Stochus</aside>
+  <a [routerLink]="['/']">
+    <aside class="text-4xl font-bold">Stochus</aside>
+  </a>
   <nav>
     <h6 class="footer-title">Rechtliches</h6>
-    <a [routerLink]="['privacy']"> Datenschutserklärung </a>
+    <a [routerLink]="['privacy']"> Datenschutzerklärung </a>
     <a [routerLink]="['imprint']"> Impressum </a>
   </nav>
   <nav>

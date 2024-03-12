@@ -5,7 +5,7 @@
   <daisy-navbar-start></daisy-navbar-start>
   <daisy-navbar-center>
     <a
-      [routerLink]="['dashboard']"
+      [routerLink]="['/']"
       daisyButton
       [style]="ButtonStyle.GHOST"
       class="normal-case text-lg"
@@ -14,7 +14,7 @@
     </a>
   </daisy-navbar-center>
   <daisy-navbar-end>
-    <daisy-dropdown showOnHover alignEnd>
+    <daisy-dropdown showOnHover alignEnd *ngIf="anyMenuItemIsVisible$ | async">
       <ng-icon name="heroBars3" button></ng-icon>
       <ul body daisyMenu class="w-max bg-base-100 rounded-box shadow">
         <li daisyMenuItem *ngIf="canChooseTasksFreely$ | async">
@@ -29,7 +29,7 @@
             Studien verwalten
           </a>
         </li>
-        <li daisyMenuItem>
+        <li daisyMenuItem *ngIf="isLoggedIn$ | async">
           <a (click)="logout()">
             <ng-icon name="heroArrowRightOnRectangle" />
             Abmelden
