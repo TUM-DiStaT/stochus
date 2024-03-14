@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+// Just for the type import
+import 'chartjs-plugin-datalabels'
 import { DetermineDiceFairnessFeedbackComponent } from './determine-dice-fairness-feedback.component'
 
 describe('DetermineDiceFairnessFeedbackComponent', () => {
