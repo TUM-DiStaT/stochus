@@ -17,6 +17,7 @@ describe('NavbarComponent', () => {
           provide: UserService,
           useValue: {
             userHasRole: () => NEVER,
+            user$: NEVER,
           },
         },
         {
