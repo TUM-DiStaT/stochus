@@ -2,15 +2,21 @@ import { CommonModule } from '@angular/common'
 import { Component, Input } from '@angular/core'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { heroExclamationTriangle } from '@ng-icons/heroicons/outline'
+import { ChartData } from 'chart.js'
+import { NgChartsModule } from 'ng2-charts'
 import {
   DetermineDiceFairnessAssignmentCompletionData,
   DetermineDiceFairnessAssignmentConfiguration,
 } from '@stochus/assignments/determine-dice-fairness/shared'
 import { minimumProbabilityD6IsUnfair } from '@stochus/core/shared'
+import {
+  chartOptions,
+  mapCompletionDataToChartData,
+} from '../assignment-process/chartAdapters'
 
 @Component({
   standalone: true,
-  imports: [CommonModule, NgIconComponent],
+  imports: [CommonModule, NgIconComponent, NgChartsModule],
   templateUrl: './determine-dice-fairness-feedback.component.html',
   providers: [provideIcons({ heroExclamationTriangle })],
 })
@@ -22,7 +28,10 @@ export class DetermineDiceFairnessFeedbackComponent {
     totalAmountOfThrows: number
     isFair: boolean
     correct: boolean
+    chartData: ChartData
   }
+
+  chartOptions = chartOptions
 
   get completionData(): DetermineDiceFairnessAssignmentCompletionData {
     return this._completionData
@@ -61,6 +70,7 @@ export class DetermineDiceFairnessFeedbackComponent {
         Math.round(minimumProbabilityD6IsUnfair(observedFrequencies) * 1000) /
         10,
       totalAmountOfThrows: observedFrequencies.reduce((a, b) => a + b, 0),
+      chartData: mapCompletionDataToChartData(this._completionData),
     }
   }
 }

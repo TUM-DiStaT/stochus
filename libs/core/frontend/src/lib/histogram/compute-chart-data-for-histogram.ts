@@ -38,8 +38,8 @@ export const computeChartDataForHistogram = (
       type: 'bar',
       data: frequenciesFromStartToEnd,
       yAxisID: 'histogramY',
-      backgroundColor: '#BF9E0D',
-      borderColor: '#5F4F07',
+      backgroundColor: '#749EBE',
+      borderColor: '#416278',
     },
   ]
 

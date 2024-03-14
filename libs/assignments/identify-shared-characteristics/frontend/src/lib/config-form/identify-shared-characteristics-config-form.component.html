@@ -53,6 +53,7 @@
       <stochus-histogram
         [data]="(debouncedParsedCsv$ | async)?.[index]"
         showBoxPlot
+        showActualMean
       />
     </div>
     }

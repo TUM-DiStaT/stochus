@@ -15,7 +15,7 @@ import {
   heroRectangleStack,
 } from '@ng-icons/heroicons/outline'
 import { KeycloakService } from 'keycloak-angular'
-import { filter, map, of, switchMap } from 'rxjs'
+import { filter, map, of, switchMap, zip } from 'rxjs'
 import { UserRoles } from '@stochus/auth/shared'
 import { UserService } from '@stochus/auth/frontend'
 import { StudiesService } from '@stochus/studies/frontend-static'
@@ -83,6 +83,7 @@ export class NavbarComponent {
     }),
   )
 
+  isLoggedIn$ = this.userService.user$.pipe(map((user) => user !== undefined))
   isStudent$ = this.userService.userHasRole(UserRoles.STUDENT)
   isResearcher$ = this.userService.userHasRole(UserRoles.RESEARCHER)
   hasActiveStudies$ = this.isStudent$.pipe(
@@ -90,7 +91,26 @@ export class NavbarComponent {
       isStudent ? this.studyService.hasActiveStudies() : of(false),
     ),
   )
-  canChooseTasksFreely$ = this.hasActiveStudies$.pipe(map((x) => !x))
+  canChooseTasksFreely$ = zip(
+    this.isStudent$,
+    this.isResearcher$,
+    this.hasActiveStudies$,
+  ).pipe(
+    map(
+      ([isStudent, isResearcher, hasActiveStudies]) =>
+        (isStudent || isResearcher) && !hasActiveStudies,
+    ),
+  )
+  anyMenuItemIsVisible$ = zip(
+    this.isLoggedIn$,
+    this.isResearcher$,
+    this.canChooseTasksFreely$,
+  ).pipe(
+    map(
+      ([isLoggedIn, isResearcher, canChooseTasksFreely]) =>
+        isLoggedIn || isResearcher || canChooseTasksFreely,
+    ),
+  )
 
   constructor(
     private readonly router: Router,

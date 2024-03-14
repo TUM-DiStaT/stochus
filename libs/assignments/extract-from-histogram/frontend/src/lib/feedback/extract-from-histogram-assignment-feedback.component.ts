@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, Input } from '@angular/core'
+import { round } from 'lodash'
 import { NgChartsModule } from 'ng2-charts'
 import {
   ExtractFromHistogramAssignmentCompletionData,
@@ -63,7 +64,7 @@ export class ExtractFromHistogramAssignmentFeedbackComponent
           : sortedData[Math.floor(sortedData.length / 2)]
       this.result = {
         correct: this.completionData.result === median,
-        actualValue: median,
+        actualValue: round(median, 2),
       }
     } else if (this._config.targetProperty === 'mean') {
       const mean =
@@ -71,7 +72,7 @@ export class ExtractFromHistogramAssignmentFeedbackComponent
         (this._config.data.length ?? 1)
       this.result = {
         correct: this.completionData.result === mean,
-        actualValue: mean,
+        actualValue: round(mean, 2),
       }
     }
   }

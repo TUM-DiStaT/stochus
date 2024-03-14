@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-12">
   <div class="grid grid-cols-2 gap-8">
-    @for (dataset of datasets;track dataset?.data) {
+    @for (dataset of datasets; track dataset?.data) {
     <div
       class="flex flex-col border-2 rounded-xl p-4 transition-all"
       [class.shadow-md]="!dataset.selected"
@@ -10,7 +10,10 @@
     >
       <div class="form-control">
         <label class="label">
-          <span class="label-text"> </span>
+          <span class="label-text">
+            @if (dataset.wasCorrect) { Richtigerweise } @else {
+            Fälschlicherweise } @if (!dataset.selected) { nicht } angekreuzt
+          </span>
           <input
             type="checkbox"
             [checked]="dataset.selected"

@@ -5,7 +5,9 @@ import { UserRoles } from '@stochus/auth/shared'
 import { AuthGuard, PublicOnlyGuard, UserService } from '@stochus/auth/frontend'
 import { StudiesService } from '@stochus/studies/frontend-static'
 import { DashboardComponent } from './dashboard/dashboard.component'
+import { ImprintComponent } from './imprint/imprint.component'
 import { LandingpageComponent } from './landingpage/landingpage.component'
+import { PrivacyComponent } from './privacy/privacy.component'
 
 export type StochusRouteData = {
   hideAppUi?: boolean
@@ -26,6 +28,16 @@ export const appRoutes: StochusRoute[] = [
     data: {
       hideAppUi: true,
     },
+  },
+  {
+    title: 'Datenschutzerklärung | Stochus',
+    path: 'privacy',
+    component: PrivacyComponent,
+  },
+  {
+    title: 'Impressum | Stochus',
+    path: 'imprint',
+    component: ImprintComponent,
   },
   {
     title: 'Dashboard | Stochus',
